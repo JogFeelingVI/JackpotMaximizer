@@ -8,5 +8,3 @@ import argparse
 
 if __name__ == '__main__':
     print('run is command')
-    
-    
