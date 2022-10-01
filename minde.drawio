@@ -4,49 +4,49 @@
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="4" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="2" target="3">
+                <mxCell id="4" value="" style="edgeStyle=none;html=1;" parent="1" source="2" target="3" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="2" value="&lt;h1&gt;qls command&lt;/h1&gt;&lt;p&gt;快速生成复合双色球规律的随机号码.&amp;nbsp;&lt;/p&gt;&lt;p&gt;支持windows linux macos android&lt;/p&gt;" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="1">
+                <mxCell id="2" value="&lt;h1&gt;qls command&lt;/h1&gt;&lt;p&gt;快速生成复合双色球规律的随机号码.&amp;nbsp;&lt;/p&gt;&lt;p&gt;支持windows linux macos android&lt;/p&gt;" style="text;html=1;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;strokeColor=default;" parent="1" vertex="1">
                     <mxGeometry x="10" y="10" width="190" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="6" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="5">
+                <mxCell id="6" value="" style="edgeStyle=none;html=1;" parent="1" source="3" target="5" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="10" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="9">
+                <mxCell id="10" value="" style="edgeStyle=none;html=1;" parent="1" source="3" target="9" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="12" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="11">
+                <mxCell id="12" value="" style="edgeStyle=none;html=1;" parent="1" source="3" target="11" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="14" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="13">
+                <mxCell id="14" value="" style="edgeStyle=none;html=1;" parent="1" source="3" target="13" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="16" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="15">
+                <mxCell id="16" value="" style="edgeStyle=none;html=1;" parent="1" source="3" target="15" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="18" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="17">
+                <mxCell id="18" value="" style="edgeStyle=none;html=1;" parent="1" source="3" target="17" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="参数" style="whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
+                <mxCell id="3" value="参数" style="whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
                     <mxGeometry x="315" y="25" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="-h 显示所有参数" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+                <mxCell id="5" value="-h 显示所有参数" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
                     <mxGeometry x="515" y="25" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="--NL 不使用网络最新数据，不带参数，使用网络最新数据" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="9" value="--NL 不使用网络最新数据，不带参数，使用网络最新数据" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="515" y="110" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="11" value="-n 10 产生十组数据" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="11" value="-n 10 产生十组数据" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="515" y="200" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="13" value="-R 7 8 9 产生红球号码，默认为6" style="whiteSpace=wrap;html=1;fillColor=#d80073;fontColor=#ffffff;strokeColor=#A50040;" vertex="1" parent="1">
+                <mxCell id="13" value="-R 7 8 9 产生红球号码，默认为6" style="whiteSpace=wrap;html=1;fillColor=#d80073;fontColor=#ffffff;strokeColor=#A50040;" parent="1" vertex="1">
                     <mxGeometry x="380" y="180" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="15" value="-B 默认 1 可输入范围为 2 - 16" style="whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" vertex="1" parent="1">
+                <mxCell id="15" value="-B 默认 1 可输入范围为 2 - 16" style="whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
                     <mxGeometry x="305" y="250" width="130" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="17" value="--save 保存随机数据" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="17" value="--save 保存随机数据" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="240" y="180" width="120" height="60" as="geometry"/>
                 </mxCell>
             </root>
