@@ -5,6 +5,9 @@
 # @Last Modified time: 2022-10-01 18:25:48
 
 import argparse
+from codex import loadjson
 
 if __name__ == '__main__':
-    print('run is command')
+    Ljson = loadjson.Load_JSON()
+    print(Ljson.read('command_info'))
+    

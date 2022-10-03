@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="qqdpAUSUiQbnmEQOyiDV" name="main">
-        <mxGraphModel dx="598" dy="287" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="598" dy="282" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -40,10 +40,10 @@
                 <mxCell id="11" value="-n 10 产生十组数据" style="whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" parent="1" vertex="1">
                     <mxGeometry x="515" y="200" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="13" value="-R 7 8 9 产生红球号码，默认为6" style="whiteSpace=wrap;html=1;fillColor=#d80073;fontColor=#ffffff;strokeColor=#A50040;" parent="1" vertex="1">
+                <mxCell id="13" value="-r 7 8 9 产生红球号码，默认为6" style="whiteSpace=wrap;html=1;fillColor=#d80073;fontColor=#ffffff;strokeColor=#A50040;" parent="1" vertex="1">
                     <mxGeometry x="380" y="180" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="15" value="-B 默认 1 可输入范围为 2 - 16" style="whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
+                <mxCell id="15" value="-b 默认 1 可输入范围为 2 - 16" style="whiteSpace=wrap;html=1;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" parent="1" vertex="1">
                     <mxGeometry x="305" y="250" width="130" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="17" value="--save 保存随机数据" style="whiteSpace=wrap;html=1;fillColor=#76608a;fontColor=#ffffff;strokeColor=#432D57;" parent="1" vertex="1">
