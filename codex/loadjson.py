@@ -3,20 +3,22 @@
 # @Date: 2022-10-03 12:25:40
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 12:25:40
-import json,enum
+import json, enum
+
 
 class Resty(enum.Enum):
-    String = './String.json'
-    
+    OxStr = './String.json'
+
 
 class Load_JSON:
 
-    def __init__(self) -> None:
-        self.JSON = self.__load()
+    def __init__(self, res: Resty) -> None:
+        ''' res: Resty '''
+        self.JSON = self.__loadjson__(res.value)
 
-    def __load(self) -> dict:
+    def __loadjson__(self, path: str) -> dict:
         ''' Load ./String.json '''
-        with open('./String.json', 'r') as f:
+        with open(path, 'r') as f:
             jdata: dict = json.load(f)
         return jdata
 

@@ -5,9 +5,11 @@
 # @Last Modified time: 2022-10-01 18:25:48
 
 import argparse
-from codex import loadjson
+from codex.loadjson import Load_JSON, Resty
+
+
 
 if __name__ == '__main__':
-    Ljson = loadjson.Load_JSON()
+    Ljson = Load_JSON(Resty.OxStr)
     print(Ljson.read('command_info'))
     
