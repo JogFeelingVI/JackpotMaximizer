@@ -37,4 +37,5 @@ class loading:
     def gparse(self) -> dict:
         ''' parse_args return dict '''
         args = self.command.parse_args()
+        print(args.__dict__)
         return args.__dict__

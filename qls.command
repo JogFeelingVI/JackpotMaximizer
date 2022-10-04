@@ -7,13 +7,14 @@
 import argparse
 from codex.loadjson import Load_JSON, Resty
 from codex.command import loading
+from codex.funcs import action
 
 
 def maix() -> None:
     ''' codex enter '''
-    Ljson = Load_JSON(Resty.OxStr)
-    Cmd_load = loading()
-    print(Cmd_load.gparse())
+    cmd_load = loading()
+    act = action(cmd_load.gparse())
+    act.act_for_dict()
 
 
 if __name__ == '__main__':
