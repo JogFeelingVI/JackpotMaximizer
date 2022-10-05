@@ -25,7 +25,7 @@ def getdata(load: True) -> dict:
             html = buf.read()
         print(':: loading buffer')
     Rx = re.findall(b'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
-    Bx = re.findall(b'>([0-9]{2})<', html)
+    Bx = re.findall(b'c_bule\">([0-9]{2})<', html)
     Lix = {'R': [], 'B': []}
     for zitem in zip(Rx, Bx):
         R, B = zitem
@@ -34,6 +34,7 @@ def getdata(load: True) -> dict:
         for Rz in R:
             Lix['R'].append(Rz)
         Lix['B'].append(B)
+    print(Lix['B'])
     return Lix
 
 
@@ -44,11 +45,13 @@ def randoms_b(Dlist: list, Count: int, depth: int = 0) -> list:
     '''
     import random as BDX
     dlis = list(set(Dlist))
+    if Count == 16:
+        return [x for x in range(1, 17)]
     weig = [Dlist.count(x) for x in dlis]
     Jieguo = BDX.choices(dlis, weights=weig, k=Count)
     Jieguo = [x for x in sorted(Jieguo)]
     if len(Jieguo) > list(set(Jieguo)).__len__():
-        return randoms_r(Dlist, Count, depth + 1)
+        return randoms_b(Dlist, Count, depth + 1)
     else:
         return Jieguo
 
@@ -88,6 +91,20 @@ def Limit_input_r(r: int) -> int:
         return 19
 
 
+def Limit_input_b(r: int) -> int:
+    '''
+    Limit input R 6-19
+    '''
+    if r >= 1 and r <= 16:
+        return r
+    elif r < 1:
+        print(':: Change parameter B to 1')
+        return 1
+    elif r > 16:
+        print(':: Change parameter b to 16')
+        return 16
+
+
 class action:
     ''' 执行脚本分析动作 '''
     data = {}
@@ -95,6 +112,7 @@ class action:
     def __init__(self, args: dict) -> None:
         self.args: dict = args if args != None else {'save': False}
         self.args['r'] = Limit_input_r(self.args['r'])
+        self.args['b'] = Limit_input_b(self.args['b'])
         print(f'action args {self.args}')
 
     def act_for_dict(self):
