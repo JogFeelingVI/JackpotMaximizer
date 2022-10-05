@@ -34,7 +34,7 @@
                 <mxCell id="5" value="-h 显示所有参数" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
                     <mxGeometry x="515" y="25" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="--NL 不使用网络最新数据，不带参数，使用网络最新数据" style="whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" parent="1" vertex="1">
+                <mxCell id="9" value="--update 不使用网络最新数据，不带参数，使用网络最新数据" style="whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" parent="1" vertex="1">
                     <mxGeometry x="515" y="110" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="11" value="-n 10 产生十组数据" style="whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" parent="1" vertex="1">

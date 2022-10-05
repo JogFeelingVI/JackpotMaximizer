@@ -19,6 +19,6 @@ class get_html:
         except:
             return None
 
-    def neirong(self):
+    def neirong(self) -> str:
         ''' get text '''
         return self.text
