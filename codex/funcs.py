@@ -37,9 +37,26 @@ def getdata(load: True) -> dict:
     return Lix
 
 
-def randoms(Clist: list, Count: int, inx:int = 0) -> None:
+def randoms_b(Dlist: list, Count: int, depth: int = 0) -> list:
     ''' 
     fromat info
+    maximum recursion depth exceeded in comparison max 16 min 1
+    '''
+    import random as BDX
+    dlis = list(set(Dlist))
+    weig = [Dlist.count(x) for x in dlis]
+    Jieguo = BDX.choices(dlis, weights=weig, k=Count)
+    Jieguo = [x for x in sorted(Jieguo)]
+    if len(Jieguo) > list(set(Jieguo)).__len__():
+        return randoms_r(Dlist, Count, depth + 1)
+    else:
+        return Jieguo
+
+
+def randoms_r(Clist: list, Count: int, depth: int = 0) -> list:
+    ''' 
+    fromat info
+    maximum recursion depth exceeded in comparison max 19 min 6
     '''
     import random as RDX
     clis = list(set(Clist))
@@ -47,9 +64,28 @@ def randoms(Clist: list, Count: int, inx:int = 0) -> None:
     Jieguo = RDX.choices(clis, weights=weig, k=Count)
     Jieguo = [x for x in sorted(Jieguo)]
     if len(Jieguo) > list(set(Jieguo)).__len__():
-        randoms(Clist, Count,inx+1)
+        if depth < 990.01:
+            return randoms_r(Clist, Count, depth + 1)
+        else:
+            print('Maximum recursion depth exceeded in comparison')
+            print(f'Limit to 990, now {depth}')
+            return [depth, [0]]
     else:
-        print(f'inx {inx} {Jieguo}')
+        return [depth, Jieguo]
+
+
+def Limit_input_r(r: int) -> int:
+    '''
+    Limit input R 6-19
+    '''
+    if r >= 6 and r <= 19:
+        return r
+    elif r < 6:
+        print(':: Change parameter R to 6')
+        return 6
+    elif r > 19:
+        print(':: Change parameter R to 19')
+        return 19
 
 
 class action:
@@ -58,9 +94,14 @@ class action:
 
     def __init__(self, args: dict) -> None:
         self.args: dict = args if args != None else {'save': False}
-        print(f'action self.args {self.args}')
+        self.args['r'] = Limit_input_r(self.args['r'])
+        print(f'action args {self.args}')
 
     def act_for_dict(self):
         ''' anys dict '''
         self.data = getdata(self.args['update'])
-        randoms(self.data['R'], self.args['r'])
+        N = [x for x in range(1, self.args['n'] + 1)]
+        for nx in N:
+            dep, lis = randoms_r(self.data['R'], self.args['r'])
+            lisb = randoms_b(self.data['B'], self.args['b'])
+            print(f'N {nx:02} depth {dep:<5} {lis} + {lisb}')

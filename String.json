@@ -3,7 +3,7 @@
     "NL": "Use buffering and do not update the latest data --NL",
     "help": "Show all parameters, --help",
     "n": "-n [Number] -n 10 def 5",
-    "r": "-r 6-19 min 6 max 20",
+    "r": "-r 6-19 min 6 max 19",
     "b": "-b 1-16 min 1 max 16",
     "save": "--save save to file name [date.list]",
     "UTXT": "https://www.cjcp.com.cn/zoushitu/cjwssq/hqfgzglclrw.html"
