@@ -34,7 +34,6 @@ def getdata(load: True) -> dict:
         for Rz in R:
             Lix['R'].append(Rz)
         Lix['B'].append(B)
-    print(Lix['B'])
     return Lix
 
 
@@ -121,5 +120,7 @@ class action:
         N = [x for x in range(1, self.args['n'] + 1)]
         for nx in N:
             dep, lis = randoms_r(self.data['R'], self.args['r'])
+            lis = ' '.join([f'{x:02}' for x in lis])
             lisb = randoms_b(self.data['B'], self.args['b'])
+            lisb = ' '.join([f'{x:02}' for x in lisb])
             print(f'N {nx:02} depth {dep:<5} {lis} + {lisb}')
