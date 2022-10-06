@@ -107,11 +107,15 @@ def Limit_input_b(r: int) -> int:
 class action:
     ''' 执行脚本分析动作 '''
     data = {}
+    buffto = []
 
     def __init__(self, args: dict) -> None:
+        from datetime import datetime as dtime
         self.args: dict = args if args != None else {'save': False}
         self.args['r'] = Limit_input_r(self.args['r'])
         self.args['b'] = Limit_input_b(self.args['b'])
+        self.buffto.append(f'date {dtime.now()}')
+        self.buffto.append(f'args {self.args}')
         print(f'action args {self.args}')
 
     def act_for_dict(self):
@@ -123,4 +127,9 @@ class action:
             lis = ' '.join([f'{x:02}' for x in lis])
             lisb = randoms_b(self.data['B'], self.args['b'])
             lisb = ' '.join([f'{x:02}' for x in lisb])
-            print(f'N {nx:02} depth {dep:<5} {lis} + {lisb}')
+            self.buffto.append(f'N {nx:02} depth {dep:<5} {lis} + {lisb}')
+            print(self.buffto[-1])
+        if self.args['save']:
+            with open('./save.log', 'w') as sto:
+                for slog in self.buffto:
+                    sto.writelines(f'{slog}\n')
