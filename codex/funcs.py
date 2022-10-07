@@ -4,6 +4,8 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 15:26:39
 
+import re
+
 
 def getdata(load: True) -> dict:
     ''' 
@@ -106,6 +108,34 @@ def Limit_input_b(r: int) -> int:
         return 16
 
 
+def Prn(N: int = 33, R: int = 6):
+    '''
+    P 概率
+    R 选择几个数
+    N 总共待选数字
+    '''
+    Ldei = {0: 0, 1: 0, 2: 0}
+    Naz = [N, R, N - R]
+    for inx in enumerate(Naz):
+        i, n = inx
+        Ldei[i] = Pjie(n)
+    print(Ldei)
+    print(f'N {N}, R {R}, Ld {Ldei[0]//(Ldei[1]*Ldei[2])}')
+
+
+def Pjie(N: int) -> int:
+    '''
+    N = 1*2*3*4*5*6*7....
+    '''
+    Ldei = 0
+    for Rx in range(1, N):
+        if Ldei <= 0:
+            Ldei = Rx
+        else:
+            Ldei = Ldei * Rx
+    return Ldei
+
+
 class action:
     ''' 执行脚本分析动作 '''
     data = {}
@@ -123,6 +153,7 @@ class action:
     def act_for_dict(self):
         ''' anys dict '''
         self.data = getdata(self.args['update'])
+        Prn(N=10, R=3)
         N = [x for x in range(1, self.args['n'] + 1)]
         for nx in N:
             dep, lis = randoms_r(self.data['R'], self.args['r'])
