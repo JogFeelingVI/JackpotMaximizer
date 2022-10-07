@@ -43,7 +43,8 @@ def randoms_b(Dlist: list, Count: int, depth: int = 0) -> list:
     maximum recursion depth exceeded in comparison max 16 min 1
     '''
     import random as BDX
-    dlis = list(set(Dlist))
+    dlis = [x for x in {}.fromkeys(Dlist).keys()]
+    BDX.shuffle(dlis)
     if Count == 16:
         return [x for x in range(1, 17)]
     weig = [Dlist.count(x) for x in dlis]
@@ -61,7 +62,8 @@ def randoms_r(Clist: list, Count: int, depth: int = 0) -> list:
     maximum recursion depth exceeded in comparison max 19 min 6
     '''
     import random as RDX
-    clis = list(set(Clist))
+    clis = [x for x in {}.fromkeys(Clist).keys()]
+    RDX.shuffle(clis)
     weig = [Clist.count(x) for x in clis]
     Jieguo = RDX.choices(clis, weights=weig, k=Count)
     Jieguo = [x for x in sorted(Jieguo)]
