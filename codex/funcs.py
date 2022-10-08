@@ -114,10 +114,13 @@ def Prn(N: int = 33, R: int = 6, B: int = 1) -> None:
     '''
     Ldei = {0: 0, 1: 0, 2: 0}
     Naz = [N, R, N - R]
-    for inx in enumerate(Naz):
-        i, n = inx
-        Ldei[i] = Pjie(n)
-    Ld = Ldei[0] // (Ldei[1] * Ldei[2])
+    if N - R > 0:
+        for inx in enumerate(Naz):
+            i, n = inx
+            Ldei[i] = Pjie(n)
+        Ld = Ldei[0] // (Ldei[1] * Ldei[2])
+    else:
+        Ld = 1
     print(f'N {N}, R {R}, BAST {Ld} CYN {Ld*2*B}')
 
 
