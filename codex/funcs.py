@@ -4,8 +4,6 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 15:26:39
 
-import re
-
 
 def getdata(load: True) -> dict:
     ''' 
@@ -108,7 +106,7 @@ def Limit_input_b(r: int) -> int:
         return 16
 
 
-def Prn(N: int = 33, R: int = 6):
+def Prn(N: int = 33, R: int = 6, B: int = 1) -> None:
     '''
     P 概率
     R 选择几个数
@@ -119,8 +117,8 @@ def Prn(N: int = 33, R: int = 6):
     for inx in enumerate(Naz):
         i, n = inx
         Ldei[i] = Pjie(n)
-    print(Ldei)
-    print(f'N {N}, R {R}, Ld {Ldei[0]//(Ldei[1]*Ldei[2])}')
+    Ld = Ldei[0] // (Ldei[1] * Ldei[2])
+    print(f'N {N}, R {R}, BAST {Ld} CYN {Ld*2*B}')
 
 
 def Pjie(N: int) -> int:
@@ -128,7 +126,7 @@ def Pjie(N: int) -> int:
     N = 1*2*3*4*5*6*7....
     '''
     Ldei = 0
-    for Rx in range(1, N):
+    for Rx in range(1, N + 1):
         if Ldei <= 0:
             Ldei = Rx
         else:
@@ -153,7 +151,7 @@ class action:
     def act_for_dict(self):
         ''' anys dict '''
         self.data = getdata(self.args['update'])
-        Prn(N=10, R=3)
+        Prn(N=self.args['r'], B=self.args['b'])
         N = [x for x in range(1, self.args['n'] + 1)]
         for nx in N:
             dep, lis = randoms_r(self.data['R'], self.args['r'])

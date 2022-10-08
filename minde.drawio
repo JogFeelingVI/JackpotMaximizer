@@ -49,9 +49,6 @@
                 <mxCell id="17" value="--save 保存随机数据" style="whiteSpace=wrap;html=1;fillColor=#76608a;fontColor=#ffffff;strokeColor=#432D57;" parent="1" vertex="1">
                     <mxGeometry x="240" y="180" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="19" value="" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://bkimg.cdn.bcebos.com/pic/96dda144ad3459822b53003909f431adcaef8444?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U5Mg==,g_7,xp_5,yp_5/format,f_auto;" vertex="1" parent="1">
-                    <mxGeometry x="120" y="320" width="520" height="510" as="geometry"/>
-                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
