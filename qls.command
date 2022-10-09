@@ -4,8 +4,6 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-01 18:25:48
 
-import argparse
-from codex.loadjson import Load_JSON, Resty
 from codex.command import loading
 from codex.funcs import action
 
