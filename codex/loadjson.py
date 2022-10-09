@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 12:25:40
 # @Last Modified by:   By JogFeelingVi
