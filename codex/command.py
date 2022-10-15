@@ -23,6 +23,10 @@ class loading:
                                   default=False,
                                   action='store_true',
                                   help='Do not load network data')
+        self.command.add_argument('--noinx',
+                                  default=False,
+                                  action='store_true',
+                                  help='No Show ID DEPTH')
         self.command.add_argument('-n',
                                   default=5,
                                   type=int,

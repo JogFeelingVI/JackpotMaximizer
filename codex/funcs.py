@@ -161,7 +161,10 @@ class action:
             lis = ' '.join([f'{x:02}' for x in lis])
             lisb = randoms_b(self.data['B'], self.args['b'])
             lisb = ' '.join([f'{x:02}' for x in lisb])
-            self.buffto.append(f'N {nx:02} depth {dep:<5} {lis} + {lisb}')
+            if self.args['noinx']:
+                self.buffto.append(f'N {lis} + {lisb}')
+            else:
+                self.buffto.append(f'N {nx:02} depth {dep:<5} {lis} + {lisb}')
             print(self.buffto[-1])
         if self.args['save']:
             with open('./save.log', 'w') as sto:
