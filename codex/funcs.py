@@ -56,26 +56,31 @@ def randoms_b(Dlist: list, Count: int, depth: int = 0) -> list:
         return Jieguo
 
 
-def randoms_r(Clist: list, Count: int, depth: int = 0) -> list:
+def randoms_r(Clist: list, Count: int, depth: int = 0, ins:list = None) -> list:
     ''' 
     fromat info
     maximum recursion depth exceeded in comparison max 19 min 6
     '''
     import random as RDX
+    ins = [x for x in range(1, 34)] if ins is None else ins
     clis = [x for x in {}.fromkeys(Clist).keys()]
     RDX.shuffle(clis)
     weig = [Clist.count(x) for x in clis]
     Jieguo = RDX.choices(clis, weights=weig, k=Count)
     Jieguo = [x for x in sorted(Jieguo)]
+    ins_x = [x for x in Jieguo if x in ins].__len__()
     if len(Jieguo) > list(set(Jieguo)).__len__():
-        if depth < 990.01:
-            return randoms_r(Clist, Count, depth + 1)
+        if depth < 990:
+            return randoms_r(Clist, Count, depth + 1, ins)
         else:
             print('Maximum recursion depth exceeded in comparison')
             print(f'Limit to 990, now {depth}')
             return [depth, [0]]
-    else:
-        return [depth, Jieguo]
+    elif len(Jieguo) == list(set(Jieguo)).__len__():
+        if ins_x >= 1:
+            return [depth, Jieguo]
+        else:
+            return randoms_r(Clist, Count, depth + 1, ins)
 
 
 def Limit_input_r(r: int) -> int:
@@ -157,7 +162,7 @@ class action:
         Prn(N=self.args['r'], B=self.args['b'])
         N = [x for x in range(1, self.args['n'] + 1)]
         for nx in N:
-            dep, lis = randoms_r(self.data['R'], self.args['r'])
+            dep, lis = randoms_r(self.data['R'], self.args['r'], 0, self.args['ins'])
             lis = ' '.join([f'{x:02}' for x in lis])
             lisb = randoms_b(self.data['B'], self.args['b'])
             lisb = ' '.join([f'{x:02}' for x in lisb])

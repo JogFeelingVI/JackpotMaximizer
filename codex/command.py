@@ -12,7 +12,7 @@ class loading:
     def __init__(self) -> None:
         self.command = argparse.ArgumentParser(
             'qls.command',
-            description='Quick make SSQ for items',
+            description='Generate lucky numbers',
             add_help=True,
             allow_abbrev=False)
         self.command.add_argument('--save',
@@ -27,6 +27,10 @@ class loading:
                                   default=False,
                                   action='store_true',
                                   help='No Show ID DEPTH')
+        self.command.add_argument('--ins',
+                                  type=int,
+                                  nargs='+',
+                                  help='Must contain numbers exp --ins 12 13 14')
         self.command.add_argument('-n',
                                   default=5,
                                   type=int,
