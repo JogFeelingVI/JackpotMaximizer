@@ -13,11 +13,12 @@ def getdata(load: True) -> dict:
         
     '''
     import re
+    from codex.ospath import os_path
+    fp = os_path.file_path('./buffer')
     if load:
         from codex.download import get_html
         from codex.loadjson import Load_JSON, Resty
         from codex.ospath import os_path
-        fp = os_path.file_path('./buffer')
         html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
         with open(fp, 'wb') as buf:
             buf.write(html)
