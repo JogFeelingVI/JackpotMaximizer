@@ -19,8 +19,8 @@ class Load_JSON:
     def __loadjson__(self, path: str) -> dict:
         ''' Load ./String.json '''
         from codex.ospath import os_path
-        fp = os_path.file_path('./String.json')
-        with open(path, 'r') as f:
+        fp = os_path.file_path(path)
+        with open(fp, 'r') as f:
             jdata: dict = json.load(f)
         return jdata
 
