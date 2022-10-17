@@ -23,7 +23,7 @@ def getdata(load: True) -> dict:
             buf.write(html)
         print(':: updata network data')
     else:
-        with open('./buffer', 'rb') as buf:
+        with open(fp, 'rb') as buf:
             html = buf.read()
         print(':: loading buffer')
     Rx = re.findall(b'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
@@ -58,7 +58,10 @@ def randoms_b(Dlist: list, Count: int, depth: int = 0) -> list:
         return Jieguo
 
 
-def randoms_r(Clist: list, Count: int, depth: int = 0, ins:list = None) -> list:
+def randoms_r(Clist: list,
+              Count: int,
+              depth: int = 0,
+              ins: list = None) -> list:
     ''' 
     fromat info
     maximum recursion depth exceeded in comparison max 19 min 6
@@ -164,7 +167,8 @@ class action:
         Prn(N=self.args['r'], B=self.args['b'])
         N = [x for x in range(1, self.args['n'] + 1)]
         for nx in N:
-            dep, lis = randoms_r(self.data['R'], self.args['r'], 0, self.args['ins'])
+            dep, lis = randoms_r(self.data['R'], self.args['r'], 0,
+                                 self.args['ins'])
             lis = ' '.join([f'{x:02}' for x in lis])
             lisb = randoms_b(self.data['B'], self.args['b'])
             lisb = ' '.join([f'{x:02}' for x in lisb])
