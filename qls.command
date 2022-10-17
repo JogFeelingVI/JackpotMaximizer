@@ -14,6 +14,5 @@ def maix() -> None:
     act = action(cmd_load.gparse())
     act.act_for_dict()
 
-
 if __name__ == '__main__':
     maix()
