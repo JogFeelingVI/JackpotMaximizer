@@ -40,6 +40,22 @@ def getdata(load: True) -> dict:
     return Lix
 
 
+def Findins(Nums: list, insre: str) -> bool:
+    '''
+    Find Ins 
+    Nums type list
+    inse type str
+    '''
+    if insre == None:
+        # 不做任何限制
+        return True
+    else:
+        import re
+        sNums = ' '.join([f'{x:02}' for x in Nums])
+        Finx = len(re.findall(insre, sNums))
+        return True if Finx >= 1 else False
+
+
 def randoms_b(Dlist: list, Count: int, depth: int = 0) -> list:
     ''' 
     fromat info
@@ -62,28 +78,28 @@ def randoms_b(Dlist: list, Count: int, depth: int = 0) -> list:
 def randoms_r(Clist: list,
               Count: int,
               depth: int = 0,
-              ins: list = None) -> list:
+              ins: str = None) -> list:
     ''' 
     fromat info
     maximum recursion depth exceeded in comparison max 19 min 6
     '''
     import random as RDX
-    ins = [x for x in range(1, 34)] if ins is None else ins
     clis = [x for x in {}.fromkeys(Clist).keys()]
     RDX.shuffle(clis)
     weig = [Clist.count(x) for x in clis]
     Jieguo = RDX.choices(clis, weights=weig, k=Count)
     Jieguo = [x for x in sorted(Jieguo)]
-    ins_x = [x for x in Jieguo if x in ins].__len__()
-    if len(Jieguo) > list(set(Jieguo)).__len__():
+    # len(Jieguo) > list(set(Jieguo)).__len__():
+    # 去除重复号码
+    if (La := len(Jieguo)) > (Lb := list(set(Jieguo)).__len__()):
         if depth < 990:
             return randoms_r(Clist, Count, depth + 1, ins)
         else:
             print('Maximum recursion depth exceeded in comparison')
             print(f'Limit to 990, now {depth}')
             return [depth, [0]]
-    elif len(Jieguo) == list(set(Jieguo)).__len__():
-        if ins_x >= 1:
+    elif La == Lb:
+        if Findins(Jieguo, insre=ins) == True:
             return [depth, Jieguo]
         else:
             return randoms_r(Clist, Count, depth + 1, ins)
@@ -176,7 +192,7 @@ class action:
             if self.args['noinx']:
                 self.buffto.append(f'N {lis} + {lisb}')
             else:
-                self.buffto.append(f'N {nx:02} depth {dep:<5} {lis} + {lisb}')
+                self.buffto.append(f'N {nx:>4} depth {dep:<5} {lis} + {lisb}')
             print(self.buffto[-1])
         if self.args['save']:
             with open('./save.log', 'w') as sto:

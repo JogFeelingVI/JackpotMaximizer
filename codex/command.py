@@ -4,6 +4,7 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 17:48:34
 import argparse
+import string
 
 
 class loading:
@@ -28,9 +29,9 @@ class loading:
                                   action='store_true',
                                   help='No Show ID DEPTH')
         self.command.add_argument('--ins',
-                                  type=int,
-                                  nargs='+',
-                                  help='Must contain numbers exp --ins 12 13 14')
+                                  default='(.*)',
+                                  type=str,
+                                  help='Filtering numbers using regular expressions exp --regx ^(02|03|05)')
         self.command.add_argument('-n',
                                   default=5,
                                   type=int,
