@@ -77,7 +77,7 @@ def randoms_b(Dlist: list, Count: int, depth: int = 0) -> list:
 
 def randoms_r(Clist: list,
               Count: int,
-              depth: int = 0,
+              depth: int = 1,
               ins: str = None) -> list:
     ''' 
     fromat info
@@ -95,14 +95,15 @@ def randoms_r(Clist: list,
         if depth < 990:
             return randoms_r(Clist, Count, depth + 1, ins)
         else:
-            print('Maximum recursion depth exceeded in comparison')
-            print(f'Limit to 990, now {depth}')
             return [depth, [0]]
     elif La == Lb:
         if Findins(Jieguo, insre=ins) == True:
             return [depth, Jieguo]
         else:
-            return randoms_r(Clist, Count, depth + 1, ins)
+            if depth < 990:
+                return randoms_r(Clist, Count, depth + 1, ins)
+            else:
+                return [depth, [0]]
 
 
 def Limit_input_r(r: int) -> int:
@@ -186,14 +187,16 @@ class action:
         for nx in N:
             dep, lis = randoms_r(self.data['R'], self.args['r'], 0,
                                  self.args['ins'])
-            lis = ' '.join([f'{x:02}' for x in lis])
-            lisb = randoms_b(self.data['B'], self.args['b'])
-            lisb = ' '.join([f'{x:02}' for x in lisb])
-            if self.args['noinx']:
-                self.buffto.append(f'N {lis} + {lisb}')
-            else:
-                self.buffto.append(f'N {nx:>4} depth {dep:<5} {lis} + {lisb}')
-            print(self.buffto[-1])
+            if len(lis) == self.args['r']:
+                lis = ' '.join([f'{x:02}' for x in lis])
+                lisb = randoms_b(self.data['B'], self.args['b'])
+                lisb = ' '.join([f'{x:02}' for x in lisb])
+                if self.args['noinx']:
+                    self.buffto.append(f'N {lis} + {lisb}')
+                else:
+                    self.buffto.append(
+                        f'N {nx:>4} depth {dep:<5} {lis} + {lisb}')
+                print(self.buffto[-1])
         if self.args['save']:
             with open('./save.log', 'w') as sto:
                 for slog in self.buffto:
