@@ -1,3 +1,3 @@
 # QuickLCK
- Quick Luck S2Q
+### Generate lucky numbers
  
