@@ -5,6 +5,15 @@
 # @Last Modified time: 2022-10-03 15:26:39
 
 
+def file_to(name: str) -> str:
+    '''
+    File real path
+    '''
+    from codex.ospath import os_path
+    fp = os_path.file_path(name)
+    return fp
+
+
 def getdata(load: True) -> dict:
     ''' 
         gethtml 
@@ -13,8 +22,7 @@ def getdata(load: True) -> dict:
         
     '''
     import re
-    from codex.ospath import os_path
-    fp = os_path.file_path('./buffer')
+    fp = file_to('./buffer')
     if load:
         from codex.download import get_html
         from codex.loadjson import Load_JSON, Resty
@@ -198,6 +206,6 @@ class action:
                         f'N {nx:>4} depth {dep:<5} {lis} + {lisb}')
                 print(self.buffto[-1])
         if self.args['save']:
-            with open('./save.log', 'w') as sto:
+            with open(file_to('./save.log'), 'w') as sto:
                 for slog in self.buffto:
                     sto.writelines(f'{slog}\n')
