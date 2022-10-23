@@ -24,3 +24,16 @@ python3 qls.command --save -n10 --ins '^(03|05|07)\s(09|11)\s(10|12|18|20)\s(16|
 #### -n 产生注数
 #### -r 产生号码的红色球数量，最小6，最大19
 #### -b 产生号码的蓝色球数量， 默认1，最大16
+
+### linux macOS fish shell quick setup
+
+#### Set file address
+> ~/.config/fish/ `linux` `macos` `termux`
+> edit config.fish
+
+```shell
+function glns
+    python /data/data/com.termux/files/home/storage/downloads/github/QuickLCK/qls.command $argv
+end
+```
+> $argv 传递参数
