@@ -18,14 +18,14 @@ python3 qls.command --save -n10 --ins '^(03|05|07)\s(09|11)\s(10|12|18|20)\s(16|
 
 ### 参数说明
 #### --save 保存数据 save.log
-#### --update 跟新数据，每次使用前都应该更新数据
-#### --noinx 不限时辅助信息 
+#### --update 更新数据，每次使用前都应该更新数据
+#### --noinx 不显示辅助信息 
 #### --ins 用正则表达式限制号码
 #### -n 产生注数
 #### -r 产生号码的红色球数量，最小6，最大19
 #### -b 产生号码的蓝色球数量， 默认1，最大16
 
-### linux macOS fish shell quick setup
+## linux macOS fish shell quick setup
 
 #### Set file address
 > ~/.config/fish/ `linux` `macos` `termux`
