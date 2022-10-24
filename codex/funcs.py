@@ -4,6 +4,8 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 15:26:39
 
+from ctypes import sizeof
+
 
 def file_to(name: str) -> str:
     '''
@@ -14,7 +16,7 @@ def file_to(name: str) -> str:
     return fp
 
 
-def getdata(load: True) -> dict:
+def getdata() -> None:
     ''' 
         gethtml 
         >03,18,23,24,25,32</span>|<span class="c_bule">09<  
@@ -23,17 +25,24 @@ def getdata(load: True) -> dict:
     '''
     import re
     fp = file_to('./buffer')
-    if load:
-        from codex.download import get_html
-        from codex.loadjson import Load_JSON, Resty
-        from codex.ospath import os_path
-        html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
-        with open(fp, 'wb') as buf:
-            buf.write(html)
-        print(':: updata network data')
-    else:
-        with open(fp, 'rb') as buf:
-            html = buf.read()
+    from codex.download import get_html
+    from codex.loadjson import Load_JSON, Resty
+    from codex.ospath import os_path
+    html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
+    with open(fp, 'wb') as buf:
+        buf.write(html)
+        hszie = fp.__sizeof__()
+        print(f':: updata network data sizeof {hszie}')
+
+
+def loaddata() -> dict:
+    '''
+    load data
+    '''
+    import re
+    fp = file_to('./buffer')
+    with open(fp, 'rb') as buf:
+        html = buf.read()
         print(':: loading buffer')
     Rx = re.findall(b'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
     Bx = re.findall(b'c_bule\">([0-9]{2})<', html)
@@ -189,7 +198,11 @@ class action:
 
     def act_for_dict(self):
         ''' anys dict '''
-        self.data = getdata(self.args['update'])
+        if self.args['update']:
+            # update
+            getdata()
+            return 0
+        self.data = loaddata()
         Prn(N=self.args['r'], B=self.args['b'])
         N = [x for x in range(1, self.args['n'] + 1)]
         for nx in N:
