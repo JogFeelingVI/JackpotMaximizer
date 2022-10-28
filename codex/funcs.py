@@ -4,7 +4,7 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 15:26:39
 
-from ctypes import sizeof
+from typing import NoReturn
 
 
 def file_to(name: str) -> str:
@@ -16,7 +16,7 @@ def file_to(name: str) -> str:
     return fp
 
 
-def getdata() -> None:
+def getdata() -> NoReturn:
     ''' 
         gethtml 
         >03,18,23,24,25,32</span>|<span class="c_bule">09<  
@@ -68,9 +68,13 @@ def Findins(Nums: list, insre: str) -> bool:
         return True
     else:
         import re
-        sNums = ' '.join([f'{x:02}' for x in Nums])
-        Finx = len(re.findall(insre, sNums))
-        return True if Finx >= 1 else False
+        try:
+            sNums = ' '.join([f'{x:02}' for x in Nums])
+            Finx = len(re.findall(insre, sNums))
+            return True if Finx >= 1 else False
+        except re.error as rerror:
+            print(f':: Findins error: {rerror.msg}')
+            return 'ERROR'
 
 
 def randoms_b(Dlist: list, Count: int, depth: int = 0) -> list:
@@ -114,7 +118,9 @@ def randoms_r(Clist: list,
         else:
             return [depth, [0]]
     elif La == Lb:
-        if Findins(Jieguo, insre=ins) == True:
+        rfind = Findins(Jieguo, insre=ins)
+        if rfind == 'ERROR': return [depth, rfind]
+        if rfind == True:
             return [depth, Jieguo]
         else:
             if depth < 990:
@@ -151,7 +157,7 @@ def Limit_input_b(r: int) -> int:
         return 16
 
 
-def Prn(N: int = 33, R: int = 6, B: int = 1) -> None:
+def Prn(N: int = 33, R: int = 6, B: int = 1):
     '''
     P 概率
     R 选择几个数
@@ -166,7 +172,7 @@ def Prn(N: int = 33, R: int = 6, B: int = 1) -> None:
         Ld = Ldei[0] // (Ldei[1] * Ldei[2])
     else:
         Ld = 1
-    print(f'N {N}, R {R}, BAST {Ld} CYN {Ld*2*B}')
+    print(f':: N {N}, R {R}, BAST {Ld} CYN {Ld*2*B}')
 
 
 def Pjie(N: int) -> int:
@@ -187,7 +193,7 @@ class action:
     data = {}
     buffto = []
 
-    def __init__(self, args: dict) -> None:
+    def __init__(self, args: dict) -> NoReturn:
         from datetime import datetime as dtime
         self.args: dict = args if args != None else {'save': False}
         self.args['r'] = Limit_input_r(self.args['r'])
@@ -196,7 +202,7 @@ class action:
         self.buffto.append(f'args {self.args}')
         print(f'action args {self.args}')
 
-    def act_for_dict(self):
+    def act_for_dict(self) -> NoReturn:
         ''' anys dict '''
         if self.args['update']:
             # update
@@ -208,6 +214,8 @@ class action:
         for nx in N:
             dep, lis = randoms_r(self.data['R'], self.args['r'], 0,
                                  self.args['ins'])
+            if lis == 'ERROR': break
+            # 发现错误 终止执行程序
             if len(lis) == self.args['r']:
                 lis = ' '.join([f'{x:02}' for x in lis])
                 lisb = randoms_b(self.data['B'], self.args['b'])
