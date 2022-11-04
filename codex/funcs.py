@@ -4,7 +4,7 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 15:26:39
 
-from typing import NoReturn
+from typing import Any, Callable, NoReturn, List
 
 
 def file_to(name: str) -> str:
@@ -57,7 +57,7 @@ def loaddata() -> dict:
     return Lix
 
 
-def Findins(Nums: list, insre: str) -> bool:
+def Findins(NR: list, NB: list, insre: str) -> bool:
     '''
     Find Ins 
     Nums type list
@@ -69,7 +69,9 @@ def Findins(Nums: list, insre: str) -> bool:
     else:
         import re
         try:
-            sNums = ' '.join([f'{x:02}' for x in Nums])
+            sNr = ' '.join([f'{x:02}' for x in NR])
+            sNb = ' '.join([f'{x:02}' for x in NB])
+            sNums = f'{sNr} + {sNb}'
             Finx = len(re.findall(insre, sNums))
             return True if Finx >= 1 else False
         except re.error as rerror:
@@ -77,56 +79,66 @@ def Findins(Nums: list, insre: str) -> bool:
             return 'ERROR'
 
 
-def randoms_b(Dlist: list, Count: int, depth: int = 0) -> list:
-    ''' 
-    fromat info
-    maximum recursion depth exceeded in comparison max 16 min 1
+def makenux(Data: dict,
+            Rlen: int,
+            Blen: int,
+            ins: str = None,
+            depth: int = 1) -> list:
     '''
-    import random as BDX
-    dlis = [x for x in {}.fromkeys(Dlist).keys()]
-    BDX.shuffle(dlis)
-    if Count == 16:
-        return [x for x in range(1, 17)]
-    weig = [Dlist.count(x) for x in dlis]
-    Jieguo = BDX.choices(dlis, weights=weig, k=Count)
-    Jieguo = [x for x in sorted(Jieguo)]
-    if len(Jieguo) > list(set(Jieguo)).__len__():
-        return randoms_b(Dlist, Count, depth + 1)
-    else:
-        return Jieguo
-
-
-def randoms_r(Clist: list,
-              Count: int,
-              depth: int = 1,
-              ins: str = None) -> list:
-    ''' 
-    fromat info
-    maximum recursion depth exceeded in comparison max 19 min 6
+        data {'r': [1,2,3...], 'b':[1-16]}
+        Rlen R len 1, 2, 3, 4, 5, 6 + Blen
+        Blen B len 1 - 16
+        ins '^(01|07)....'
     '''
     import random as RDX
-    clis = [x for x in {}.fromkeys(Clist).keys()]
-    RDX.shuffle(clis)
-    weig = [Clist.count(x) for x in clis]
-    Jieguo = RDX.choices(clis, weights=weig, k=Count)
+    Dr = Data['R']
+    Db = Data['B']
+    R_keys = [x for x in {}.fromkeys(Dr).keys()]
+    B_keys = [x for x in {}.fromkeys(Db).keys()]
+    RDX.shuffle(R_keys)
+    RDX.shuffle(B_keys)
+    weights_R = [Data['R'].count(x) for x in R_keys]
+    weights_B = [Data['B'].count(x) for x in B_keys]
+    dr, Rs = choicesrb(R_keys, weights_R, Rlen, RDX.choices, depth + 1)
+    db, Bs = choicesrb(B_keys, weights_B, Blen, RDX.choices, depth + 1)
+    rfind = Findins(Rs, Bs, insre=ins)
+    if rfind == 'ERROR':
+        return [dr, rfind, rfind]
+    if rfind == True:
+        return [dr, Rs, Bs]
+    else:
+        if dr < 990 and db < 990:
+            return makenux(Data, Rlen, Blen, ins, depth + 1)
+        else:
+            return [Dr, [0], [0]]
+
+
+def choicesrb(keys: list,
+              weights: list,
+              lens: int,
+              rdxfunx: Any,
+              depth: int = 1) -> list:
+    '''
+    keys list 待选列表
+    weights list 权重
+    len int 选择长度
+    depth int 计算深度
+    rdx = RDX.choices
+    '''
+    Jieguo = rdxfunx(keys, weights=weights, k=lens)
     Jieguo = [x for x in sorted(Jieguo)]
-    # len(Jieguo) > list(set(Jieguo)).__len__():
-    # 去除重复号码
     if (La := len(Jieguo)) > (Lb := list(set(Jieguo)).__len__()):
         if depth < 990:
-            return randoms_r(Clist, Count, depth + 1, ins)
+            return choicesrb(keys, weights, lens, rdxfunx, depth + 1)
         else:
             return [depth, [0]]
     elif La == Lb:
-        rfind = Findins(Jieguo, insre=ins)
-        if rfind == 'ERROR': return [depth, rfind]
-        if rfind == True:
-            return [depth, Jieguo]
+        return [depth, Jieguo]
+    else:
+        if depth < 990:
+            return choicesrb(keys, weights, lens, rdxfunx, depth + 1)
         else:
-            if depth < 990:
-                return randoms_r(Clist, Count, depth + 1, ins)
-            else:
-                return [depth, [0]]
+            return [depth, [0]]
 
 
 def Limit_input_r(r: int) -> int:
@@ -212,19 +224,16 @@ class action:
         Prn(N=self.args['r'], B=self.args['b'])
         N = [x for x in range(1, self.args['n'] + 1)]
         for nx in N:
-            dep, lis = randoms_r(self.data['R'], self.args['r'], 0,
-                                 self.args['ins'])
-            if lis == 'ERROR': break
+            dep, Nr, Nb = makenux(self.data, self.args['r'], self.args['b'],
+                                  self.args['ins'])
+            if Nr == 'ERROR' or Nb == 'ERROR': break
             # 发现错误 终止执行程序
-            if len(lis) == self.args['r']:
-                lis = ' '.join([f'{x:02}' for x in lis])
-                lisb = randoms_b(self.data['B'], self.args['b'])
-                lisb = ' '.join([f'{x:02}' for x in lisb])
+            if len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
+                lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
                 if self.args['noinx']:
-                    self.buffto.append(f'N {lis} + {lisb}')
+                    self.buffto.append(f'N {lis}')
                 else:
-                    self.buffto.append(
-                        f'N {nx:>4} depth {dep:<5} {lis} + {lisb}')
+                    self.buffto.append(f'N {nx:>4} depth {dep:<5} {lis}')
                 print(self.buffto[-1])
         if self.args['save']:
             with open(file_to('./save.log'), 'w') as sto:
