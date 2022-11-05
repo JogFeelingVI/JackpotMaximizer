@@ -214,6 +214,27 @@ class action:
         self.buffto.append(f'args {self.args}')
         print(f'action args {self.args}')
 
+    def __fixrba__(self, rba: str) -> NoReturn:
+        '''
+        fix r b a
+        rba is [ r, b, a ]
+        '''
+        cmds = {
+            'r':
+            lambda: [['R', [x for x in range(1, 34)]]],
+            'b':
+            lambda: [['B', [x for x in range(1, 17)]]],
+            'a':
+            lambda: [['R', [x for x in range(1, 34)]],
+                     ['B', [x for x in range(1, 17)]]]
+        }
+        Zdict = cmds[rba]()
+        for n,l in Zdict:
+            qsr = [x for x in l if x not in self.data[n]]
+            if len(qsr) > 0:
+                self.data[n] = self.data[n] + qsr
+                print(f':: fix {n} {qsr}')
+
     def act_for_dict(self) -> NoReturn:
         ''' anys dict '''
         if self.args['update']:
@@ -221,6 +242,9 @@ class action:
             getdata()
             return 0
         self.data = loaddata()
+        if self.args['fix'] != None:
+            # 执行 fix 程序
+            self.__fixrba__(self.args['fix'])
         Prn(N=self.args['r'], B=self.args['b'])
         N = [x for x in range(1, self.args['n'] + 1)]
         for nx in N:
