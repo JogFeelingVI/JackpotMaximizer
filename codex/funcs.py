@@ -23,30 +23,15 @@ def getdata() -> NoReturn:
         (?=.*[0-9])(?=.*[,])[0-9,]{17} R
         
     '''
-    import re
-    fp = file_to('./buffer')
+    import re,json
+    fp = file_to('./rbdata.json')
+    from datetime import datetime as dtime
     from codex.download import get_html
     from codex.loadjson import Load_JSON, Resty
-    from codex.ospath import os_path
     html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
-    with open(fp, 'wb') as buf:
-        buf.write(html)
-        hszie = fp.__sizeof__()
-        print(f':: updata network data sizeof {hszie}')
-
-
-def loaddata() -> dict:
-    '''
-    load data
-    '''
-    import re
-    fp = file_to('./buffer')
-    with open(fp, 'rb') as buf:
-        html = buf.read()
-        print(':: loading buffer')
     Rx = re.findall(b'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
     Bx = re.findall(b'c_bule\">([0-9]{2})<', html)
-    Lix = {'R': [], 'B': []}
+    Lix = {'R': [], 'B': [],'date': dtime.now().__str__()}
     for zitem in zip(Rx, Bx):
         R, B = zitem
         R = [int(x) for x in R.decode('utf-8').split(',')]
@@ -54,7 +39,23 @@ def loaddata() -> dict:
         for Rz in R:
             Lix['R'].append(Rz)
         Lix['B'].append(B)
-    return Lix
+    json_str = json.dumps(Lix, indent=4)
+    with open(fp, 'w') as datajson:
+        datajson.write(json_str)
+        hszie = json_str.__sizeof__()
+        print(f':: updata network data sizeof {hszie}')
+
+
+def loaddata() -> dict:
+    '''
+    load data
+    '''
+    import json
+    fp = file_to('./rbdata.json')
+    with open(fp, 'r') as rbdata:
+        json_str = json.load(rbdata)
+        print(':: loading buffer')
+    return json_str
 
 
 def Findins(NR: list, NB: list, insre: str) -> bool:
