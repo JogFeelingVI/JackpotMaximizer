@@ -80,8 +80,12 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
             return 'ERROR'
 
 
-def filters() -> bool:
-    pass
+def debug(msg: Any) -> NoReturn:
+    '''
+    echo debug msg
+    '''
+    msgs = f'debug {msg}'
+    print(msgs)
 
 
 def makenux(Data: dict,
@@ -210,7 +214,7 @@ class action:
     data = {}
     buffto = []
 
-    def __init__(self, args: dict) -> NoReturn:
+    def __init__(self, args: dict):
         from datetime import datetime as dtime
         self.args: dict = args if args != None else {'save': False}
         self.args['r'] = Limit_input_r(self.args['r'])
