@@ -23,7 +23,7 @@ def getdata() -> NoReturn:
         (?=.*[0-9])(?=.*[,])[0-9,]{17} R
         
     '''
-    import re,json
+    import re, json
     fp = file_to('./rbdata.json')
     from datetime import datetime as dtime
     from codex.download import get_html
@@ -31,7 +31,7 @@ def getdata() -> NoReturn:
     html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
     Rx = re.findall(b'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
     Bx = re.findall(b'c_bule\">([0-9]{2})<', html)
-    Lix = {'R': [], 'B': [],'date': dtime.now().__str__()}
+    Lix = {'R': [], 'B': [], 'date': dtime.now().__str__()}
     for zitem in zip(Rx, Bx):
         R, B = zitem
         R = [int(x) for x in R.decode('utf-8').split(',')]
@@ -80,6 +80,10 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
             return 'ERROR'
 
 
+def filters() -> bool:
+    pass
+
+
 def makenux(Data: dict,
             Rlen: int,
             Blen: int,
@@ -98,8 +102,8 @@ def makenux(Data: dict,
     B_keys = [x for x in {}.fromkeys(Db).keys()]
     RDX.shuffle(R_keys)
     RDX.shuffle(B_keys)
-    weights_R = [Data['R'].count(x) for x in R_keys]
-    weights_B = [Data['B'].count(x) for x in B_keys]
+    weights_R = [11 - Data['R'].count(x) for x in R_keys]
+    weights_B = [4 - Data['B'].count(x) for x in B_keys]
     dr, Rs = choicesrb(R_keys, weights_R, Rlen, RDX.choices, depth + 1)
     db, Bs = choicesrb(B_keys, weights_B, Blen, RDX.choices, depth + 1)
     rfind = Findins(Rs, Bs, insre=ins)
@@ -230,7 +234,7 @@ class action:
                      ['B', [x for x in range(1, 17)]]]
         }
         Zdict = cmds[rba]()
-        for n,l in Zdict:
+        for n, l in Zdict:
             qsr = [x for x in l if x not in self.data[n]]
             if len(qsr) > 0:
                 self.data[n] = self.data[n] + qsr
