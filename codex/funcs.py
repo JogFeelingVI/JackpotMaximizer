@@ -4,30 +4,30 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 15:26:39
 
-from typing import Any, Callable, NoReturn, List
+from typing import Any, Callable, List
+import math, re, json, random as RDX
+from codex.ospath import os_path
+from datetime import datetime as dtime
+from codex.download import get_html
+from codex.loadjson import Load_JSON, Resty
 
 
 def file_to(name: str) -> str:
     '''
     File real path
     '''
-    from codex.ospath import os_path
     fp = os_path.file_path(name)
     return fp
 
 
-def getdata() -> NoReturn:
+def getdata() -> None:
     ''' 
         gethtml 
         >03,18,23,24,25,32</span>|<span class="c_bule">09<  
         (?=.*[0-9])(?=.*[,])[0-9,]{17} R
         
     '''
-    import re, json
     fp = file_to('./rbdata.json')
-    from datetime import datetime as dtime
-    from codex.download import get_html
-    from codex.loadjson import Load_JSON, Resty
     html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
     Rx = re.findall(b'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
     Bx = re.findall(b'c_bule\">([0-9]{2})<', html)
@@ -50,7 +50,6 @@ def loaddata() -> dict:
     '''
     load data
     '''
-    import json
     fp = file_to('./rbdata.json')
     with open(fp, 'r') as rbdata:
         json_str = json.load(rbdata)
@@ -89,7 +88,6 @@ def debugx(msg: Any) -> None:
 
 
 def truncate(avg, x):
-    import math
     #debugx(int(num*(10**n)))
     integer = math.ceil(abs(avg - x))
     return integer
@@ -106,7 +104,6 @@ def makenux(Data: dict,
         Blen B len 1 - 16
         ins '^(01|07)....'
     '''
-    import random as RDX
     Dr = Data['R']
     Db = Data['B']
     R_keys = [x for x in {}.fromkeys(Dr).keys()]
@@ -228,7 +225,7 @@ class action:
     buffto = []
 
     def __init__(self, args: dict):
-        from datetime import datetime as dtime
+        
         self.args: dict = args if args != None else {'save': False}
         self.args['r'] = Limit_input_r(self.args['r'])
         self.args['b'] = Limit_input_b(self.args['b'])
@@ -236,7 +233,7 @@ class action:
         self.buffto.append(f'args {self.args}')
         debugx(self.args)
 
-    def __fixrba__(self, rba: str) -> NoReturn:
+    def __fixrba__(self, rba: str) -> None:
         '''
         fix r b a
         rba is [ r, b, a ]
@@ -257,7 +254,7 @@ class action:
                 self.data[n] = self.data[n] + qsr
                 print(f':: fix {n} {qsr}')
 
-    def act_for_dict(self) -> NoReturn:
+    def act_for_dict(self) -> None:
         ''' anys dict '''
         if self.args['update']:
             # update

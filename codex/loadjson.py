@@ -4,6 +4,7 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 12:25:40
 import json, enum
+from codex.ospath import os_path
 
 
 class Resty(enum.Enum):
@@ -18,7 +19,6 @@ class Load_JSON:
 
     def __loadjson__(self, path: str) -> dict:
         ''' Load ./String.json '''
-        from codex.ospath import os_path
         fp = os_path.file_path(path)
         with open(fp, 'r') as f:
             jdata: dict = json.load(f)
