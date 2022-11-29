@@ -80,12 +80,19 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
             return 'ERROR'
 
 
-def debug(msg: Any) -> NoReturn:
+def debugx(msg: Any) -> None:
     '''
     echo debug msg
     '''
     msgs = f'debug {msg}'
     print(msgs)
+
+
+def truncate(avg, x):
+    import math
+    #debugx(int(num*(10**n)))
+    integer = math.ceil(abs(avg - x))
+    return integer
 
 
 def makenux(Data: dict,
@@ -106,8 +113,14 @@ def makenux(Data: dict,
     B_keys = [x for x in {}.fromkeys(Db).keys()]
     RDX.shuffle(R_keys)
     RDX.shuffle(B_keys)
-    weights_R = [11 - Data['R'].count(x) for x in R_keys]
-    weights_B = [4 - Data['B'].count(x) for x in B_keys]
+    weights_R = [Data['R'].count(x) for x in R_keys]
+    avg_r = sum(weights_R) / 33
+    weights_R = [truncate(avg_r, x) for x in weights_R]
+    # avg R
+    weights_B = [Data['B'].count(x) for x in B_keys]
+    avg_b = sum(weights_B) / 16
+    weights_B = [truncate(avg_b, x) for x in weights_B]
+    # avg B
     dr, Rs = choicesrb(R_keys, weights_R, Rlen, RDX.choices, depth + 1)
     db, Bs = choicesrb(B_keys, weights_B, Blen, RDX.choices, depth + 1)
     rfind = Findins(Rs, Bs, insre=ins)
@@ -221,7 +234,7 @@ class action:
         self.args['b'] = Limit_input_b(self.args['b'])
         self.buffto.append(f'date {dtime.now()}')
         self.buffto.append(f'args {self.args}')
-        print(f'action args {self.args}')
+        debugx(self.args)
 
     def __fixrba__(self, rba: str) -> NoReturn:
         '''
