@@ -29,6 +29,7 @@ class loading:
                                   help='No Show ID DEPTH')
         self.command.add_argument('--fix',
                                   type=str,
+                                  default='a',
                                   choices=['r','b', 'a'],
                                   help='repair data')
         self.command.add_argument('--ins',

@@ -67,7 +67,6 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
         # 不做任何限制
         return True
     else:
-        import re
         try:
             sNr = ' '.join([f'{x:02}' for x in NR])
             sNb = ' '.join([f'{x:02}' for x in NB])
@@ -87,10 +86,18 @@ def debugx(msg: Any) -> None:
     print(msgs)
 
 
-def truncate(avg, x):
+def truncate(Dr: list, keys: list) -> list:
     #debugx(int(num*(10**n)))
-    integer = math.ceil(abs(avg - x))
-    return integer
+    tmps = [Dr.count(x) for x in keys]
+    avg = sum(tmps) / len(tmps)
+    tmps = [math.ceil(abs(avg - x)) for x in tmps]
+    return tmps
+
+
+def frommkeyx(Dx: list) -> list:
+    tmps = [x for x in {}.fromkeys(Dx).keys()]
+    RDX.shuffle(tmps)
+    return tmps
 
 
 def makenux(Data: dict,
@@ -106,20 +113,15 @@ def makenux(Data: dict,
     '''
     Dr = Data['R']
     Db = Data['B']
-    R_keys = [x for x in {}.fromkeys(Dr).keys()]
-    B_keys = [x for x in {}.fromkeys(Db).keys()]
-    RDX.shuffle(R_keys)
-    RDX.shuffle(B_keys)
-    weights_R = [Data['R'].count(x) for x in R_keys]
-    avg_r = sum(weights_R) / 33
-    weights_R = [truncate(avg_r, x) for x in weights_R]
+    R_keys = frommkeyx(Dr)
+    B_keys = frommkeyx(Db)
+    # EDIT
+    weights_R = truncate(Dr, R_keys)
     # avg R
-    weights_B = [Data['B'].count(x) for x in B_keys]
-    avg_b = sum(weights_B) / 16
-    weights_B = [truncate(avg_b, x) for x in weights_B]
+    weights_B = truncate(Db, B_keys)
     # avg B
-    dr, Rs = choicesrb(R_keys, weights_R, Rlen, RDX.choices, depth + 1)
-    db, Bs = choicesrb(B_keys, weights_B, Blen, RDX.choices, depth + 1)
+    dr, Rs = choicesrb(R_keys, weights_R, Rlen, depth + 1)
+    db, Bs = choicesrb(B_keys, weights_B, Blen, depth + 1)
     rfind = Findins(Rs, Bs, insre=ins)
     if rfind == 'ERROR':
         return [dr, rfind, rfind]
@@ -132,11 +134,7 @@ def makenux(Data: dict,
             return [Dr, [0], [0]]
 
 
-def choicesrb(keys: list,
-              weights: list,
-              lens: int,
-              rdxfunx: Any,
-              depth: int = 1) -> list:
+def choicesrb(keys: list, weights: list, lens: int, depth: int = 1) -> list:
     '''
     keys list 待选列表
     weights list 权重
@@ -144,18 +142,18 @@ def choicesrb(keys: list,
     depth int 计算深度
     rdx = RDX.choices
     '''
-    Jieguo = rdxfunx(keys, weights=weights, k=lens)
+    Jieguo = RDX.choices(keys, weights=weights, k=lens)
     Jieguo = [x for x in sorted(Jieguo)]
     if (La := len(Jieguo)) > (Lb := list(set(Jieguo)).__len__()):
         if depth < 990:
-            return choicesrb(keys, weights, lens, rdxfunx, depth + 1)
+            return choicesrb(keys, weights, lens, depth + 1)
         else:
             return [depth, [0]]
     elif La == Lb:
         return [depth, Jieguo]
     else:
         if depth < 990:
-            return choicesrb(keys, weights, lens, rdxfunx, depth + 1)
+            return choicesrb(keys, weights, lens, depth + 1)
         else:
             return [depth, [0]]
 
@@ -203,7 +201,7 @@ def Prn(N: int = 33, R: int = 6, B: int = 1):
         Ld = Ldei[0] // (Ldei[1] * Ldei[2])
     else:
         Ld = 1
-    print(f':: N {N}, R {R}, BAST {Ld} CYN {Ld*2*B}')
+    print(f':: objectives {N} -> {R} / {Ld} $ {Ld*2*B}')
 
 
 def Pjie(N: int) -> int:
@@ -225,7 +223,7 @@ class action:
     buffto = []
 
     def __init__(self, args: dict):
-        
+
         self.args: dict = args if args != None else {'save': False}
         self.args['r'] = Limit_input_r(self.args['r'])
         self.args['b'] = Limit_input_b(self.args['b'])
