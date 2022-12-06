@@ -18,7 +18,6 @@ class get_html:
             self.text = urllib.request.urlopen(url).read()
         except:
             self.text = ''
-            return self.text
 
     def neirong(self) -> str:
         ''' get text '''

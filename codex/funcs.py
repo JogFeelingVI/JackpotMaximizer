@@ -29,21 +29,24 @@ def getdata() -> None:
     '''
     fp = file_to('./rbdata.json')
     html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
-    Rx = re.findall(b'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
-    Bx = re.findall(b'c_bule\">([0-9]{2})<', html)
-    Lix = {'R': [], 'B': [], 'date': dtime.now().__str__()}
-    for zitem in zip(Rx, Bx):
-        R, B = zitem
-        R = [int(x) for x in R.decode('utf-8').split(',')]
-        B = int(B.decode('utf-8'))
-        for Rz in R:
-            Lix['R'].append(Rz)
-        Lix['B'].append(B)
-    json_str = json.dumps(Lix, indent=4)
-    with open(fp, 'w') as datajson:
-        datajson.write(json_str)
-        hszie = json_str.__sizeof__()
-        print(f':: updata network data sizeof {hszie}')
+    if html != '':
+        Rx = re.findall(b'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
+        Bx = re.findall(b'c_bule\">([0-9]{2})<', html)
+        Lix = {'R': [], 'B': [], 'date': dtime.now().__str__()}
+        for zitem in zip(Rx, Bx):
+            R, B = zitem
+            R = [int(x) for x in R.decode('utf-8').split(',')]
+            B = int(B.decode('utf-8'))
+            for Rz in R:
+                Lix['R'].append(Rz)
+            Lix['B'].append(B)
+        json_str = json.dumps(Lix, indent=4)
+        with open(fp, 'w') as datajson:
+            datajson.write(json_str)
+            hszie = json_str.__sizeof__()
+            print(f':: updata network data sizeof {hszie}')
+    else:
+        print(f':: updata network error')
 
 
 def loaddata() -> dict:
@@ -90,7 +93,7 @@ def truncate(Dr: list, keys: list) -> list:
     #debugx(int(num*(10**n)))
     tmps = [Dr.count(x) for x in keys]
     mx = max(tmps)
-    tmps = [mx - x for x in tmps]
+    tmps = [[mx - x, 1][x == mx] for x in tmps]
     return tmps
 
 

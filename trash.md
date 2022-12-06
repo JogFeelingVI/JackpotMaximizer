@@ -66,3 +66,17 @@ def Cji(lisd: list) -> int:
         Rex *= x
     return Rex**(1 / len(lisd))
 ```
+
+```shell
+debug {'save': False, 'update': True, 'noinx': False, 'fix': 'a', 'ins': '(.*)', 'n': 5, 'r': 6, 'b': 1}
+Traceback (most recent call last):
+  File "/Users/feelingvi/Downloads/GitHub/QuickLCK/qls.command", line 19, in <module>
+    maix()
+  File "/Users/feelingvi/Downloads/GitHub/QuickLCK/qls.command", line 15, in maix
+    act.act_for_dict()
+  File "/Users/feelingvi/Downloads/GitHub/QuickLCK/codex/funcs.py", line 259, in act_for_dict
+    getdata()
+  File "/Users/feelingvi/Downloads/GitHub/QuickLCK/codex/funcs.py", line 31, in getdata
+    html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
+TypeError: __init__() should return None, not 'str'
+```
