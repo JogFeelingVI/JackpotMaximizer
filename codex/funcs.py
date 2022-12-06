@@ -86,21 +86,11 @@ def debugx(msg: Any) -> None:
     print(msgs)
 
 
-def Cji(lisd: list) -> int:
-    '''
-    n1*n2*n3..**(1/len(n))
-    '''
-    Rex = 1
-    for x in lisd:
-        Rex *= x
-    return Rex**(1 / len(lisd))
-
-
 def truncate(Dr: list, keys: list) -> list:
     #debugx(int(num*(10**n)))
     tmps = [Dr.count(x) for x in keys]
-    avg = Cji(tmps)
-    tmps = [math.ceil(abs(avg - x)) for x in tmps]
+    mx = max(tmps)
+    tmps = [mx - x for x in tmps]
     return tmps
 
 

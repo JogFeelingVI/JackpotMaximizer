@@ -55,3 +55,14 @@ def randoms_r(Clist: list,
                 return [depth, [0]]
 
 ```
+
+```python
+def Cji(lisd: list) -> int:
+    '''
+    n1*n2*n3..**(1/len(n))
+    '''
+    Rex = 1
+    for x in lisd:
+        Rex *= x
+    return Rex**(1 / len(lisd))
+```
