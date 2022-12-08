@@ -5,7 +5,7 @@
 # @Last Modified time: 2022-10-03 15:26:39
 
 from typing import Any, Callable, List
-import math, re, json, random as RDX
+import multiprocessing as mlps, os, re, json, random as RDX
 from codex.ospath import os_path
 from datetime import datetime as dtime
 from codex.download import get_html
@@ -103,6 +103,15 @@ def frommkeyx(Dx: list) -> list:
     return tmps
 
 
+def makenuxe(arglist: list) -> list:
+    '''
+    makenux for all cpu
+    '''
+    inx, D, R, B, i = arglist
+    a, b, c = makenux(Data=D, Rlen=R, Blen=B, ins=i, depth=1)
+    return [inx, a, b, c]
+
+
 def makenux(Data: dict,
             Rlen: int,
             Blen: int,
@@ -131,10 +140,10 @@ def makenux(Data: dict,
     if rfind == True:
         return [dr, Rs, Bs]
     else:
-        if dr < 990 and db < 990:
+        if dr < 985 and db < 985:
             return makenux(Data, Rlen, Blen, ins, depth + 1)
         else:
-            return [Dr, [0], [0]]
+            return [dr, [0], [0]]
 
 
 def choicesrb(keys: list, weights: list, lens: int, depth: int = 1) -> list:
@@ -148,14 +157,14 @@ def choicesrb(keys: list, weights: list, lens: int, depth: int = 1) -> list:
     Jieguo = RDX.choices(keys, weights=weights, k=lens)
     Jieguo = [x for x in sorted(Jieguo)]
     if (La := len(Jieguo)) > (Lb := list(set(Jieguo)).__len__()):
-        if depth < 990:
+        if depth < 985:
             return choicesrb(keys, weights, lens, depth + 1)
         else:
             return [depth, [0]]
     elif La == Lb:
         return [depth, Jieguo]
     else:
-        if depth < 990:
+        if depth < 985:
             return choicesrb(keys, weights, lens, depth + 1)
         else:
             return [depth, [0]]
@@ -255,17 +264,19 @@ class action:
                 self.data[n] = self.data[n] + qsr
                 print(f':: fix {n} {qsr}')
 
-    def act_for_dict(self) -> None:
-        ''' anys dict '''
-        if self.args['update']:
-            # update
-            getdata()
-            return 0
-        self.data = loaddata()
-        if self.args['fix'] != None:
-            # 执行 fix 程序
-            self.__fixrba__(self.args['fix'])
-        Prn(N=self.args['r'], B=self.args['b'])
+    def __cpuse__(self, argb: str) -> None:
+        '''
+        '''
+        cmds = {
+            'o': lambda: self.__cpu_one__(),
+            'a': lambda: self.__cpu_all__(),
+        }
+        cmds[argb]()
+
+    def __cpu_one__(self) -> None:
+        '''
+        only cpu A run work
+        '''
         N = [x for x in range(1, self.args['n'] + 1)]
         for nx in N:
             dep, Nr, Nb = makenux(self.data, self.args['r'], self.args['b'],
@@ -279,6 +290,42 @@ class action:
                 else:
                     self.buffto.append(f'N {nx:>4} depth {dep:<5} {lis}')
                 print(self.buffto[-1])
+
+    def __cpu_all__(self) -> None:
+        '''
+        use all cpu cores
+        '''
+        cpus = os.cpu_count()
+        print(f':: cpu count {cpus}')
+        N = [[x, self.data, self.args['r'], self.args['b'], self.args['ins']]
+             for x in range(1, self.args['n'] + 1)]
+        mpool = mlps.Pool(processes=cpus)
+        Retds = mpool.map(makenuxe, N)
+        for inx, dep, Nr, Nb in Retds:
+            if Nr == 'ERROR' or Nb == 'ERROR': break
+            if len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
+                lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
+                if self.args['noinx']:
+                    self.buffto.append(f'N {lis}')
+                else:
+                    self.buffto.append(f'N {inx:>4} depth {dep:<5} {lis}')
+                print(self.buffto[-1])
+
+    def act_for_dict(self) -> None:
+        ''' anys dict '''
+        if self.args['update']:
+            # update
+            getdata()
+            return 0
+        self.data = loaddata()
+        if self.args['fix'] != None:
+            # 执行 fix 程序
+            self.__fixrba__(self.args['fix'])
+        Prn(N=self.args['r'], B=self.args['b'])
+        # cpu switch
+        if self.args['cpu'] != None:
+            self.__cpuse__(self.args['cpu'])
+
         if self.args['save']:
             with open(file_to('./save.log'), 'w') as sto:
                 for slog in self.buffto:
