@@ -300,7 +300,7 @@ class action:
         use all cpu cores
         '''
         cpus = os.cpu_count()
-        print(f':: cpu count {cpus}')
+        print(f':: cpus {cpus} maxdep {maxdep}')
         N = [[x, self.data, self.args['r'], self.args['b'], self.args['ins']]
              for x in range(1, self.args['n'] + 1)]
         mpool = mlps.Pool(processes=cpus)
