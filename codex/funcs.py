@@ -5,11 +5,13 @@
 # @Last Modified time: 2022-10-03 15:26:39
 
 from typing import Any, Callable, List
-import multiprocessing as mlps, os, re, json, random as RDX
+import multiprocessing as mlps, os, sys, re, json, random as RDX
 from codex.ospath import os_path
 from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
+
+maxdep = sys.getrecursionlimit() - 15
 
 
 def file_to(name: str) -> str:
@@ -140,7 +142,7 @@ def makenux(Data: dict,
     if rfind == True:
         return [dr, Rs, Bs]
     else:
-        if dr < 985 and db < 985:
+        if dr < maxdep and db < maxdep:
             return makenux(Data, Rlen, Blen, ins, depth + 1)
         else:
             return [dr, [0], [0]]
@@ -157,14 +159,14 @@ def choicesrb(keys: list, weights: list, lens: int, depth: int = 1) -> list:
     Jieguo = RDX.choices(keys, weights=weights, k=lens)
     Jieguo = [x for x in sorted(Jieguo)]
     if (La := len(Jieguo)) > (Lb := list(set(Jieguo)).__len__()):
-        if depth < 985:
+        if depth < maxdep:
             return choicesrb(keys, weights, lens, depth + 1)
         else:
             return [depth, [0]]
     elif La == Lb:
         return [depth, Jieguo]
     else:
-        if depth < 985:
+        if depth < maxdep:
             return choicesrb(keys, weights, lens, depth + 1)
         else:
             return [depth, [0]]
@@ -235,7 +237,9 @@ class action:
     buffto = []
 
     def __init__(self, args: dict):
-
+        '''
+        action __init__
+        '''
         self.args: dict = args if args != None else {'save': False}
         self.args['r'] = Limit_input_r(self.args['r'])
         self.args['b'] = Limit_input_b(self.args['b'])
