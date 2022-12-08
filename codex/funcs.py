@@ -11,7 +11,7 @@ from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
 
-maxdep = sys.getrecursionlimit() - 15
+maxdep = sys.getrecursionlimit() - 30
 
 
 def file_to(name: str) -> str:
