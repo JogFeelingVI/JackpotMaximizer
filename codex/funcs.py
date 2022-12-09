@@ -303,17 +303,17 @@ class action:
         print(f':: cpus {cpus} maxdep {maxdep}')
         N = [[x, self.data, self.args['r'], self.args['b'], self.args['ins']]
              for x in range(1, self.args['n'] + 1)]
-        mpool = mlps.Pool(processes=cpus)
-        Retds = mpool.map(makenuxe, N)
-        for inx, dep, Nr, Nb in Retds:
-            if Nr == 'ERROR' or Nb == 'ERROR': break
-            if len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
-                lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
-                if self.args['noinx']:
-                    self.buffto.append(f'N {lis}')
-                else:
-                    self.buffto.append(f'N {inx:>4} depth {dep:<5} {lis}')
-                print(self.buffto[-1])
+        with mlps.Pool(processes=cpus) as p:
+            Retds = p.map(makenuxe, N)
+            for inx, dep, Nr, Nb in Retds:
+                if Nr == 'ERROR' or Nb == 'ERROR': break
+                if len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
+                    lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
+                    if self.args['noinx']:
+                        self.buffto.append(f'N {lis}')
+                    else:
+                        self.buffto.append(f'N {inx:>4} depth {dep:<5} {lis}')
+                    print(self.buffto[-1])
 
     def act_for_dict(self) -> None:
         ''' anys dict '''
