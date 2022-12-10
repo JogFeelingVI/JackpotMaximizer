@@ -277,6 +277,22 @@ class action:
         }
         cmds[argb]()
 
+    def __echo__(self, Rexs: list) -> None:
+        '''
+        echo numbers
+        '''
+        inx, dep, Nr, Nb = Rexs
+        if Nr == 'ERROR' or Nb == 'ERROR':
+            pass
+        # 发现错误 终止执行程序
+        elif len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
+            lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
+            if self.args['noinx']:
+                self.buffto.append(f'N {lis}')
+            else:
+                self.buffto.append(f'N {inx:>4} depth {dep:<5} {lis}')
+            print(self.buffto[-1])
+
     def __cpu_one__(self) -> None:
         '''
         only cpu A run work
@@ -285,15 +301,7 @@ class action:
         for nx in N:
             dep, Nr, Nb = makenux(self.data, self.args['r'], self.args['b'],
                                   self.args['ins'])
-            if Nr == 'ERROR' or Nb == 'ERROR': break
-            # 发现错误 终止执行程序
-            if len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
-                lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
-                if self.args['noinx']:
-                    self.buffto.append(f'N {lis}')
-                else:
-                    self.buffto.append(f'N {nx:>4} depth {dep:<5} {lis}')
-                print(self.buffto[-1])
+            self.__echo__([nx, dep, Nr, Nb])
 
     def __cpu_all__(self) -> None:
         '''
@@ -305,15 +313,8 @@ class action:
              for x in range(1, self.args['n'] + 1)]
         with mlps.Pool(processes=cpus) as p:
             Retds = p.map(makenuxe, N)
-            for inx, dep, Nr, Nb in Retds:
-                if Nr == 'ERROR' or Nb == 'ERROR': break
-                if len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
-                    lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
-                    if self.args['noinx']:
-                        self.buffto.append(f'N {lis}')
-                    else:
-                        self.buffto.append(f'N {inx:>4} depth {dep:<5} {lis}')
-                    print(self.buffto[-1])
+            for item in Retds:
+                self.__echo__(item)
 
     def act_for_dict(self) -> None:
         ''' anys dict '''
