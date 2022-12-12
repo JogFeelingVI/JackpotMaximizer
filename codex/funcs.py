@@ -12,6 +12,7 @@ from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
 
 maxdep = sys.getrecursionlimit() - 30
+prompt = '[+]'
 
 
 def file_to(name: str) -> str:
@@ -46,9 +47,9 @@ def getdata() -> None:
         with open(fp, 'w') as datajson:
             datajson.write(json_str)
             hszie = json_str.__sizeof__()
-            print(f':: updata network data sizeof {hszie}')
+            print(f'{prompt} updata network data sizeof {hszie}')
     else:
-        print(f':: updata network error')
+        print(f'{prompt} updata network error')
 
 
 def loaddata() -> dict:
@@ -58,7 +59,7 @@ def loaddata() -> dict:
     fp = file_to('./rbdata.json')
     with open(fp, 'r') as rbdata:
         json_str = json.load(rbdata)
-        print(':: loading buffer')
+        print(f'{prompt} loading buffer')
     return json_str
 
 
@@ -79,7 +80,7 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
             Finx = len(re.findall(insre, sNums))
             return True if Finx >= 1 else False
         except re.error as rerror:
-            print(f':: Findins error: {rerror.msg}')
+            print(f'{prompt} Findins error: {rerror.msg}')
             return 'ERROR'
 
 
@@ -179,10 +180,10 @@ def Limit_input_r(r: int) -> int:
     if r >= 6 and r <= 19:
         return r
     elif r < 6:
-        print(':: Change parameter R to 6')
+        print(f'{prompt} Change parameter R to 6')
         return 6
     elif r > 19:
-        print(':: Change parameter R to 19')
+        print(f'{prompt} Change parameter R to 19')
         return 19
 
 
@@ -193,10 +194,10 @@ def Limit_input_b(r: int) -> int:
     if r >= 1 and r <= 16:
         return r
     elif r < 1:
-        print(':: Change parameter B to 1')
+        print(f'{prompt} Change parameter B to 1')
         return 1
     elif r > 16:
-        print(':: Change parameter b to 16')
+        print(f'{prompt} Change parameter b to 16')
         return 16
 
 
@@ -215,7 +216,7 @@ def Prn(N: int = 33, R: int = 6, B: int = 1):
         Ld = Ldei[0] // (Ldei[1] * Ldei[2])
     else:
         Ld = 1
-    print(f':: objectives {N} -> {R} / {Ld} $ {Ld*2*B}')
+    print(f'{prompt} objectives {N} -> {R} / {Ld} $ {Ld*2*B}')
 
 
 def Pjie(N: int) -> int:
@@ -266,7 +267,7 @@ class action:
             qsr = [x for x in l if x not in self.data[n]]
             if len(qsr) > 0:
                 self.data[n] = self.data[n] + qsr
-                print(f':: fix {n} {qsr}')
+                print(f'{prompt} fix {n} {qsr}')
 
     def __cpuse__(self, argb: str) -> None:
         '''
@@ -283,7 +284,7 @@ class action:
         '''
         inx, dep, Nr, Nb = Rexs
         if Nr == 'ERROR' or Nb == 'ERROR':
-            pass
+            print(f' ⠿ Error')
         # 发现错误 终止执行程序
         elif len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
             lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
@@ -308,7 +309,7 @@ class action:
         use all cpu cores
         '''
         cpus = os.cpu_count()
-        print(f':: cpus {cpus} maxdep {maxdep}')
+        print(f'{prompt} cpus {cpus} maxdep {maxdep}')
         N = [[x, self.data, self.args['r'], self.args['b'], self.args['ins']]
              for x in range(1, self.args['n'] + 1)]
         with mlps.Pool(processes=cpus) as p:
