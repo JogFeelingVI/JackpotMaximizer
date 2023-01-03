@@ -289,9 +289,9 @@ class action:
         elif len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
             lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
             if self.args['noinx']:
-                self.buffto.append(f'N {lis}')
+                self.buffto.append(f'{prompt} {lis}')
             else:
-                self.buffto.append(f'N {inx:>4} depth {dep:<5} {lis}')
+                self.buffto.append(f'{prompt} {inx:>4} depth {dep:<5} {lis}')
             print(self.buffto[-1])
 
     def __cpu_one__(self) -> None:
