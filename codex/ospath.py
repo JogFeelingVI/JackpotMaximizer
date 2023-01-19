@@ -23,5 +23,5 @@ class os_path:
         huo qu wen jian lu jing
         '''
         path = os_path.path()
-        fp = pathlib.PurePath(path, file)
-        return fp if pathlib.Path(fp).exists() else None
+        fp = f'{pathlib.PurePath(path, file)}'
+        return fp if pathlib.Path(fp).exists() else ''

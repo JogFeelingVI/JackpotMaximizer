@@ -11,7 +11,7 @@ class get_html:
     ''' get download url '''
     text = ''
 
-    def __init__(self, url: str = None) -> None:
+    def __init__(self, url: str) -> None:
         if url == None:
             return None
         try:

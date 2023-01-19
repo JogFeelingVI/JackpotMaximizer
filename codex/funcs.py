@@ -33,8 +33,8 @@ def getdata() -> None:
     fp = file_to('./rbdata.json')
     html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
     if html != '':
-        Rx = re.findall(b'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
-        Bx = re.findall(b'c_bule\">([0-9]{2})<', html)
+        Rx = re.findall(r'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
+        Bx = re.findall(r'c_bule\">([0-9]{2})<', html)
         Lix = {'R': [], 'B': [], 'date': dtime.now().__str__()}
         for zitem in zip(Rx, Bx):
             R, B = zitem
@@ -81,7 +81,7 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
             return True if Finx >= 1 else False
         except re.error as rerror:
             print(f'{prompt} Findins error: {rerror.msg}')
-            return 'ERROR'
+            return False
 
 
 def debugx(msg: Any) -> None:
@@ -118,7 +118,7 @@ def makenuxe(arglist: list) -> list:
 def makenux(Data: dict,
             Rlen: int,
             Blen: int,
-            ins: str = None,
+            ins: str,
             depth: int = 1) -> list:
     '''
         data {'r': [1,2,3...], 'b':[1-16]}
@@ -177,28 +177,24 @@ def Limit_input_r(r: int) -> int:
     '''
     Limit input R 6-19
     '''
-    if r >= 6 and r <= 19:
-        return r
-    elif r < 6:
+    if r in range(6, 20):
+        r = r
+    else:
+        r = 6
         print(f'{prompt} Change parameter R to 6')
-        return 6
-    elif r > 19:
-        print(f'{prompt} Change parameter R to 19')
-        return 19
+    return r
 
 
 def Limit_input_b(r: int) -> int:
     '''
     Limit input R 6-19
     '''
-    if r >= 1 and r <= 16:
-        return r
-    elif r < 1:
+    if r in range(1, 17):
+        r = r
+    else:
+        r = 1
         print(f'{prompt} Change parameter B to 1')
-        return 1
-    elif r > 16:
-        print(f'{prompt} Change parameter b to 16')
-        return 16
+    return r
 
 
 def Prn(N: int = 33, R: int = 6, B: int = 1):
@@ -241,7 +237,11 @@ class action:
         '''
         action __init__
         '''
-        self.args: dict = args if args != None else {'save': False}
+        self.args: dict = args if args != None else {
+            'save': False,
+            'r': 6,
+            'b': 1
+        }
         self.args['r'] = Limit_input_r(self.args['r'])
         self.args['b'] = Limit_input_b(self.args['b'])
         self.buffto.append(f'date {dtime.now()}')
@@ -322,7 +322,7 @@ class action:
         if self.args['update']:
             # update
             getdata()
-            return 0
+            return
         self.data = loaddata()
         if self.args['fix'] != None:
             # 执行 fix 程序
