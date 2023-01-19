@@ -4,6 +4,7 @@
 # @Last Modified by:   By JogFeelingVi 
 # @Last Modified time: 2022-10-17 09:28:52
 import pathlib
+from typing import Union
 class os_path:
     '''
     get os path /data/data/com.termux.com/file
@@ -18,10 +19,10 @@ class os_path:
         return path
     
     @staticmethod
-    def file_path(file:str) -> str:
+    def file_path(file:str) -> Union[str, None]:
         '''
         huo qu wen jian lu jing
         '''
         path = os_path.path()
         fp = f'{pathlib.PurePath(path, file)}'
-        return fp if pathlib.Path(fp).exists() else ''
+        return fp if pathlib.Path(fp).exists() else None

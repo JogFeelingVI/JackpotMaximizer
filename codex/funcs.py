@@ -4,7 +4,7 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 15:26:39
 
-from typing import Any, Callable, List
+from typing import Union, Any
 import multiprocessing as mlps, os, sys, re, json, random as RDX
 from codex.ospath import os_path
 from datetime import datetime as dtime
@@ -15,7 +15,7 @@ maxdep = sys.getrecursionlimit() - 30
 prompt = '[+]'
 
 
-def file_to(name: str) -> str:
+def file_to(name: str) -> Union[str, None]:
     '''
     File real path
     '''
@@ -31,6 +31,7 @@ def getdata() -> None:
         
     '''
     fp = file_to('./rbdata.json')
+    fp = fp if fp is not None else ''
     html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
     if html != '':
         Rx = re.findall(r'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
@@ -52,14 +53,15 @@ def getdata() -> None:
         print(f'{prompt} updata network error')
 
 
-def loaddata() -> dict:
+def loaddata() -> dict[str, list[int]]:
     '''
     load data
     '''
-    fp = file_to('./rbdata.json')
-    with open(fp, 'r') as rbdata:
-        json_str = json.load(rbdata)
-        print(f'{prompt} loading buffer')
+    json_str = {}
+    if (fps := file_to('./rbdata.json')) != None:
+        with open(fps, 'r') as rbdata:
+            json_str = json.load(rbdata)
+            print(f'{prompt} loading buffer')
     return json_str
 
 
@@ -84,7 +86,7 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
             return False
 
 
-def debugx(msg: Any) -> None:
+def debugx(msg: Union[str, int, dict]) -> None:
     '''
     echo debug msg
     '''
@@ -230,7 +232,6 @@ def Pjie(N: int) -> int:
 
 class action:
     ''' 执行脚本分析动作 '''
-    data = {}
     buffto = []
 
     def __init__(self, args: dict):
@@ -263,11 +264,18 @@ class action:
                      ['B', [x for x in range(1, 17)]]]
         }
         Zdict = cmds[rba]()
-        for n, l in Zdict:
+        for kn, vl in Zdict:
+            # kn = R vl = [1,2,3,4,5,6...]
+            kn_val = self.data.get(kn)
+            fix_kn = [x for x in vl if x not in kn_val]
+            if len(fix_kn) > 0:
+                self.data[kn] += fix_kn
+                print(f'{prompt} fix {kn} {fix_kn}')
+        """ for kn, vl in Zdict:
             qsr = [x for x in l if x not in self.data[n]]
             if len(qsr) > 0:
                 self.data[n] = self.data[n] + qsr
-                print(f'{prompt} fix {n} {qsr}')
+                print(f'{prompt} fix {n} {qsr}') """
 
     def __cpuse__(self, argb: str) -> None:
         '''
@@ -333,6 +341,7 @@ class action:
             self.__cpuse__(self.args['cpu'])
 
         if self.args['save']:
-            with open(file_to('./save.log'), 'w') as sto:
-                for slog in self.buffto:
-                    sto.writelines(f'{slog}\n')
+            if (fps := file_to('./save.log')) != None:
+                with open(fps, 'w') as sto:
+                    for slog in self.buffto:
+                        sto.writelines(f'{slog}\n')
