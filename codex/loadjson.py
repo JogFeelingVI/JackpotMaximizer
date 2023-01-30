@@ -13,17 +13,26 @@ class Resty(enum.Enum):
 
 class Load_JSON:
 
-    def __init__(self, res: Resty) -> None:
+    def __init__(self, res: Resty, keys:str) -> None:
         ''' res: Resty '''
-        self.JSON = self.__loadjson__(res.value)
+        self.json_data = self.__loadjson__(res.value)
+        self.keys = keys
 
     def __loadjson__(self, path: str) -> dict:
         ''' Load ./String.json '''
-        fp = os_path.file_path(path)
-        with open(fp, 'r') as f:
-            jdata: dict = json.load(f)
+        jdata:dict = {}
+        try:
+            fp: str = os_path.file_path(path)
+            with open(fp, 'r') as f:
+                jdata: dict = json.load(f)
+        except:
+            jdata = {'Error': 1}
+        
         return jdata
 
-    def read(self, key: str) -> list:
+    @property
+    def read(self) -> tuple:
         ''' read(key) return list [str, xxxoooxxx ] '''
-        return [type(self.JSON[key]), self.JSON[key]]
+        date = self.json_data.get(self.keys)
+        rex = (type(date), date)
+        return rex

@@ -32,7 +32,7 @@ def getdata() -> None:
     '''
     fp = file_to('./rbdata.json')
     fp = fp if fp is not None else ''
-    html = get_html(Load_JSON(Resty.OxStr).read('UTXT')[1]).neirong()
+    html = get_html(Load_JSON(Resty.OxStr, 'UTXT').read[1]).neirong()
     if html != '':
         Rx = re.findall(r'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
         Bx = re.findall(r'c_bule\">([0-9]{2})<', html)

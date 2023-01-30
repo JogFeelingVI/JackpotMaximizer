@@ -19,10 +19,10 @@ class os_path:
         return path
     
     @staticmethod
-    def file_path(file:str) -> Union[str, None]:
+    def file_path(file:str) -> str:
         '''
         huo qu wen jian lu jing
         '''
         path = os_path.path()
         fp = f'{pathlib.PurePath(path, file)}'
-        return fp if pathlib.Path(fp).exists() else None
+        return fp if pathlib.Path(fp).exists() else ''
