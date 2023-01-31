@@ -4,7 +4,7 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 15:26:39
 
-from typing import Union, Any
+from typing import Union, Any, List
 import multiprocessing as mlps, os, sys, re, json, random as RDX
 from codex.ospath import os_path
 from datetime import datetime as dtime
@@ -34,8 +34,8 @@ def getdata() -> None:
     fp = fp if fp is not None else ''
     html = get_html(Load_JSON(Resty.OxStr, 'UTXT').read[1]).neirong
     if html != '':
-        Rx = re.findall(r'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
-        Bx = re.findall(r'c_bule\">([0-9]{2})<', html)
+        Rx = re.findall(rb'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
+        Bx = re.findall(rb'c_bule\">([0-9]{2})<', html)
         Lix = {'R': [], 'B': [], 'date': dtime.now().__str__()}
         for zitem in zip(Rx, Bx):
             R, B = zitem
@@ -53,7 +53,7 @@ def getdata() -> None:
         print(f'{prompt} updata network error')
 
 
-def loaddata() -> dict[str, list[int]]:
+def loaddata() -> dict[str, List]:
     '''
     load data
     '''
