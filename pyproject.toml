@@ -15,6 +15,12 @@ toml = "^0.10.2"
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.32.0"
 
+[tool.poetry.group.new_group]
+optional = true
+
+[tool.poetry.group.new_group.dependencies]
+tensorflow = "*"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

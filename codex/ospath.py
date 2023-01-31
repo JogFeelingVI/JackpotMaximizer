@@ -3,7 +3,8 @@
 # @Date: 2022-10-17 09:28:52 
 # @Last Modified by:   By JogFeelingVi 
 # @Last Modified time: 2022-10-17 09:28:52
-import pathlib
+import os, sys
+from pathlib import Path, PurePath
 from typing import Union
 class os_path:
     '''
@@ -14,7 +15,6 @@ class os_path:
         '''
         huo qu li jing
         '''
-        import os, sys
         path, _ = os.path.split(os.path.realpath(sys.argv[0]))
         return path
     
@@ -24,5 +24,5 @@ class os_path:
         huo qu wen jian lu jing
         '''
         path = os_path.path()
-        fp = f'{pathlib.PurePath(path, file)}'
-        return fp if pathlib.Path(fp).exists() else ''
+        fp = f'{PurePath(path, file)}'
+        return fp if Path(fp).exists() else ''
