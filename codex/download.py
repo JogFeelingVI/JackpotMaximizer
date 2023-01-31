@@ -18,7 +18,7 @@ class get_html:
             context = ssl._create_unverified_context()
             with urllib.request.urlopen(url, context=context) as response:
                 rscode = response.read().decode('gb2312')
-                self.text = rscode.encode('utf-8')
+                self.text = rscode
         except Exception as e:
             raise ValueError(f"Failed to retrieve content from URL ({url}), error: {str(e)}")
 
