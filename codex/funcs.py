@@ -37,7 +37,11 @@ def getdata() -> None:
         if html_content != '':
             Rx = re.findall(r'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html_content)
             Bx = re.findall(r'c_bule\">([0-9]{2})<', html_content)
-            Lix = {'R': [int(x) for r in Rx for x in r.split(',')], 'B': [int(x) for x in Bx], 'date': dtime.now().__str__()}
+            Lix = {
+                'R': [int(x) for r in Rx for x in r.split(',')],
+                'B': [int(x) for x in Bx],
+                'date': dtime.now().__str__()
+            }
             json_str = json.dumps(Lix, indent=4)
             with open(data_file_path, 'w') as datajson:
                 datajson.write(json_str)
@@ -72,7 +76,7 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
     Nums type list
     inse type str
     '''
-    if insre == '':
+    if insre == '' or insre == '(.*)':
         # 不做任何限制
         return True
     else:
@@ -87,7 +91,7 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
             return False
 
 
-def debugx(msg: Union[str, int, dict]) -> None:
+def debugx(msg: Any) -> None:
     '''
     echo debug msg
     '''
@@ -95,7 +99,7 @@ def debugx(msg: Union[str, int, dict]) -> None:
     print(msgs)
 
 
-def truncate(Dr: list, keys: list) -> list:
+def truncate(Dr: List, keys: List) -> List:
     #debugx(int(num*(10**n)))
     tmps = [Dr.count(x) for x in keys]
     mx = max(tmps)
@@ -103,13 +107,13 @@ def truncate(Dr: list, keys: list) -> list:
     return tmps
 
 
-def frommkeyx(Dx: list) -> list:
+def frommkeyx(Dx: List) -> List:
     tmps = [x for x in {}.fromkeys(Dx).keys()]
     RDX.shuffle(tmps)
     return tmps
 
 
-def makenuxe(arglist: list) -> list:
+def makenuxe(arglist: List) -> List:
     '''
     makenux for all cpu
     '''
@@ -122,7 +126,7 @@ def makenux(Data: dict,
             Rlen: int,
             Blen: int,
             ins: str,
-            depth: int = 1) -> list:
+            depth: int = 1) -> List:
     '''
         data {'r': [1,2,3...], 'b':[1-16]}
         Rlen R len 1, 2, 3, 4, 5, 6 + Blen
@@ -138,11 +142,9 @@ def makenux(Data: dict,
     # avg R
     weights_B = truncate(Db, B_keys)
     # avg B
-    dr, Rs = choicesrb(R_keys, weights_R, Rlen, depth + 1)
-    db, Bs = choicesrb(B_keys, weights_B, Blen, depth + 1)
+    dr, Rs = choicesrb(R_keys, weights_R, Rlen, depth)
+    db, Bs = choicesrb(B_keys, weights_B, Blen, depth)
     rfind = Findins(Rs, Bs, insre=ins)
-    if rfind == 'ERROR':
-        return [dr, rfind, rfind]
     if rfind == True:
         return [dr, Rs, Bs]
     else:
@@ -152,7 +154,7 @@ def makenux(Data: dict,
             return [dr, [0], [0]]
 
 
-def choicesrb(keys: list, weights: list, lens: int, depth: int = 1) -> list:
+def choicesrb(keys: List, weights: List, lens: int, depth: int = 1) -> List:
     '''
     keys list 待选列表
     weights list 权重
@@ -162,18 +164,13 @@ def choicesrb(keys: list, weights: list, lens: int, depth: int = 1) -> list:
     '''
     Jieguo = RDX.choices(keys, weights=weights, k=lens)
     Jieguo = [x for x in sorted(Jieguo)]
-    if (La := len(Jieguo)) > (Lb := list(set(Jieguo)).__len__()):
+    if len(Jieguo) != list(set(Jieguo)).__len__():
         if depth < maxdep:
             return choicesrb(keys, weights, lens, depth + 1)
         else:
             return [depth, [0]]
-    elif La == Lb:
-        return [depth, Jieguo]
     else:
-        if depth < maxdep:
-            return choicesrb(keys, weights, lens, depth + 1)
-        else:
-            return [depth, [0]]
+        return [depth, Jieguo]
 
 
 def Limit_input_r(r: int) -> int:
@@ -272,11 +269,6 @@ class action:
             if len(fix_kn) > 0:
                 self.data[kn] += fix_kn
                 print(f'{prompt} fix {kn} {fix_kn}')
-        """ for kn, vl in Zdict:
-            qsr = [x for x in l if x not in self.data[n]]
-            if len(qsr) > 0:
-                self.data[n] = self.data[n] + qsr
-                print(f'{prompt} fix {n} {qsr}') """
 
     def __cpuse__(self, argb: str) -> None:
         '''
@@ -287,13 +279,13 @@ class action:
         }
         cmds[argb]()
 
-    def __echo__(self, Rexs: list) -> None:
+    def __echo__(self, Rexs: List) -> None:
         '''
         echo numbers
         '''
         inx, dep, Nr, Nb = Rexs
         if Nr == 'ERROR' or Nb == 'ERROR':
-            print(f' ⠿ Error')
+            print(f'{prompt} Error')
         # 发现错误 终止执行程序
         elif len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
             lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
