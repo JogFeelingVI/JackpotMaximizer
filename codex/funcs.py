@@ -15,7 +15,7 @@ maxdep = sys.getrecursionlimit() - 30
 prompt = '[+]'
 
 
-def file_to(name: str) -> Union[str, None]:
+def get_file_path(name: str) -> str:
     '''
     File real path
     '''
@@ -30,39 +30,40 @@ def getdata() -> None:
         (?=.*[0-9])(?=.*[,])[0-9,]{17} R
         
     '''
-    fp = file_to('./rbdata.json')
-    fp = fp if fp is not None else ''
-    html = get_html(Load_JSON(Resty.OxStr, 'UTXT').read[1]).neirong
-    if html != '':
-        Rx = re.findall(r'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html)
-        Bx = re.findall(r'c_bule\">([0-9]{2})<', html)
-        Lix = {'R': [], 'B': [], 'date': dtime.now().__str__()}
-        for zitem in zip(Rx, Bx):
-            R, B = zitem
-            R = [int(x) for x in R.split(',')]
-            B = int(B)
-            for Rz in R:
-                Lix['R'].append(Rz)
-            Lix['B'].append(B)
-        json_str = json.dumps(Lix, indent=4)
-        with open(fp, 'w') as datajson:
-            datajson.write(json_str)
-            hszie = json_str.__sizeof__()
-            print(f'{prompt} updata network data sizeof {hszie}')
-    else:
-        print(f'{prompt} updata network error')
+    try:
+        data_file_path = get_file_path('./rbdata.json')
+        data_file_path = data_file_path if data_file_path is not None else ''
+        html_content = get_html(Load_JSON(Resty.OxStr, 'UTXT').read[1]).neirong
+        if html_content != '':
+            Rx = re.findall(r'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html_content)
+            Bx = re.findall(r'c_bule\">([0-9]{2})<', html_content)
+            Lix = {'R': [int(x) for r in Rx for x in r.split(',')], 'B': [int(x) for x in Bx], 'date': dtime.now().__str__()}
+            json_str = json.dumps(Lix, indent=4)
+            with open(data_file_path, 'w') as datajson:
+                datajson.write(json_str)
+                hszie = json_str.__sizeof__()
+                print(f'{prompt} updata network data sizeof {hszie}')
+        else:
+            print(f'{prompt} updata network error')
+    except Exception as e:
+        print(f'{prompt} error: {e}')
 
 
-def loaddata() -> dict[str, List]:
+def loaddata() -> dict[str, List[int]]:
     '''
     load data
     '''
-    json_str = {}
-    if (fps := file_to('./rbdata.json')) != None:
-        with open(fps, 'r') as rbdata:
-            json_str = json.load(rbdata)
-            print(f'{prompt} loading buffer')
-    return json_str
+    file_name = './rbdata.json'
+    try:
+        json_str = {}
+        if (fps := get_file_path(file_name)) != None:
+            with open(fps, 'r') as rbdata:
+                json_str = json.load(rbdata)
+                print(f'{prompt} loading buffer')
+        return json_str
+    except FileNotFoundError:
+        print(f'{prompt} failed to load data from {file_name}, file not found')
+        return {}
 
 
 def Findins(NR: list, NB: list, insre: str) -> bool:
@@ -71,7 +72,7 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
     Nums type list
     inse type str
     '''
-    if insre == None:
+    if insre == '':
         # 不做任何限制
         return True
     else:
@@ -341,7 +342,7 @@ class action:
             self.__cpuse__(self.args['cpu'])
 
         if self.args['save']:
-            if (fps := file_to('./save.log')) != None:
+            if (fps := get_file_path('./save.log')) != None:
                 with open(fps, 'w') as sto:
                     for slog in self.buffto:
                         sto.writelines(f'{slog}\n')
