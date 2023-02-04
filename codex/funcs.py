@@ -5,7 +5,7 @@
 # @Last Modified time: 2022-10-03 15:26:39
 
 from typing import Union, Any, List
-import multiprocessing as mlps, os, sys, re, json, random as RDX
+import multiprocessing as mlps, os, sys, re, json, random as RDX, enum
 from codex.ospath import os_path
 from datetime import datetime as dtime
 from codex.download import get_html
@@ -14,6 +14,10 @@ from codex.loadjson import Load_JSON, Resty
 maxdep = sys.getrecursionlimit() - 30
 prompt = '[+]'
 
+class mode_f(enum.Enum):
+    Ok = 1
+    No = 2
+    Er = -1
 
 def get_file_path(name: str) -> str:
     '''
@@ -68,9 +72,9 @@ def loaddata() -> dict[str, List[int]]:
     except FileNotFoundError:
         print(f'{prompt} failed to load data from {file_name}, file not found')
         return {}
+    
 
-
-def Findins(NR: list, NB: list, insre: str) -> bool:
+def Findins(NR: list, NB: list, insre: str) -> mode_f:
     '''
     Find Ins 
     Nums type list
@@ -78,17 +82,17 @@ def Findins(NR: list, NB: list, insre: str) -> bool:
     '''
     if insre == '' or insre == '(.*)':
         # 不做任何限制
-        return True
+        return mode_f.Ok
     else:
         try:
             sNr = ' '.join([f'{x:02}' for x in NR])
             sNb = ' '.join([f'{x:02}' for x in NB])
             sNums = f'{sNr} + {sNb}'
             Finx = len(re.findall(insre, sNums))
-            return True if Finx >= 1 else False
+            return mode_f.Ok if Finx >= 1 else mode_f.No
         except re.error as rerror:
             print(f'{prompt} Findins error: {rerror.msg}')
-            return False
+            return mode_f.Er
 
 
 def debugx(msg: Any) -> None:
@@ -144,14 +148,16 @@ def makenux(Data: dict,
     # avg B
     dr, Rs = choicesrb(R_keys, weights_R, Rlen, depth)
     db, Bs = choicesrb(B_keys, weights_B, Blen, depth)
-    rfind = Findins(Rs, Bs, insre=ins)
-    if rfind == True:
+    rinsx: mode_f = Findins(Rs, Bs, insre=ins)
+    if rinsx == mode_f.Ok:
         return [dr, Rs, Bs]
-    else:
+    elif rinsx == mode_f.No:
         if dr < maxdep and db < maxdep:
             return makenux(Data, Rlen, Blen, ins, depth + 1)
         else:
             return [dr, [0], [0]]
+    elif rinsx == mode_f.Er:
+        return [dr, [0], [0]]
 
 
 def choicesrb(keys: List, weights: List, lens: int, depth: int = 1) -> List:
