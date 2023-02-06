@@ -14,10 +14,12 @@ from codex.loadjson import Load_JSON, Resty
 maxdep = sys.getrecursionlimit() - 30
 prompt = '[+]'
 
+
 class mode_f(enum.Enum):
     Ok = 1
     No = 2
     Er = -1
+
 
 def get_file_path(name: str) -> str:
     '''
@@ -72,7 +74,7 @@ def loaddata() -> dict[str, List[int]]:
     except FileNotFoundError:
         print(f'{prompt} failed to load data from {file_name}, file not found')
         return {}
-    
+
 
 def Findins(NR: list, NB: list, insre: str) -> mode_f:
     '''
@@ -258,14 +260,14 @@ class action:
         fix r b a
         rba is [ r, b, a ]
         '''
+        Numa = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        Numb = [
+            17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33
+        ]
         cmds = {
-            'r':
-            lambda: [['R', [x for x in range(1, 34)]]],
-            'b':
-            lambda: [['B', [x for x in range(1, 17)]]],
-            'a':
-            lambda: [['R', [x for x in range(1, 34)]],
-                     ['B', [x for x in range(1, 17)]]]
+            'r': lambda: [['R', Numa + Numb]],
+            'b': lambda: [['B', Numa]],
+            'a': lambda: [['R', Numa + Numb], ['B', Numa]]
         }
         Zdict = cmds[rba]()
         for kn, vl in Zdict:
