@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["--update"]
+            "args": ["--ins","^01\\s02\\s03\\04"]
         }
     ]
 }

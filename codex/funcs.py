@@ -16,9 +16,20 @@ prompt = '[+]'
 
 
 class mode_f(enum.Enum):
+    '''
+    find mode ok, no, er
+    '''
     Ok = 1
     No = 2
     Er = -1
+
+
+class Limit_i(enum.Enum):
+    '''
+    Limit_input 6-19 or 1-16
+    '''
+    r = (6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
+    b = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
 
 
 def get_file_path(name: str) -> str:
@@ -181,27 +192,15 @@ def choicesrb(keys: List, weights: List, lens: int, depth: int = 1) -> List:
         return [depth, Jieguo]
 
 
-def Limit_input_r(r: int) -> int:
+def Limit_input(r: int, input: Limit_i) -> int:
     '''
     Limit input R 6-19
     '''
-    if r in range(6, 20):
+    if r in input.value:
         r = r
     else:
         r = 6
-        print(f'{prompt} Change parameter R to 6')
-    return r
-
-
-def Limit_input_b(r: int) -> int:
-    '''
-    Limit input R 6-19
-    '''
-    if r in range(1, 17):
-        r = r
-    else:
-        r = 1
-        print(f'{prompt} Change parameter B to 1')
+        print(f'{prompt} -{input.name} in {input.value}')
     return r
 
 
@@ -249,8 +248,8 @@ class action:
             'r': 6,
             'b': 1
         }
-        self.args['r'] = Limit_input_r(self.args['r'])
-        self.args['b'] = Limit_input_b(self.args['b'])
+        self.args['r'] = Limit_input(self.args['r'], Limit_i.r)
+        self.args['b'] = Limit_input(self.args['b'], Limit_i.b)
         self.buffto.append(f'date {dtime.now()}')
         self.buffto.append(f'args {self.args}')
         debugx(self.args)
@@ -292,10 +291,8 @@ class action:
         echo numbers
         '''
         inx, dep, Nr, Nb = Rexs
-        if Nr == 'ERROR' or Nb == 'ERROR':
-            print(f'{prompt} Error')
         # 发现错误 终止执行程序
-        elif len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
+        if len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
             lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
             if self.args['noinx']:
                 self.buffto.append(f'{prompt} {lis}')
