@@ -11,8 +11,8 @@ from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
 
-maxdep = sys.getrecursionlimit() - 30
-prompt = '[+]'
+maxdep: int = 3000
+prompt: str = '[+]'
 
 
 class mode_f(enum.Enum):
@@ -135,15 +135,14 @@ def makenuxe(arglist: List) -> List:
     makenux for all cpu
     '''
     inx, D, R, B, i = arglist
-    a, b, c = makenux(Data=D, Rlen=R, Blen=B, ins=i, depth=1)
+    a, b, c = makenux(Data=D, Rlen=R, Blen=B, ins=i)
     return [inx, a, b, c]
 
 
 def makenux(Data: dict,
             Rlen: int,
             Blen: int,
-            ins: str,
-            depth: int = 1) -> List:
+            ins: str) -> List:
     '''
         data {'r': [1,2,3...], 'b':[1-16]}
         Rlen R len 1, 2, 3, 4, 5, 6 + Blen
@@ -159,37 +158,36 @@ def makenux(Data: dict,
     # avg R
     weights_B = truncate(Db, B_keys)
     # avg B
-    dr, Rs = choicesrb(R_keys, weights_R, Rlen, depth)
-    db, Bs = choicesrb(B_keys, weights_B, Blen, depth)
-    rinsx: mode_f = Findins(Rs, Bs, insre=ins)
-    if rinsx == mode_f.Ok:
-        return [dr, Rs, Bs]
-    elif rinsx == mode_f.No:
-        if dr < maxdep and db < maxdep:
-            return makenux(Data, Rlen, Blen, ins, depth + 1)
-        else:
+    depth: int = 1
+    while True:
+        dr, Rs = choicesrb_dd(R_keys, weights_R, Rlen)
+        db, Bs = choicesrb_dd(B_keys, weights_B, Blen)
+        rinsx: mode_f = Findins(Rs, Bs, insre=ins)
+        if rinsx == mode_f.Ok:
+            return [dr, Rs, Bs]
+        depth += 1
+        if depth >= maxdep:
             return [dr, [0], [0]]
-    elif rinsx == mode_f.Er:
-        return [dr, [0], [0]]
 
 
-def choicesrb(keys: List, weights: List, lens: int, depth: int = 1) -> List:
+def choicesrb_dd(keys: List, weights: List, lens: int) -> List:
     '''
+    _dd
     keys list 待选列表
     weights list 权重
     len int 选择长度
     depth int 计算深度
     rdx = RDX.choices
     '''
-    Jieguo = RDX.choices(keys, weights=weights, k=lens)
-    Jieguo = [x for x in sorted(Jieguo)]
-    if len(Jieguo) != list(set(Jieguo)).__len__():
-        if depth < maxdep:
-            return choicesrb(keys, weights, lens, depth + 1)
-        else:
+    depth: int = 1
+    while True:
+        Jieguo = RDX.choices(keys, weights=weights, k=lens)
+        Jieguo = [x for x in sorted(Jieguo)]
+        if len(Jieguo) == list(set(Jieguo)).__len__():
+            return [depth, Jieguo]
+        depth += 1
+        if depth >= maxdep:
             return [depth, [0]]
-    else:
-        return [depth, Jieguo]
 
 
 def Limit_input(r: int, input: Limit_i) -> int:
