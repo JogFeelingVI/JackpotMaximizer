@@ -119,8 +119,8 @@ def debugx(msg: Any) -> None:
 def truncate(Dr: List, keys: List) -> List:
     #debugx(int(num*(10**n)))
     tmps = [Dr.count(x) for x in keys]
-    mx = max(tmps)
-    tmps = [[mx - x, 1][x == mx] for x in tmps]
+    #mx = max(tmps)
+    #tmps = [[mx - x, 1][x == mx] for x in tmps]
     return tmps
 
 
@@ -139,10 +139,7 @@ def makenuxe(arglist: List) -> List:
     return [inx, a, b, c]
 
 
-def makenux(Data: dict,
-            Rlen: int,
-            Blen: int,
-            ins: str) -> List:
+def makenux(Data: dict, Rlen: int, Blen: int, ins: str) -> List:
     '''
         data {'r': [1,2,3...], 'b':[1-16]}
         Rlen R len 1, 2, 3, 4, 5, 6 + Blen
@@ -277,10 +274,14 @@ class action:
 
     def __cpuse__(self, argb: str) -> None:
         '''
+        str o one
+        str a all
+        str m Moni TEST
         '''
         cmds = {
             'o': lambda: self.__cpu_one__(),
             'a': lambda: self.__cpu_all__(),
+            'm': lambda: self.__cpu_all_moni__(),
         }
         cmds[argb]()
 
@@ -297,6 +298,36 @@ class action:
             else:
                 self.buffto.append(f'{prompt} {inx:>4} depth {dep:<5} {lis}')
             print(self.buffto[-1])
+
+    def __diff__(self, Rexs: List) -> int:
+        '''
+        echo numbers
+        '''
+        inx, dep, Nr, Nb = Rexs
+        jhr = self.args.get('jhr')
+        jhb = self.args.get('jhb')
+        dif_l = 0
+        Lv_ssq = {
+            '61': 1,
+            '60': 2,
+            '51': 3,
+            '50': 4,
+            '41': 4,
+            '40': 5,
+            '31': 5,
+            '21': 6,
+            '11': 6,
+            '01': 6,
+            '00': 0
+        }
+        # 发现错误 终止执行程序
+        if len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
+            dif_r = [x for x in Nr if x in jhr].__len__()
+            dif_b: int = [x for x in Nb if x in jhb].__len__()
+            key = f'{dif_r}{dif_b}'
+            dif_l = Lv_ssq.get(key, 0)
+            #print(f'Diff info  -> {dif_l} {key}')
+        return dif_l
 
     def __cpu_one__(self) -> None:
         '''
@@ -320,6 +351,33 @@ class action:
             Retds = p.map(makenuxe, N)
             for item in Retds:
                 self.__echo__(item)
+
+    def __cpu_all_moni__(self) -> None:
+        '''
+        use all cpu cores
+        '''
+        cpus = os.cpu_count()
+        print(f'{prompt} cpus {cpus} maxdep {maxdep}')
+        N = [[x, self.data, self.args['r'], self.args['b'], self.args['ins']]
+             for x in range(1, self.args['n'] + 1)]
+        with mlps.Pool(processes=cpus) as p:
+            Retds = p.map(makenuxe, N)
+            Rex = [self.__diff__(x) for x in Retds]
+            len_rets = Retds.__len__()
+            diff_rex = [x for x in Rex if x != 0]
+            len_diff_rex = diff_rex.__len__()
+            listx = [[x, Rex.count(x)] for x in range(1, 7)]
+            for l, v in listx:
+                print(f'{l} Probability of Winning {v/len_rets:>5.2%}')
+            print(
+                f'Total Probability of Winning {len_diff_rex/len_rets:>5.2%}')
+
+    def Moni_Calcu(self):
+        '''
+        '''
+        self.data = loaddata()
+        self.__fixrba__('a')
+        self.__cpuse__('m')
 
     def act_for_dict(self) -> None:
         ''' anys dict '''

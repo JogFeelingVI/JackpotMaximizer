@@ -1,5 +1,5 @@
 # QuickLCK
-### Generate lucky numbers
+> Generate lucky numbers
  
 ```shell
 ↪ glns --ins '^(0[1246])\s(09)\s(1[02468]|2[02])\s(23)\s((?!24|30|20|14).)*\s(28|29|33)\s\+\s(07|11|14)' --fix b -n100
@@ -44,3 +44,6 @@ function glns
 end
 ```
 > $argv 传递参数
+
+#### ins regex
+* 在正则表达式后面加上排除 `'^(0[124])((?!22|24|05).)*$'`
