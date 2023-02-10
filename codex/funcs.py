@@ -119,8 +119,8 @@ def debugx(msg: Any) -> None:
 def truncate(Dr: List, keys: List) -> List:
     #debugx(int(num*(10**n)))
     tmps = [Dr.count(x) for x in keys]
-    #mx = max(tmps)
-    #tmps = [[mx - x, 1][x == mx] for x in tmps]
+    mx = max(tmps)
+    tmps = [[mx - x, 1][x == mx] for x in tmps]
     return tmps
 
 
@@ -326,7 +326,7 @@ class action:
             dif_b: int = [x for x in Nb if x in jhb].__len__()
             key = f'{dif_r}{dif_b}'
             dif_l = Lv_ssq.get(key, 0)
-            #print(f'Diff info  -> {dif_l} {key}')
+            #print(f'Diff info  -> {Nr} {Nb}')
         return dif_l
 
     def __cpu_one__(self) -> None:
@@ -364,13 +364,14 @@ class action:
             Retds = p.map(makenuxe, N)
             Rex = [self.__diff__(x) for x in Retds]
             len_rets = Retds.__len__()
-            diff_rex = [x for x in Rex if x != 0]
-            len_diff_rex = diff_rex.__len__()
+            sum = 0.0
             listx = [[x, Rex.count(x)] for x in range(1, 7)]
             for l, v in listx:
-                print(f'{l} Probability of Winning {v/len_rets:>5.2%}')
+                print(f'{l} Probability of Winning {v/len_rets:>7.2%} {v}')
+                sum += v/len_rets
             print(
-                f'Total Probability of Winning {len_diff_rex/len_rets:>5.2%}')
+                f'{"":>21}sum {sum:>7.2%}')
+            #6 Probability of Winning
 
     def Moni_Calcu(self):
         '''

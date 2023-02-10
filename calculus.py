@@ -8,15 +8,16 @@ from codex import funcs
 
 def test():
     args = {
-        'ins': '(.*)',
-        'n': 5,
+        'ins': '^(06)\\s(07)((?!22|24|11|16|17|28|33).)*$',
+        'n': 1000,
         'r': 6,
         'b': 1,
-        'jhr': [8, 10, 14, 15, 18, 22],
-        'jhb': [8]
+        'jhr': [6, 7, 18, 23, 27, 30],
+        'jhb': [5]
     }
     act = funcs.action(args)
-    act.Moni_Calcu()
+    for x in range(10):
+        act.Moni_Calcu()
 
 
 if __name__ == '__main__':
