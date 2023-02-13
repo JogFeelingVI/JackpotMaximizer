@@ -9,14 +9,14 @@ from codex.runingtime import runingtime
 @runingtime
 def Moni_T():
     args = {
-        'ins': '^(06)\\s(07)((?!22|24|11|16|17|28|33).)*$',
-        'n': 10,
+        'ins': '^(0[12457])\\s(03|1[134567]|2[012])\\s(09|1[0148]|2[2356])((?!06|08|23|24).)*\\s\\+\\s(0[12789]|1[456])$',
+        'n': 50,
         'r': 6,
         'b': 1,
-        'jhr': [6, 7, 18, 23, 27, 30],
-        'jhb': [5]
+        'jhr': [2, 3, 14, 21, 29, 32],
+        'jhb': [8]
     }
-    act = funcs.action(args)
+    act = funcs.action(args, diff=True)
     act.Moni_Calcu()
 
 

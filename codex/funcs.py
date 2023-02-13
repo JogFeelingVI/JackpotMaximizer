@@ -119,8 +119,8 @@ def debugx(msg: Any) -> None:
 def truncate(Dr: List, keys: List) -> List:
     #debugx(int(num*(10**n)))
     tmps = [Dr.count(x) for x in keys]
-    mx = max(tmps)
-    tmps = [[mx - x, 1][x == mx] for x in tmps]
+    #mx = max(tmps)
+    #tmps = [[mx - x, 1][x == mx] for x in tmps]
     return tmps
 
 
@@ -233,8 +233,9 @@ def Pjie(N: int) -> int:
 class action:
     ''' 执行脚本分析动作 '''
     buffto = []
+    diff_date = []
 
-    def __init__(self, args: dict):
+    def __init__(self, args: dict, diff: bool = False):
         '''
         action __init__
         '''
@@ -247,7 +248,14 @@ class action:
         self.args['b'] = Limit_input(self.args['b'], Limit_i.b)
         self.buffto.append(f'date {dtime.now()}')
         self.buffto.append(f'args {self.args}')
+        if diff == True:
+            self.__Load_diff__()
         debugx(self.args)
+
+    def __Load_diff__(self) -> None:
+        listx = '611602513504414405315216116016000300200100'
+        rex = re.compile('[0-6]{3}')
+        self.diff_date = re.findall(rex, listx)
 
     def __fixrba__(self, rba: str) -> None:
         '''
@@ -307,25 +315,14 @@ class action:
         jhr = self.args.get('jhr')
         jhb = self.args.get('jhb')
         dif_l = 0
-        Lv_ssq = {
-            '61': 1,
-            '60': 2,
-            '51': 3,
-            '50': 4,
-            '41': 4,
-            '40': 5,
-            '31': 5,
-            '21': 6,
-            '11': 6,
-            '01': 6,
-            '00': 0
-        }
+        
         # 发现错误 终止执行程序
         if len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
             dif_r = [x for x in Nr if x in jhr].__len__()
             dif_b: int = [x for x in Nb if x in jhb].__len__()
-            key = f'{dif_r}{dif_b}'
-            dif_l = Lv_ssq.get(key, 0)
+            key = f'^{dif_r}{dif_b}[0-6]'
+            difex:str = [x for x in self.diff_date if re.match(key, x)][0]
+            dif_l = int(difex[-1])
             #print(f'Diff info  -> {Nr} {Nb}')
         return dif_l
 
@@ -367,10 +364,11 @@ class action:
             sum = 0.0
             listx = [[x, Rex.count(x)] for x in range(1, 7)]
             for l, v in listx:
-                print(f'{prompt} {l} Probability of Winning {v/len_rets:>7.2%} {v}')
-                sum += v/len_rets
-            print(
-                f'{prompt} sum {sum:>7.2%}')
+                print(
+                    f'{prompt} {l} Probability of Winning {v/len_rets:>7.2%} {v}'
+                )
+                sum += v / len_rets
+            print(f'{prompt} sum {sum:>7.2%}')
             #6 Probability of Winning
 
     def Moni_Calcu(self):
