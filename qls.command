@@ -3,11 +3,13 @@
 # @Date: 2022-10-01 18:25:48
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-01 18:25:48
-
+from codex.runingtime import runingtime
 from codex.command import loading
 from codex.funcs import action
 
 
+
+@runingtime
 def maix() -> None:
     ''' codex enter '''
     cmd_load = loading()

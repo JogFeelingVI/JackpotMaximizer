@@ -367,10 +367,10 @@ class action:
             sum = 0.0
             listx = [[x, Rex.count(x)] for x in range(1, 7)]
             for l, v in listx:
-                print(f'{l} Probability of Winning {v/len_rets:>7.2%} {v}')
+                print(f'{prompt} {l} Probability of Winning {v/len_rets:>7.2%} {v}')
                 sum += v/len_rets
             print(
-                f'{"":>21}sum {sum:>7.2%}')
+                f'{prompt} sum {sum:>7.2%}')
             #6 Probability of Winning
 
     def Moni_Calcu(self):
