@@ -7,6 +7,7 @@
 import urllib.request
 import ssl
 
+
 class get_html:
     ''' get download url '''
     text: str = ''
@@ -20,7 +21,9 @@ class get_html:
                 rscode = response.read().decode('gb2312')
                 self.text = rscode
         except Exception as e:
-            raise ValueError(f"Failed to retrieve content from URL ({url}), error: {str(e)}")
+            raise ValueError(
+                f"Failed to retrieve content from URL ({url}), error: {str(e)}"
+            )
 
     @property
     def neirong(self) -> str:

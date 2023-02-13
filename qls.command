@@ -8,7 +8,6 @@ from codex.command import loading
 from codex.funcs import action
 
 
-
 @runingtime
 def maix() -> None:
     ''' codex enter '''

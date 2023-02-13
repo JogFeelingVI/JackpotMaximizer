@@ -315,13 +315,13 @@ class action:
         jhr = self.args.get('jhr')
         jhb = self.args.get('jhb')
         dif_l = 0
-        
+
         # 发现错误 终止执行程序
         if len(Nr) == self.args['r'] and len(Nb) == self.args['b']:
             dif_r = [x for x in Nr if x in jhr].__len__()
             dif_b: int = [x for x in Nb if x in jhb].__len__()
             key = f'^{dif_r}{dif_b}[0-6]'
-            difex:str = [x for x in self.diff_date if re.match(key, x)][0]
+            difex: str = [x for x in self.diff_date if re.match(key, x)][0]
             dif_l = int(difex[-1])
             #print(f'Diff info  -> {Nr} {Nb}')
         return dif_l

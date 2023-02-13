@@ -6,6 +6,7 @@ import time
 
 prompt: str = '[+]'
 
+
 def runingtime(fun):
     '''
     runing time
