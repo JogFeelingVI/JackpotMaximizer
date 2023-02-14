@@ -234,6 +234,7 @@ class action:
     ''' 执行脚本分析动作 '''
     buffto = []
     diff_date = []
+    __echo_index: int = 1
 
     def __init__(self, args: dict, diff: bool = False):
         '''
@@ -306,6 +307,9 @@ class action:
             else:
                 self.buffto.append(f'{prompt} {inx:>4} depth {dep:<5} {lis}')
             print(self.buffto[-1])
+            if self.__echo_index % 5 == 0:
+                print('')
+            self.__echo_index += 1
 
     def __diff__(self, Rexs: List) -> int:
         '''
@@ -346,6 +350,7 @@ class action:
              for x in range(1, self.args['n'] + 1)]
         with mlps.Pool(processes=cpus) as p:
             Retds = p.map(makenuxe, N)
+            index = 1
             for item in Retds:
                 self.__echo__(item)
 
@@ -392,6 +397,8 @@ class action:
         # cpu switch
         if self.args['cpu'] != None:
             self.__cpuse__(self.args['cpu'])
+
+        print(f'{prompt} Total {self.__echo_index-1} Notes')
 
         if self.args['save']:
             if (fps := get_file_path('./save.log')) != None:
