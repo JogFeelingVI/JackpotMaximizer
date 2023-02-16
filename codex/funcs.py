@@ -252,6 +252,21 @@ class action:
         if diff == True:
             self.__Load_diff__()
         debugx(self.args)
+        self.__load_insx__()
+        
+    def __load_insx__(self)  -> None:
+        _huan =re.compile('\\n')
+        _zhus = re.compile('^#.*')
+        _regs = re.compile('^[^#|^\\^].*')
+        _insx = get_file_path('./insx.reg')
+        with open(file=_insx, mode='r', encoding='utf-8') as regs:
+            regadd = ['^']
+            reglins = regs.readlines()
+            for linx in reglins:
+                if _zhus.match(linx) == None and _regs.match(linx)!=None:
+                    regadd.append(_huan.sub('',linx))
+            print(f'regs {"".join(regadd)}')
+        
 
     def __Load_diff__(self) -> None:
         listx = '611602513504414405315216116016000300200100'
