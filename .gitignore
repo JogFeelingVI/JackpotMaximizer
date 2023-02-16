@@ -142,7 +142,7 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 .venv
-.vscode
+.DS_Store
 __pycache__
 
 # Cython debug symbols
