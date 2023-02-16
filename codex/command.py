@@ -37,12 +37,16 @@ class loading:
                                   default='a',
                                   choices=['a', 'o'],
                                   help='repair data')
+        self.command.add_argument('--loadins',
+                                  default=False,
+                                  action='store_true',
+                                  help='load insx.reg')
         self.command.add_argument(
             '--ins',
             default='(.*)',
             type=str,
             help=
-            'Filtering numbers using regular expressions exp --regx ^(02|03|05)'
+            'Filtering numbers using regular expressions exp --ins ^(02|03|05)'
         )
         self.command.add_argument('-n',
                                   default=5,
