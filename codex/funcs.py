@@ -243,7 +243,9 @@ class action:
         self.args: dict[str, Any] = args if args != None else {
             'save': False,
             'r': 6,
-            'b': 1
+            'b': 1,
+            'jhr': [0, 1, 2, 3, 4, 5],
+            'jhb': [0]
         }
         self.fmr = Limit_input(self.fmr, Limit_i.r)
         self.fmb = Limit_input(self.fmb, Limit_i.b)
@@ -254,127 +256,126 @@ class action:
         if self.fmloadins == True:
             self.fmins = self.loadinsx
         debugx(self.args)
-    
-    @property    
+
+    @property
     def fmr(self) -> int:
         ''' fmkey  '''
         value = 6
         if 'r' in self.args.keys():
-            value:int = int(self.args.get('r', value))
+            value: int = int(self.args.get('r', value))
         return value
-    
+
     @fmr.setter
-    def fmr(self, value:int):
+    def fmr(self, value: int):
         dvalu = {'r': value}
         self.args.update(dvalu)
-        
-    @property    
+
+    @property
     def fmb(self) -> int:
         ''' fmkey  '''
         value = 1
         if 'b' in self.args.keys():
-            value:int = int(self.args.get('b', value))
+            value: int = int(self.args.get('b', value))
         return value
-    
+
     @fmb.setter
-    def fmb(self, value:int):
+    def fmb(self, value: int):
         dvalu = {'b': value}
         self.args.update(dvalu)
-    
+
     @property
     def fmn(self) -> int:
         value = 5
         if 'n' in self.args.keys():
-            value:int = int(self.args.get('n', value))
+            value: int = int(self.args.get('n', value))
         return value
-    
+
     @property
     def fmins(self) -> str:
         value = '(.*)'
         if 'ins' in self.args.keys():
-            value:str = str(self.args.get('ins', value))
+            value: str = str(self.args.get('ins', value))
         return value
-    
+
     @fmins.setter
-    def fmins(self, value:str):
+    def fmins(self, value: str):
         dvalu = {'ins': value}
         self.args.update(dvalu)
-        
+
     @property
     def fmcpu(self) -> str:
         value = 'a'
         if 'cpu' in self.args.keys():
-            value:str = str(self.args.get('cpu', value))
+            value: str = str(self.args.get('cpu', value))
         return value
-    
+
     @property
     def fmfix(self) -> str:
         value = 'a'
         if 'fix' in self.args.keys():
-            value:str = str(self.args.get('fix', value))
+            value: str = str(self.args.get('fix', value))
         return value
-    
+
     @property
     def fmupdate(self) -> bool:
         value = False
         if 'update' in self.args.keys():
             value = bool(self.args.get('update', value))
         return value
-    
+
     @property
     def fmsave(self) -> bool:
         value = False
         if 'save' in self.args.keys():
             value = bool(self.args.get('save', value))
         return value
-    
+
     @property
     def fmloadins(self) -> bool:
         value = False
         if 'loadins' in self.args.keys():
             value = bool(self.args.get('loadins', value))
         return value
-    
+
     @property
     def fmnoinx(self) -> bool:
         value = False
         if 'noinx' in self.args.keys():
             value = bool(self.args.get('noinx', value))
         return value
-    
+
     @property
     def fmjhr(self) -> list:
         value = [0]
         if 'jhr' in self.args.keys():
             value = list(self.args.get('jhr', value))
         return value
-    
+
     @property
     def fmjhb(self) -> list:
         value = [0]
         if 'jhb' in self.args.keys():
             value = list(self.args.get('jhb', value))
         return value
-    
-    @property    
-    def loadinsx(self)  -> str:
-        _huan =re.compile('\\n')
+
+    @property
+    def loadinsx(self) -> str:
+        _huan = re.compile('\\n')
         _zhus = re.compile('^#.*')
-        _regs = re.compile('^[^#|^\\^].*')
+        _regs = re.compile('^[^#].*')
         _insx = get_file_path('./insx.reg')
-        regadd = ['^']
+        regadd = ['']
         with open(file=_insx, mode='r', encoding='utf-8') as regs:
             reglins = regs.readlines()
             for linx in reglins:
-                if _zhus.match(linx) == None and _regs.match(linx)!=None:
-                    regadd.append(_huan.sub('',linx))
+                if _zhus.match(linx) == None and _regs.match(linx) != None:
+                    regadd.append(_huan.sub('', linx))
         return ''.join(regadd)
-        
 
     def __Load_diff__(self) -> None:
         listx = '611602513504414405315216116016000300200100'
         rex = re.compile('[0-6]{3}')
-        self.diff_date = re.findall(rex, listx)
+        self.diff_date = rex.findall(listx)
 
     def __fixrba__(self, rba: str) -> None:
         '''
@@ -452,10 +453,9 @@ class action:
         '''
         only cpu A run work
         '''
-        N = [x for x in range(1,self.fmn + 1)]
+        N = [x for x in range(1, self.fmn + 1)]
         for nx in N:
-            dep, Nr, Nb = makenux(self.data, self.fmr, self.fmb,
-                                  self.fmins)
+            dep, Nr, Nb = makenux(self.data, self.fmr, self.fmb, self.fmins)
             self.__echo__([nx, dep, Nr, Nb])
 
     def __cpu_all__(self) -> None:
