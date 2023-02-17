@@ -89,9 +89,10 @@ def loaddata() -> dict[str, List[int]]:
 
 def jiaoyan(r: List) -> bool:
     rex = False
-    a, b, c, d = r
-    if type(a) == type(b) == int and c != [0] and d != [0]:
-        rex = True
+    if type(r) in [list, tuple]:
+        a, b, c, d = r
+        if type(a) == type(b) == int and c != [0] and d != [0]:
+            rex = True
     return rex
 
 
@@ -425,6 +426,9 @@ class action:
         '''
         echo numbers
         '''
+        if jiaoyan(Rexs) == False:
+            print('')
+            return
         inx, dep, Nr, Nb = Rexs
         # 发现错误 终止执行程序
         if len(Nr) == self.fmr and len(Nb) == self.fmb:
@@ -434,8 +438,6 @@ class action:
             else:
                 self.buffto.append(f'{prompt} {inx:>4} depth {dep:<5} {lis}')
             print(self.buffto[-1])
-        else:
-            print('')
 
     def __diff__(self, Rexs: List) -> int:
         '''
@@ -491,7 +493,7 @@ class action:
             ts = temp[i:i + step]
             if len(ts) == step and i + step < len_t:
                 glos.extend(ts)
-                glos.extend([[0, 0, [0], [0]]])
+                glos.extend([0])
             else:
                 glos.extend(ts)
         return glos
