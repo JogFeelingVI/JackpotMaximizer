@@ -87,6 +87,14 @@ def loaddata() -> dict[str, List[int]]:
         return {}
 
 
+def jiaoyan(r: List) -> bool:
+    rex = False
+    a, b, c, d = r
+    if type(a) == type(b) == int and c != [0] and d != [0]:
+        rex = True
+    return rex
+
+
 def Findins(NR: list, NB: list, insre: str) -> mode_f:
     '''
     Find Ins 
@@ -426,9 +434,8 @@ class action:
             else:
                 self.buffto.append(f'{prompt} {inx:>4} depth {dep:<5} {lis}')
             print(self.buffto[-1])
-            if self.__echo_index % 5 == 0:
-                print('')
-            self.__echo_index += 1
+        else:
+            print('')
 
     def __diff__(self, Rexs: List) -> int:
         '''
@@ -468,9 +475,26 @@ class action:
              for x in range(1, self.fmn + 1)]
         with mlps.Pool(processes=cpus) as p:
             Retds = p.map(makenuxe, N)
-            index = 1
+            Retds = self.__planning__(Retds)
             for item in Retds:
                 self.__echo__(item)
+
+    def __planning__(self, rex: List) -> List:
+        ''' 
+        xxxxx ^ xxxxx
+        '''
+        glos = []
+        step = 5
+        temp = [x for x in rex if jiaoyan(x)]
+        len_t = temp.__len__()
+        for i in range(0, len_t, step):
+            ts = temp[i:i + step]
+            if len(ts) == step and i + step < len_t:
+                glos.extend(ts)
+                glos.extend([[0, 0, [0], [0]]])
+            else:
+                glos.extend(ts)
+        return glos
 
     def __cpu_all_moni__(self) -> None:
         '''
