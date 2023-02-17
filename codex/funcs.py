@@ -243,7 +243,7 @@ class action:
     ''' 执行脚本分析动作 '''
     buffto = []
     diff_date = []
-    __echo_index: int = 1
+    __echo_index: int = 0
 
     def __init__(self, args: dict, diff: bool = False):
         '''
@@ -438,6 +438,7 @@ class action:
             else:
                 self.buffto.append(f'{prompt} {inx:>4} depth {dep:<5} {lis}')
             print(self.buffto[-1])
+            self.__echo_index += 1
 
     def __diff__(self, Rexs: List) -> int:
         '''
@@ -462,10 +463,11 @@ class action:
         '''
         only cpu A run work
         '''
-        N = [x for x in range(1, self.fmn + 1)]
-        for nx in N:
-            dep, Nr, Nb = makenux(self.data, self.fmr, self.fmb, self.fmins)
-            self.__echo__([nx, dep, Nr, Nb])
+        args = (self.data, self.fmr, self.fmb, self.fmins)
+        reds = [[x] + makenux(*args) for x in range(0, self.fmn)]
+        reds = self.__planning__(reds)
+        for inx in reds:
+            self.__echo__(inx)
 
     def __cpu_all__(self) -> None:
         '''
@@ -488,11 +490,11 @@ class action:
         glos = []
         step = 5
         temp = [x for x in rex if jiaoyan(x)]
-        len_t = temp.__len__()
-        for i in range(0, len_t, step):
+        lent = temp.__len__()
+        for i in range(0, lent, step):
             es = i + step
             ts = temp[i:es]
-            if len(ts) == step and es < len_t:
+            if len(ts) == step and es < lent:
                 glos.extend(ts)
                 glos.extend([0])
             else:
@@ -543,7 +545,7 @@ class action:
         if self.fmcpu != None:
             self.__cpuse__(self.fmcpu)
 
-        print(f'{prompt} Total {self.__echo_index-1} Notes')
+        print(f'{prompt} Total {self.__echo_index} Notes')
 
         if self.fmsave:
             if (fps := get_file_path('./save.log')) != None:
