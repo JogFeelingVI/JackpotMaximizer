@@ -490,8 +490,9 @@ class action:
         temp = [x for x in rex if jiaoyan(x)]
         len_t = temp.__len__()
         for i in range(0, len_t, step):
-            ts = temp[i:i + step]
-            if len(ts) == step and i + step < len_t:
+            es = i + step
+            ts = temp[i:es]
+            if len(ts) == step and es < len_t:
                 glos.extend(ts)
                 glos.extend([0])
             else:
