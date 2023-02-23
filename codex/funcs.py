@@ -262,7 +262,7 @@ class action:
         self.buffto.append(f'args {self.args}')
         if diff == True:
             self.__Load_diff__()
-        debugx(self.args)
+        
 
     @property
     def fmr(self) -> int:
@@ -369,7 +369,7 @@ class action:
     def loadinsx(self) -> str:
         _huan = re.compile('\\n')
         _zhus = re.compile('^#.*')
-        _regs = re.compile('^[^#|^-].*')
+        _regs = re.compile('^[^#-].*')
         _asrb = re.compile('^-([ 0-9]+)as [R|B]$')
         _insx = get_file_path('./insx.reg')
         regadd = ['']
@@ -560,6 +560,7 @@ class action:
             self.fmins = self.loadinsx
         Prn(N=self.fmr, B=self.fmb)
         # cpu switch
+        debugx(self.args)
         if self.fmcpu != None:
             self.__cpuse__(self.fmcpu)
 
