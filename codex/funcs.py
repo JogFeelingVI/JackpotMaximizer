@@ -393,7 +393,7 @@ class action:
             numx = [int(x) for x in _nums.findall(rex)]
             for p in pfix:
                 self.data[p] = [x for x in self.data[p] if x not in numx]
-            print(f'REX [{rex}] PFIX {pfix} NUM {numx}')
+            print(f'{prompt} REX [{rex}] PFIX {pfix} NUM {numx}')
 
     def __Load_diff__(self) -> None:
         listx = '611602513504414405315216116016000300200100'
