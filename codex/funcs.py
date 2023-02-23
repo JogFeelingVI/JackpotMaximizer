@@ -262,8 +262,6 @@ class action:
         self.buffto.append(f'args {self.args}')
         if diff == True:
             self.__Load_diff__()
-        if self.fmloadins == True:
-            self.fmins = self.loadinsx
         debugx(self.args)
 
     @property
@@ -371,15 +369,31 @@ class action:
     def loadinsx(self) -> str:
         _huan = re.compile('\\n')
         _zhus = re.compile('^#.*')
-        _regs = re.compile('^[^#].*')
+        _regs = re.compile('^[^#|^-].*')
+        _asrb = re.compile('^-([ 0-9]+)as [R|B]$')
         _insx = get_file_path('./insx.reg')
         regadd = ['']
         with open(file=_insx, mode='r', encoding='utf-8') as regs:
             reglins = regs.readlines()
             for linx in reglins:
-                if _zhus.match(linx) == None and _regs.match(linx) != None:
-                    regadd.append(_huan.sub('', linx))
+                if _zhus.match(linx) == None:
+                    if (asin := _asrb.match(linx)) != None:
+                        # <re.Match object; span=(0, 12), match='- 9 8 2 as B'>
+                        self.__fix_ass__(_huan.sub('', asin.string))
+                    # bit_ regx
+                    if _regs.match(linx) != None:
+                        regadd.append(_huan.sub('', linx))
         return ''.join(regadd)
+
+    def __fix_ass__(self, rex: str):
+        _nums = re.compile('[0-9]{1,2}')
+        _fixw = re.compile('(R|B)$')
+        if rex != '':
+            pfix = _fixw.findall(rex)
+            numx = [int(x) for x in _nums.findall(rex)]
+            for p in pfix:
+                self.data[p] = [x for x in self.data[p] if x not in numx]
+            print(f'REX [{rex}] PFIX {pfix} NUM {numx}')
 
     def __Load_diff__(self) -> None:
         listx = '611602513504414405315216116016000300200100'
@@ -527,6 +541,8 @@ class action:
         '''
         '''
         self.data = loaddata()
+        if self.fmloadins == True:
+            self.fmins = self.loadinsx
         self.__fixrba__('a')
         self.__cpuse__('m')
 
@@ -540,6 +556,8 @@ class action:
         if self.fmfix != None:
             # 执行 fix 程序
             self.__fixrba__(self.fmfix)
+        if self.fmloadins == True:
+            self.fmins = self.loadinsx
         Prn(N=self.fmr, B=self.fmb)
         # cpu switch
         if self.fmcpu != None:

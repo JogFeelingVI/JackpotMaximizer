@@ -13,9 +13,7 @@
             "justMyCode": true,
             "args": [
                 "-n13",
-                "--loadins",
-                "--cpu",
-                "o"
+                "--loadins"
             ]
         }
     ]
