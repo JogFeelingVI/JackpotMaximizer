@@ -10,13 +10,16 @@ from codex.runingtime import runingtime
 @runingtime
 def Moni_T():
     args = {
+        'debug': True,
         'loadins': True,
+        'fix': 'a',
+        'cpu': 'm',
         'ins': '(.*)',
-        'n': 100,
+        'n': 3000,
         'r': 6,
         'b': 1,
-        'jhr': [14, 16, 19, 23, 28, 30],
-        'jhb': [3]
+        'jhr': [1, 12, 17, 18, 26, 27],
+        'jhb': [5]
     }
     act = funcs.action(args, diff=True)
     act.Moni_Calcu()

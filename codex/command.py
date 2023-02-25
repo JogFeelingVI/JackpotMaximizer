@@ -41,6 +41,10 @@ class loading:
                                   default=False,
                                   action='store_true',
                                   help='load insx.reg')
+        self.command.add_argument('--debug',
+                                  default=False,
+                                  action='store_true',
+                                  help='show debug info')
         self.command.add_argument(
             '--ins',
             default='(.*)',

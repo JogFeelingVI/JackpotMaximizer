@@ -13,6 +13,9 @@ from codex.loadjson import Load_JSON, Resty
 
 maxdep: int = 3000
 prompt: str = '[+]'
+prompt_L = '[-]'
+prompt_W = '[!]'
+prompt_D = '[*]'
 
 
 class mode_f(enum.Enum):
@@ -117,12 +120,13 @@ def Findins(NR: list, NB: list, insre: str) -> mode_f:
             return mode_f.Er
 
 
-def debugx(msg: Any) -> None:
+def showargs(ages: dict) -> None:
     '''
     echo debug msg
     '''
-    msgs = f'debug {msg}'
-    print(msgs)
+    for k, i in ages.items():
+        msgs = f'{prompt_D} {k} = {i}'
+        print(msgs)
 
 
 def truncate(Dr: List, keys: List) -> List:
@@ -262,7 +266,6 @@ class action:
         self.buffto.append(f'args {self.args}')
         if diff == True:
             self.__Load_diff__()
-        
 
     @property
     def fmr(self) -> int:
@@ -352,6 +355,13 @@ class action:
         return value
 
     @property
+    def fmdebug(self) -> bool:
+        value = False
+        if 'debug' in self.args.keys():
+            value = bool(self.args.get('debug', value))
+        return value
+
+    @property
     def fmjhr(self) -> list:
         value = [0]
         if 'jhr' in self.args.keys():
@@ -393,7 +403,8 @@ class action:
             numx = [int(x) for x in _nums.findall(rex)]
             for p in pfix:
                 self.data[p] = [x for x in self.data[p] if x not in numx]
-            print(f'{prompt} REX [{rex}] PFIX {pfix} NUM {numx}')
+            if self.fmdebug == True:
+                print(f'{prompt_D} REX [{rex}] PFIX {pfix} NUM {numx}')
 
     def __Load_diff__(self) -> None:
         listx = '611602513504414405315216116016000300200100'
@@ -441,16 +452,16 @@ class action:
         echo numbers
         '''
         if jiaoyan(Rexs) == False:
-            print('')
+            print(f'{prompt_L}')
             return
         inx, dep, Nr, Nb = Rexs
         # 发现错误 终止执行程序
         if len(Nr) == self.fmr and len(Nb) == self.fmb:
             lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
             if self.fmnoinx:
-                self.buffto.append(f'{prompt} {lis}')
+                self.buffto.append(f'{prompt_L} {lis}')
             else:
-                self.buffto.append(f'{prompt} {inx:>4} depth {dep:<5} {lis}')
+                self.buffto.append(f'{prompt_L} {inx:>4} depth {dep:<5} {lis}')
             print(self.buffto[-1])
             self.__echo_index += 1
 
@@ -520,7 +531,7 @@ class action:
         use all cpu cores
         '''
         cpus = os.cpu_count()
-        print(f'{prompt} cpus {cpus} maxdep {maxdep}')
+        print(f'{prompt_W} cpus {cpus} maxdep {maxdep}')
         N = [[x, self.data, self.fmr, self.fmb, self.fmins]
              for x in range(1, self.fmn + 1)]
         with mlps.Pool(processes=cpus) as p:
@@ -531,10 +542,10 @@ class action:
             listx = [[x, Rex.count(x)] for x in range(1, 7)]
             for l, v in listx:
                 print(
-                    f'{prompt} {l} Probability of Winning {v/len_rets:>7.2%} {v}'
+                    f'{prompt_W} {l} Probability of Winning {v/len_rets:>7.2%} {v}'
                 )
                 sum += v / len_rets
-            print(f'{prompt} sum {sum:>7.2%}')
+            print(f'{prompt_W} sum {sum:>7.2%}')
             #6 Probability of Winning
 
     def Moni_Calcu(self):
@@ -543,8 +554,8 @@ class action:
         self.data = loaddata()
         if self.fmloadins == True:
             self.fmins = self.loadinsx
-        self.__fixrba__('a')
-        self.__cpuse__('m')
+        if self.fmcpu != None:
+            self.__cpuse__(self.fmcpu)
 
     def act_for_dict(self) -> None:
         ''' anys dict '''
@@ -559,8 +570,10 @@ class action:
         if self.fmloadins == True:
             self.fmins = self.loadinsx
         Prn(N=self.fmr, B=self.fmb)
+        # show debug
+        if self.fmdebug == True:
+            showargs(self.args)
         # cpu switch
-        debugx(self.args)
         if self.fmcpu != None:
             self.__cpuse__(self.fmcpu)
 
