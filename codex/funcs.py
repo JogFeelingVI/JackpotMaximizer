@@ -35,6 +35,27 @@ class Limit_i(enum.Enum):
     b = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
 
 
+class insrt:
+
+    def __init__(self, code: int, reP: re.Pattern) -> None:
+        self.code = code
+        self.reP = reP
+
+
+def insregs(ins: str) -> insrt:
+    try:
+        temp: re.Pattern = re.compile(ins)
+    except re.error as er:
+        date = {'sp': '', 'info': ''}
+        date['info'] = f'Regular error {er.pattern}'
+        date['sp'] = f'{"-"*len(date["info"])}'
+        for key in ['sp', 'info', 'sp']:
+            print(f'{prompt_W} {date[key]}')
+        return insrt(0, re.compile('(.*)'))
+    else:
+        return insrt(1, temp)
+
+
 def get_file_path(name: str) -> str:
     '''
     File real path
@@ -51,7 +72,7 @@ def getdata() -> None:
         
     '''
     try:
-        data_file_path = get_file_path('./rbdata.json')
+        data_file_path = get_file_path(Resty.OxSave.tostr())
         data_file_path = data_file_path if data_file_path is not None else ''
         html_content = get_html(Load_JSON(Resty.OxStr, 'UTXT').read[1]).neirong
         if html_content != '':
@@ -77,7 +98,7 @@ def loaddata() -> dict[str, List[int]]:
     '''
     load data
     '''
-    file_name = './rbdata.json'
+    file_name = Resty.OxData.tostr()
     try:
         json_str = {}
         if (fps := get_file_path(file_name)) != None:
@@ -99,13 +120,13 @@ def jiaoyan(r: List) -> bool:
     return rex
 
 
-def Findins(NR: list, NB: list, insre: str) -> mode_f:
+def Findins(NR: list, NB: list, insre: re.Pattern) -> mode_f:
     '''
     Find Ins 
     Nums type list
     inse type str
     '''
-    if insre == '' or insre == '(.*)':
+    if insre == re.compile('(.*)'):
         # 不做任何限制
         return mode_f.Ok
     else:
@@ -113,7 +134,7 @@ def Findins(NR: list, NB: list, insre: str) -> mode_f:
             sNr = ' '.join([f'{x:02}' for x in NR])
             sNb = ' '.join([f'{x:02}' for x in NB])
             sNums = f'{sNr} + {sNb}'
-            Finx = len(re.findall(insre, sNums))
+            Finx = len(insre.findall(sNums))
             return mode_f.Ok if Finx >= 1 else mode_f.No
         except re.error as rerror:
             print(f'{prompt} Findins error: {rerror.msg}')
@@ -152,7 +173,7 @@ def makenuxe(arglist: List) -> List:
     return [inx, a, b, c]
 
 
-def makenux(Data: dict, Rlen: int, Blen: int, ins: str) -> List:
+def makenux(Data: dict, Rlen: int, Blen: int, ins: re.Pattern) -> List:
     '''
         data {'r': [1,2,3...], 'b':[1-16]}
         Rlen R len 1, 2, 3, 4, 5, 6 + Blen
@@ -381,18 +402,25 @@ class action:
         _zhus = re.compile('^#.*')
         _regs = re.compile('^[^#-].*')
         _asrb = re.compile('^-([ 0-9]+)as [R|B]$')
-        _insx = get_file_path('./insx.reg')
+        _insx = get_file_path(Resty.Oxinsreg.tostr())
         regadd = ['']
         with open(file=_insx, mode='r', encoding='utf-8') as regs:
             reglins = regs.readlines()
             for linx in reglins:
                 if _zhus.match(linx) == None:
-                    if (asin := _asrb.match(linx)) != None:
+                    tmp_huan = _huan.sub('', linx)
+                    if (asin := _asrb.match(tmp_huan)) != None:
                         # <re.Match object; span=(0, 12), match='- 9 8 2 as B'>
-                        self.__fix_ass__(_huan.sub('', asin.string))
+                        self.__fix_ass__(asin.string)
                     # bit_ regx
-                    if _regs.match(linx) != None:
-                        regadd.append(_huan.sub('', linx))
+                    if _regs.match(tmp_huan) != None:
+                        regx_is = insregs(tmp_huan)
+                        if regx_is.code == 1:
+                            regadd.append(tmp_huan)
+                        else:
+                            regadd.clear()
+                            regadd.append('(.*)')
+                            break
         return ''.join(regadd)
 
     def __fix_ass__(self, rex: str):
@@ -488,25 +516,29 @@ class action:
         '''
         only cpu A run work
         '''
-        args = (self.data, self.fmr, self.fmb, self.fmins)
-        reds = [[x] + makenux(*args) for x in range(0, self.fmn)]
-        reds = self.__planning__(reds)
-        for inx in reds:
-            self.__echo__(inx)
+        fmins_is = insregs(self.fmins)
+        if fmins_is.code == 1:
+            args = (self.data, self.fmr, self.fmb, fmins_is.reP)
+            reds = [[x] + makenux(*args) for x in range(0, self.fmn)]
+            reds = self.__planning__(reds)
+            for inx in reds:
+                self.__echo__(inx)
 
     def __cpu_all__(self) -> None:
         '''
         use all cpu cores
         '''
-        cpus = os.cpu_count()
-        print(f'{prompt} cpus {cpus} maxdep {maxdep}')
-        N = [[x, self.data, self.fmr, self.fmb, self.fmins]
-             for x in range(1, self.fmn + 1)]
-        with mlps.Pool(processes=cpus) as p:
-            Retds = p.map(makenuxe, N)
-            Retds = self.__planning__(Retds)
-            for item in Retds:
-                self.__echo__(item)
+        fmins_is = insregs(self.fmins)
+        if fmins_is.code == 1:
+            cpus = os.cpu_count()
+            print(f'{prompt} cpus {cpus} maxdep {maxdep}')
+            N = [[x, self.data, self.fmr, self.fmb, fmins_is.reP]
+                 for x in range(1, self.fmn + 1)]
+            with mlps.Pool(processes=cpus) as p:
+                Retds = p.map(makenuxe, N)
+                Retds = self.__planning__(Retds)
+                for item in Retds:
+                    self.__echo__(item)
 
     def __planning__(self, rex: List) -> List:
         ''' 
@@ -530,23 +562,25 @@ class action:
         '''
         use all cpu cores
         '''
-        cpus = os.cpu_count()
-        print(f'{prompt_W} cpus {cpus} maxdep {maxdep}')
-        N = [[x, self.data, self.fmr, self.fmb, self.fmins]
-             for x in range(1, self.fmn + 1)]
-        with mlps.Pool(processes=cpus) as p:
-            Retds = p.map(makenuxe, N)
-            Rex = [self.__diff__(x) for x in Retds]
-            len_rets = Retds.__len__()
-            sum = 0.0
-            listx = [[x, Rex.count(x)] for x in range(1, 7)]
-            for l, v in listx:
-                print(
-                    f'{prompt_W} {l} Probability of Winning {v/len_rets:>7.2%} {v}'
-                )
-                sum += v / len_rets
-            print(f'{prompt_W} sum {sum:>7.2%}')
-            #6 Probability of Winning
+        fmins_is = insregs(self.fmins)
+        if fmins_is.code == 1:
+            cpus = os.cpu_count()
+            print(f'{prompt_W} cpus {cpus} maxdep {maxdep}')
+            N = [[x, self.data, self.fmr, self.fmb, fmins_is.reP]
+                 for x in range(1, self.fmn + 1)]
+            with mlps.Pool(processes=cpus) as p:
+                Retds = p.map(makenuxe, N)
+                Rex = [self.__diff__(x) for x in Retds]
+                len_rets = Retds.__len__()
+                sum = 0.0
+                listx = [[x, Rex.count(x)] for x in range(1, 7)]
+                for l, v in listx:
+                    print(
+                        f'{prompt_W} {l} Probability of Winning {v/len_rets:>7.2%} {v}'
+                    )
+                    sum += v / len_rets
+                print(f'{prompt_W} sum {sum:>7.2%}')
+                #6 Probability of Winning
 
     def Moni_Calcu(self):
         '''
@@ -580,7 +614,7 @@ class action:
         print(f'{prompt} Total {self.__echo_index} Notes')
 
         if self.fmsave:
-            if (fps := get_file_path('./save.log')) != None:
+            if (fps := get_file_path(Resty.OxSave.tostr())) != None:
                 with open(fps, 'w') as sto:
                     for slog in self.buffto:
                         sto.writelines(f'{slog}\n')

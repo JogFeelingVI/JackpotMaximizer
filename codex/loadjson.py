@@ -9,13 +9,19 @@ from codex.ospath import os_path
 
 class Resty(enum.Enum):
     OxStr = './String.json'
+    Oxinsreg = './insx.reg'
+    OxSave = './save.log'
+    OxData = './rbdata.json'
+
+    def tostr(self) -> str:
+        return self.value
 
 
 class Load_JSON:
 
     def __init__(self, res: Resty, keys: str) -> None:
         ''' res: Resty '''
-        self.json_data = self.__loadjson__(res.value)
+        self.json_data = self.__loadjson__(res.tostr())
         self.keys = keys
 
     def __loadjson__(self, path: str) -> dict:
