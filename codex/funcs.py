@@ -72,7 +72,7 @@ def getdata() -> None:
         
     '''
     try:
-        data_file_path = get_file_path(Resty.OxSave.tostr())
+        data_file_path = get_file_path(Resty.OxData.tostr())
         data_file_path = data_file_path if data_file_path is not None else ''
         html_content = get_html(Load_JSON(Resty.OxStr, 'UTXT').read[1]).neirong
         if html_content != '':

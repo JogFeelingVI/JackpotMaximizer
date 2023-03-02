@@ -30,7 +30,7 @@ class Load_JSON:
         try:
             fp: str = os_path.file_path(path)
             with open(fp, 'r') as f:
-                jdata: dict = json.load(f)
+                jdata: dict = json.loads(f.read())
         except:
             jdata = {'Error': 1}
 
