@@ -76,7 +76,7 @@ def getdata() -> None:
         data_file_path = data_file_path if data_file_path is not None else ''
         html_content = get_html(Load_JSON(Resty.OxStr, 'UTXT').read[1]).neirong
         if html_content != '':
-            Rx = re.findall(r'(?=.*[0-9])(?=.*[,])[0-9,]{17}', html_content)
+            Rx = re.findall(r'>([0-9,]{17})<', html_content)
             Bx = re.findall(r'c_bule\">([0-9]{2})<', html_content)
             Lix = {
                 'R': [int(x) for r in Rx for x in r.split(',')],
