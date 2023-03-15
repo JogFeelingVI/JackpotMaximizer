@@ -5,7 +5,7 @@
 # @Last Modified time: 2022-10-03 15:26:39
 
 from typing import Union, Any, List
-import multiprocessing as mlps, os, sys, re, json, random as RDX, enum
+import multiprocessing as mlps, os, sys, re, json, random as RDX, enum, itertools as itr
 from codex.ospath import os_path
 from datetime import datetime as dtime
 from codex.download import get_html
@@ -120,7 +120,7 @@ def jiaoyan(r: List) -> bool:
     return rex
 
 
-def Findins(NR: list, NB: list, insre: re.Pattern) -> mode_f:
+def Findins(NR: Union[list, tuple], NB: Union[list, tuple], insre: re.Pattern) -> mode_f:
     '''
     Find Ins 
     Nums type list
@@ -193,12 +193,31 @@ def makenux(Data: dict, Rlen: int, Blen: int, ins: re.Pattern) -> List:
     while True:
         dr, Rs = choicesrb_dd(R_keys, weights_R, Rlen)
         db, Bs = choicesrb_dd(B_keys, weights_B, Blen)
-        rinsx: mode_f = Findins(Rs, Bs, insre=ins)
+        #rinsx: mode_f = Findins(Rs, Bs, insre=ins)
+        rinsx = combinations_ols(Rs, Bs, insre=ins)
         if rinsx == mode_f.Ok:
             return [dr, Rs, Bs]
         depth += 1
         if depth >= maxdep:
             return [dr, [0], [0]]
+
+
+def combinations_ols(Rs: List[int], Bs: List[int],
+                     insre: re.Pattern) -> mode_f:
+    '''
+    '''
+    rinsx: mode_f = mode_f.Er
+    if Rs.__len__() >= 7:
+        Lir = itr.combinations(Rs, 6)
+        Lib = itr.combinations(Bs, 1)
+        zipo = itr.product(Lir, Lib)
+        ex_f_z = [Findins(Lr, Lb, insre) for Lr, Lb in zipo]
+        if mode_f.Ok in ex_f_z:
+            rinsx = mode_f.Ok
+    if Rs.__len__() == 6:
+        rinsx: mode_f = Findins(Rs, Bs, insre=insre)
+
+    return rinsx
 
 
 def choicesrb_dd(keys: List, weights: List, lens: int) -> List:
@@ -445,7 +464,7 @@ class action:
         rba is [ r, b, a ]
         '''
         Numa: List[int] = [b for b in range(1, 17)]
-        Numb: List[int] = [a for a  in range(17, 34)]
+        Numb: List[int] = [a for a in range(17, 34)]
         cmds = {
             'r': lambda: [['R', Numa + Numb]],
             'b': lambda: [['B', Numa]],
@@ -491,22 +510,24 @@ class action:
             print(self.buffto[-1])
             self.__echo_index += 1
 
-    def __diff__(self, Rexs: List) -> int:
+    def __diff__(self, Rexs: List) -> List[int]:
         '''
         echo numbers
         '''
         inx, dep, Nr, Nb = Rexs
+        dif_l = []
         jhr = self.fmjhr
         jhb = self.fmjhb
-        dif_l = 0
-
+        Lir = itr.combinations(Nr, 6)
+        Lib = itr.combinations(Nb, 1)
+        zipo = itr.product(Lir, Lib)
         # 发现错误 终止执行程序
-        if len(Nr) == self.fmr and len(Nb) == self.fmb:
-            dif_r = [x for x in Nr if x in jhr].__len__()
-            dif_b: int = [x for x in Nb if x in jhb].__len__()
+        for zR, zB in zipo:
+            dif_r = [x for x in zR if x in jhr].__len__()
+            dif_b: int = [x for x in zB if x in jhb].__len__()
             key = f'^{dif_r}{dif_b}[0-6]'
             difex: str = [x for x in self.diff_date if re.match(key, x)][0]
-            dif_l = int(difex[-1])
+            dif_l.append(int(difex[-1]))
             #print(f'Diff info  -> {Nr} {Nb}')
         return dif_l
 
@@ -568,16 +589,16 @@ class action:
                  for x in range(1, self.fmn + 1)]
             with mlps.Pool(processes=cpus) as p:
                 Retds = p.map(makenuxe, N)
-                Rex = [self.__diff__(x) for x in Retds]
-                len_rets = Retds.__len__()
+                Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
+                iRex = len(Rex)
                 sum = 0.0
                 listx = [[x, Rex.count(x)] for x in range(1, 7)]
                 for l, v in listx:
                     print(
-                        f'{prompt_W} {l} Probability of Winning {v/len_rets:>7.2%} {v}'
+                        f'{prompt_W} {l} Probability of Winning {v/iRex:>7.2%} {v}'
                     )
-                    sum += v / len_rets
-                print(f'{prompt_W} sum {sum:>7.2%}')
+                    sum += v / iRex
+                print(f'{prompt_W} sum {sum:>7.2%} Len {iRex}')
                 #6 Probability of Winning
 
     def Moni_Calcu(self):
