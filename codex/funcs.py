@@ -229,7 +229,7 @@ def Limit_input(r: int, input: Limit_i) -> int:
         r = r
     else:
         r = 6
-        print(f'{prompt} -{input.name} in {input.value}')
+        print(f'{prompt} - {input.name} in {input.value}')
     return r
 
 
@@ -444,10 +444,8 @@ class action:
         fix r b a
         rba is [ r, b, a ]
         '''
-        Numa = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-        Numb = [
-            17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33
-        ]
+        Numa: List[int] = [b for b in range(1, 17)]
+        Numb: List[int] = [a for a  in range(17, 34)]
         cmds = {
             'r': lambda: [['R', Numa + Numb]],
             'b': lambda: [['B', Numa]],
