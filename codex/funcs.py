@@ -31,8 +31,12 @@ class Limit_i(enum.Enum):
     '''
     Limit_input 6-19 or 1-16
     '''
-    r = (6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
-    b = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+    r = (6, 19)
+    b = (1, 16)
+
+    def tovs(self) -> List:
+        a, b = self.value
+        return [x for x in range(a, b + 1)]
 
 
 class insrt:
@@ -120,7 +124,8 @@ def jiaoyan(r: List) -> bool:
     return rex
 
 
-def Findins(NR: Union[list, tuple], NB: Union[list, tuple], insre: re.Pattern) -> mode_f:
+def Findins(NR: Union[list, tuple], NB: Union[list, tuple],
+            insre: re.Pattern) -> mode_f:
     '''
     Find Ins 
     Nums type list
@@ -231,6 +236,8 @@ def choicesrb_dd(keys: List, weights: List, lens: int) -> List:
     '''
     depth: int = 1
     while True:
+        if lens >= keys.__len__() * 0.751:
+            return [1, keys[0:lens]]
         Jieguo = RDX.choices(keys, weights=weights, k=lens)
         Jieguo = [x for x in sorted(Jieguo)]
         if len(Jieguo) == list(set(Jieguo)).__len__():
@@ -244,10 +251,10 @@ def Limit_input(r: int, input: Limit_i) -> int:
     '''
     Limit input R 6-19
     '''
-    if r in input.value:
+    if r in input.tovs():
         r = r
     else:
-        r = 6
+        r = input.tovs()[0]
         print(f'{prompt} - {input.name} in {input.value}')
     return r
 
