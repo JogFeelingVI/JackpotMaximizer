@@ -12,8 +12,10 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "--debug",
-                "-b14"
+                "--loadins",
+                "-b14",
+                "-r16",
+                "-n5"
             ]
         }
     ]

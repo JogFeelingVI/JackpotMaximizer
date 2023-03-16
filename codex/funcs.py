@@ -4,7 +4,7 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 15:26:39
 
-from typing import Union, Any, List
+from typing import Union, Any, List, Iterable
 import multiprocessing as mlps, os, sys, re, json, random as RDX, enum, itertools as itr
 from codex.ospath import os_path
 from datetime import datetime as dtime
@@ -187,18 +187,17 @@ def makenux(Data: dict, Rlen: int, Blen: int, ins: re.Pattern) -> List:
     '''
     Dr = Data['R']
     Db = Data['B']
-    R_keys = frommkeyx(Dr)
-    B_keys = frommkeyx(Db)
-    # EDIT
-    weights_R = truncate(Dr, R_keys)
-    # avg R
-    weights_B = truncate(Db, B_keys)
-    # avg B
     depth: int = 1
     while True:
+        R_keys = frommkeyx(Dr)
+        B_keys = frommkeyx(Db)
+        # EDIT
+        weights_R = truncate(Dr, R_keys)
+        # avg R
+        weights_B = truncate(Db, B_keys)
         dr, Rs = choicesrb_dd(R_keys, weights_R, Rlen)
         db, Bs = choicesrb_dd(B_keys, weights_B, Blen)
-        #rinsx: mode_f = Findins(Rs, Bs, insre=ins)
+        # rinsx: mode_f = Findins(Rs, Bs, insre=ins)
         rinsx = combinations_ols(Rs, Bs, insre=ins)
         if rinsx == mode_f.Ok:
             return [dr, Rs, Bs]
@@ -206,22 +205,23 @@ def makenux(Data: dict, Rlen: int, Blen: int, ins: re.Pattern) -> List:
         if depth >= maxdep:
             return [dr, [0], [0]]
 
+def ccp(A:Iterable, b:Iterable) -> itr.product:
+    '''
+    '''
+    Lir = itr.combinations(A, 6)
+    Lib = itr.combinations(b, 1)
+    zipo = itr.product(Lir, Lib)
+    return zipo
 
 def combinations_ols(Rs: List[int], Bs: List[int],
                      insre: re.Pattern) -> mode_f:
     '''
     '''
     rinsx: mode_f = mode_f.Er
-    if Rs.__len__() >= 7:
-        Lir = itr.combinations(Rs, 6)
-        Lib = itr.combinations(Bs, 1)
-        zipo = itr.product(Lir, Lib)
-        ex_f_z = [Findins(Lr, Lb, insre) for Lr, Lb in zipo]
-        if mode_f.Ok in ex_f_z:
-            rinsx = mode_f.Ok
-    if Rs.__len__() == 6:
-        rinsx: mode_f = Findins(Rs, Bs, insre=insre)
-
+    zipo = ccp(Rs, Bs)
+    ex_f_z = [Findins(Lr, Lb, insre) for Lr, Lb in zipo]
+    if mode_f.Ok in ex_f_z:
+        rinsx = mode_f.Ok
     return rinsx
 
 
@@ -236,15 +236,29 @@ def choicesrb_dd(keys: List, weights: List, lens: int) -> List:
     '''
     depth: int = 1
     while True:
-        if lens >= keys.__len__() * 0.751:
-            return [1, keys[0:lens]]
-        Jieguo = RDX.choices(keys, weights=weights, k=lens)
+        Jieguo = rdxchoices(keys, weights=weights, k=lens)
         Jieguo = [x for x in sorted(Jieguo)]
         if len(Jieguo) == list(set(Jieguo)).__len__():
             return [depth, Jieguo]
         depth += 1
         if depth >= maxdep:
             return [depth, [0]]
+        
+def rdxchoices(keys:List, weights:List, k:int) -> list[int]:
+    ''''''
+    choi = [0] * k
+    while 0 in choi:
+        if keys.__len__() > 0:
+            i = choi.index(0)
+            kv = RDX.choices(keys, weights=weights, k=1)[-1]
+            ki = keys.index(kv)
+            choi[i] = kv
+            keys.pop(ki)
+            weights.pop(ki)
+        else:
+            i = choi.index(0)
+            choi.pop(i)
+    return choi
 
 
 def Limit_input(r: int, input: Limit_i) -> int:
@@ -508,14 +522,14 @@ class action:
             return
         inx, dep, Nr, Nb = Rexs
         # 发现错误 终止执行程序
-        if len(Nr) == self.fmr and len(Nb) == self.fmb:
-            lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
-            if self.fmnoinx:
-                self.buffto.append(f'{prompt_L} {lis}')
-            else:
-                self.buffto.append(f'{prompt_L} {inx:>4} depth {dep:<5} {lis}')
-            print(self.buffto[-1])
-            self.__echo_index += 1
+        lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
+        if self.fmnoinx:
+            self.buffto.append(f'{prompt_L} {lis}')
+        else:
+            self.buffto.append(f'{prompt_L} {inx:>4} depth {dep:<5} {lis}')
+        print(self.buffto[-1])
+        self.__echo_index += 1
+            
 
     def __diff__(self, Rexs: List) -> List[int]:
         '''
@@ -525,9 +539,7 @@ class action:
         dif_l = []
         jhr = self.fmjhr
         jhb = self.fmjhb
-        Lir = itr.combinations(Nr, 6)
-        Lib = itr.combinations(Nb, 1)
-        zipo = itr.product(Lir, Lib)
+        zipo = ccp(Nr, Nb)
         # 发现错误 终止执行程序
         for zR, zB in zipo:
             dif_r = [x for x in zR if x in jhr].__len__()
