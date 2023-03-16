@@ -234,15 +234,9 @@ def choicesrb_dd(keys: List, weights: List, lens: int) -> List:
     depth int 计算深度
     rdx = RDX.choices
     '''
-    depth: int = 1
-    while True:
-        Jieguo = rdxchoices(keys, weights=weights, k=lens)
-        Jieguo = [x for x in sorted(Jieguo)]
-        if len(Jieguo) == list(set(Jieguo)).__len__():
-            return [depth, Jieguo]
-        depth += 1
-        if depth >= maxdep:
-            return [depth, [0]]
+    Jieguo = rdxchoices(keys, weights=weights, k=lens)
+    Jieguo = [x for x in sorted(Jieguo)]
+    return [1, Jieguo]
         
 def rdxchoices(keys:List, weights:List, k:int) -> list[int]:
     ''''''
