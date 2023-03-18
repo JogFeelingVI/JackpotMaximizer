@@ -174,8 +174,8 @@ def makenuxe(arglist: List) -> List:
     makenux for all cpu
     '''
     inx, D, R, B, i = arglist
-    a, b, c = makenux(Data=D, Rlen=R, Blen=B, ins=i)
-    return [inx, a, b, c]
+    d, r, b = makenux(Data=D, Rlen=R, Blen=B, ins=i)
+    return [inx, d, r, b]
 
 
 def makenux(Data: dict, Rlen: int, Blen: int, ins: re.Pattern) -> List:
@@ -195,23 +195,25 @@ def makenux(Data: dict, Rlen: int, Blen: int, ins: re.Pattern) -> List:
         weights_R = truncate(Dr, R_keys)
         # avg R
         weights_B = truncate(Db, B_keys)
-        dr, Rs = choicesrb_dd(R_keys, weights_R, Rlen)
-        db, Bs = choicesrb_dd(B_keys, weights_B, Blen)
+        Rs = choicesrb_dd(R_keys, weights_R, Rlen)
+        Bs = choicesrb_dd(B_keys, weights_B, Blen)
         # rinsx: mode_f = Findins(Rs, Bs, insre=ins)
         rinsx = combinations_ols(Rs, Bs, insre=ins)
         if rinsx == mode_f.Ok:
-            return [dr, Rs, Bs]
+            return [depth, Rs, Bs]
         depth += 1
         if depth >= maxdep:
-            return [dr, [0], [0]]
+            return [depth, [0], [0]]
 
-def ccp(A:Iterable, b:Iterable) -> itr.product:
+
+def ccp(A: Iterable, b: Iterable) -> itr.product:
     '''
     '''
     Lir = itr.combinations(A, 6)
     Lib = itr.combinations(b, 1)
     zipo = itr.product(Lir, Lib)
     return zipo
+
 
 def combinations_ols(Rs: List[int], Bs: List[int],
                      insre: re.Pattern) -> mode_f:
@@ -236,9 +238,10 @@ def choicesrb_dd(keys: List, weights: List, lens: int) -> List:
     '''
     Jieguo = rdxchoices(keys, weights=weights, k=lens)
     Jieguo = [x for x in sorted(Jieguo)]
-    return [1, Jieguo]
-        
-def rdxchoices(keys:List, weights:List, k:int) -> list[int]:
+    return Jieguo
+
+
+def rdxchoices(keys: List, weights: List, k: int) -> list[int]:
     ''''''
     choi = [0] * k
     while 0 in choi:
@@ -431,6 +434,13 @@ class action:
         return value
 
     @property
+    def fmsubcommand(self) -> str:
+        value = 'load'
+        if 'subcommand' in self.args.keys():
+            value = str(self.args.get('subcommand', value))
+        return value
+
+    @property
     def loadinsx(self) -> str:
         _huan = re.compile('\\n')
         _zhus = re.compile('^#.*')
@@ -523,7 +533,6 @@ class action:
             self.buffto.append(f'{prompt_L} {inx:>4} depth {dep:<5} {lis}')
         print(self.buffto[-1])
         self.__echo_index += 1
-            
 
     def __diff__(self, Rexs: List) -> List[int]:
         '''
@@ -625,28 +634,29 @@ class action:
 
     def act_for_dict(self) -> None:
         ''' anys dict '''
-        if self.fmupdate:
-            # update
+        if self.fmsubcommand == 'help':
+            print(f'help {self.args}')
+        elif self.fmsubcommand == 'update':
             getdata()
-            return
-        self.data = loaddata()
-        if self.fmfix != None:
-            # 执行 fix 程序
-            self.__fixrba__(self.fmfix)
-        if self.fmloadins == True:
-            self.fmins = self.loadinsx
-        Prn(N=self.fmr, B=self.fmb)
-        # show debug
-        if self.fmdebug == True:
-            showargs(self.args)
-        # cpu switch
-        if self.fmcpu != None:
-            self.__cpuse__(self.fmcpu)
+        elif self.fmsubcommand == 'load':
+            self.data = loaddata()
+            if self.fmfix != None:
+                # 执行 fix 程序
+                self.__fixrba__(self.fmfix)
+            if self.fmloadins == True:
+                self.fmins = self.loadinsx
+            Prn(N=self.fmr, B=self.fmb)
+            # show debug
+            if self.fmdebug == True:
+                showargs(self.args)
+            # cpu switch
+            if self.fmcpu != None:
+                self.__cpuse__(self.fmcpu)
 
-        print(f'{prompt} Total {self.__echo_index} Notes')
+            print(f'{prompt} Total {self.__echo_index} Notes')
 
-        if self.fmsave:
-            if (fps := get_file_path(Resty.OxSave.tostr())) != None:
-                with open(fps, 'w') as sto:
-                    for slog in self.buffto:
-                        sto.writelines(f'{slog}\n')
+            if self.fmsave:
+                if (fps := get_file_path(Resty.OxSave.tostr())) != None:
+                    with open(fps, 'w') as sto:
+                        for slog in self.buffto:
+                            sto.writelines(f'{slog}\n')

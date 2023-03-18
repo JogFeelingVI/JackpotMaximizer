@@ -15,55 +15,62 @@ class loading:
             description='Generate lucky numbers',
             add_help=True,
             allow_abbrev=False)
-        self.command.add_argument('--save',
-                                  default=False,
-                                  action='store_true',
-                                  help='save to files')
-        self.command.add_argument('--update',
-                                  default=False,
-                                  action='store_true',
-                                  help='Do not load network data')
-        self.command.add_argument('--noinx',
-                                  default=False,
-                                  action='store_true',
-                                  help='No Show ID DEPTH')
-        self.command.add_argument('--fix',
-                                  type=str,
-                                  default='a',
-                                  choices=['r', 'b', 'a'],
-                                  help='repair data')
-        self.command.add_argument('--cpu',
-                                  type=str,
-                                  default='a',
-                                  choices=['a', 'o'],
-                                  help='repair data')
-        self.command.add_argument('--loadins',
-                                  default=False,
-                                  action='store_true',
-                                  help='load insx.reg')
-        self.command.add_argument('--debug',
-                                  default=False,
-                                  action='store_true',
-                                  help='show debug info')
-        self.command.add_argument(
+        self.subparsers = self.command.add_subparsers()
+        # update
+        update_args = self.subparsers.add_parser(
+            'update', help='Do not load network data')
+        update_args.set_defaults(subcommand='update')
+
+        # load
+        load_args = self.subparsers.add_parser('load', help='generate number')
+        load_args.add_argument('--save',
+                               default=False,
+                               action='store_true',
+                               help='save to files')
+
+        load_args.add_argument('--noinx',
+                               default=False,
+                               action='store_true',
+                               help='No Show ID DEPTH')
+        load_args.add_argument('--fix',
+                               type=str,
+                               default='a',
+                               choices=['r', 'b', 'a'],
+                               help='repair data')
+        load_args.add_argument('--cpu',
+                               type=str,
+                               default='a',
+                               choices=['a', 'o'],
+                               help='repair data')
+        load_args.add_argument('--loadins',
+                               default=False,
+                               action='store_true',
+                               help='load insx.reg')
+        load_args.add_argument('--debug',
+                               default=False,
+                               action='store_true',
+                               help='show debug info')
+        load_args.add_argument(
             '--ins',
             default='(.*)',
             type=str,
             help=
             'Filtering numbers using regular expressions exp --ins ^(02|03|05)'
         )
-        self.command.add_argument('-n',
-                                  default=5,
-                                  type=int,
-                                  help='Generate 10 pieces of data')
-        self.command.add_argument('-r',
-                                  default=6,
-                                  type=int,
-                                  help='Red number default 6, max 20')
-        self.command.add_argument('-b',
-                                  default=1,
-                                  type=int,
-                                  help='Default 1 blue ball, max 16')
+        load_args.add_argument('-n',
+                               default=5,
+                               type=int,
+                               help='Generate 10 pieces of data')
+        load_args.add_argument('-r',
+                               default=6,
+                               type=int,
+                               help='Red number default 6, max 20')
+        load_args.add_argument('-b',
+                               default=1,
+                               type=int,
+                               help='Default 1 blue ball, max 16')
+        load_args.set_defaults(subcommand='load')
+
 
     def gparse(self) -> dict:
         ''' parse_args return dict '''
