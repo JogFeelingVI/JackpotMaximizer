@@ -185,3 +185,22 @@ def calculate_hash_dispersion(arr, bucket_count):
 ```
 
 > 在上面的代码中，我们首先创建了 bucket_count 个桶，并使用每个元素的散列值将其分配到相应的桶中。然后，我们使用每个桶中元素的数量计算散列度。散列度越低，说明元素的分布越均匀，散列函数的性能越好。
+
+```python
+def rdxchoices_x(keys: List, weights: List, k: int) -> list[int]:
+    ''' 系统缓慢根本问题
+    '''
+    choi = [0] * k
+    while 0 in choi:
+        if keys.__len__() > 0:
+            i = choi.index(0)
+            kv = RDX.choices(keys, weights=weights, k=1)[-1]
+            ki = keys.index(kv)
+            choi[i] = kv
+            keys.pop(ki)
+            weights.pop(ki)
+        else:
+            i = choi.index(0)
+            choi.pop(i)
+    return choi
+```

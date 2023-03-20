@@ -15,11 +15,11 @@ def Moni_T():
         'fix': 'a',
         'cpu': 'm',
         'ins': '(.*)',
-        'n': 5,
-        'r': 9,
+        'n': 100,
+        'r': 6,
         'b': 2,
-        'jhr': [3,7,12,24,28,33],
-        'jhb': [8]
+        'jhr': [2, 3, 7, 16, 30, 31],
+        'jhb': [6]
     }
     act = funcs.action(args, diff=True)
     act.Moni_Calcu()

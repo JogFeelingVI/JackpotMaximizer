@@ -241,21 +241,12 @@ def choicesrb_dd(keys: List, weights: List, lens: int) -> List:
     return Jieguo
 
 
-def rdxchoices(keys: List, weights: List, k: int) -> list[int]:
-    ''''''
-    choi = [0] * k
-    while 0 in choi:
-        if keys.__len__() > 0:
-            i = choi.index(0)
-            kv = RDX.choices(keys, weights=weights, k=1)[-1]
-            ki = keys.index(kv)
-            choi[i] = kv
-            keys.pop(ki)
-            weights.pop(ki)
-        else:
-            i = choi.index(0)
-            choi.pop(i)
-    return choi
+def rdxchoices(keys: List, weights: List, k: int) -> set[int]:
+    numbers = set()
+    while (lm := numbers.__len__()) < k:
+        selected = RDX.choices(keys, weights, k=k - lm)
+        numbers |= set(selected)
+    return numbers
 
 
 def Limit_input(r: int, input: Limit_i) -> int:
@@ -573,10 +564,10 @@ class action:
         if fmins_is.code == 1:
             cpus = os.cpu_count()
             print(f'{prompt} cpus {cpus} maxdep {maxdep}')
-            N = [[x, self.data, self.fmr, self.fmb, fmins_is.reP]
-                 for x in range(1, self.fmn + 1)]
+            N = self.distribute(self.data, self.fmr, self.fmb, fmins_is.reP,
+                                self.fmn)
             with mlps.Pool(processes=cpus) as p:
-                Retds = p.map(makenuxe, N)
+                Retds = p.map(makenuxe, N, chunksize=10)
                 Retds = self.__planning__(Retds)
                 for item in Retds:
                     self.__echo__(item)
@@ -607,10 +598,10 @@ class action:
         if fmins_is.code == 1:
             cpus = os.cpu_count()
             print(f'{prompt_W} cpus {cpus} maxdep {maxdep}')
-            N = [[x, self.data, self.fmr, self.fmb, fmins_is.reP]
-                 for x in range(1, self.fmn + 1)]
+            N = self.distribute(self.data, self.fmr, self.fmb, fmins_is.reP,
+                                self.fmn)
             with mlps.Pool(processes=cpus) as p:
-                Retds = p.map(makenuxe, N)
+                Retds = p.map(makenuxe, N, chunksize=10)
                 Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
                 iRex = len(Rex)
                 sum = 0.0
@@ -622,6 +613,27 @@ class action:
                     sum += v / iRex
                 print(f'{prompt_W} sum {sum:>7.2%} Len {iRex}')
                 #6 Probability of Winning
+
+    @staticmethod
+    def distribute(
+        D: dict,
+        R: int,
+        B: int,
+        P: re.Pattern,
+        max: int = 6,
+    ) -> list:
+        ''' '''
+        base = [0, {}, 0, 0, '(.*)']
+        Nx = [base] * max
+        counter = 1
+        while True:
+            if base in Nx:
+                index = Nx.index(base)
+                Nx[index] = [counter, D, R, B, P]
+                counter += 1
+            else:
+                break
+        return Nx
 
     def Moni_Calcu(self):
         '''
