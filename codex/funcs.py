@@ -195,11 +195,11 @@ def makenux(Data: dict, Rlen: int, Blen: int, ins: re.Pattern) -> List:
         weights_R = truncate(Dr, R_keys)
         # avg R
         weights_B = truncate(Db, B_keys)
-        Rs = choicesrb_dd(R_keys, weights_R, Rlen)
-        Bs = choicesrb_dd(B_keys, weights_B, Blen)
+        Rs = rdxchoices(R_keys, weights_R, Rlen)
+        Bs = rdxchoices(B_keys, weights_B, Blen)
         # rinsx: mode_f = Findins(Rs, Bs, insre=ins)
         rinsx = combinations_ols(Rs, Bs, insre=ins)
-        if rinsx == mode_f.Ok:
+        if mode_f.Ok in rinsx:
             return [depth, Rs, Bs]
         depth += 1
         if depth >= maxdep:
@@ -215,38 +215,20 @@ def ccp(A: Iterable, b: Iterable) -> itr.product:
     return zipo
 
 
-def combinations_ols(Rs: List[int], Bs: List[int],
-                     insre: re.Pattern) -> mode_f:
+def combinations_ols(Rs: List[int], Bs: List[int], insre: re.Pattern) -> list:
     '''
     '''
-    rinsx: mode_f = mode_f.Er
     zipo = ccp(Rs, Bs)
     ex_f_z = [Findins(Lr, Lb, insre) for Lr, Lb in zipo]
-    if mode_f.Ok in ex_f_z:
-        rinsx = mode_f.Ok
-    return rinsx
+    return ex_f_z
 
 
-def choicesrb_dd(keys: List, weights: List, lens: int) -> List:
-    '''
-    _dd
-    keys list 待选列表
-    weights list 权重
-    len int 选择长度
-    depth int 计算深度
-    rdx = RDX.choices
-    '''
-    Jieguo = rdxchoices(keys, weights=weights, k=lens)
-    Jieguo = [x for x in sorted(Jieguo)]
-    return Jieguo
-
-
-def rdxchoices(keys: List, weights: List, k: int) -> set[int]:
+def rdxchoices(keys: List, weights: List, k: int) -> list[int]:
     numbers = set()
     while (lm := numbers.__len__()) < k:
         selected = RDX.choices(keys, weights, k=k - lm)
         numbers |= set(selected)
-    return numbers
+    return sorted(numbers)
 
 
 def Limit_input(r: int, input: Limit_i) -> int:
@@ -552,7 +534,8 @@ class action:
         if fmins_is.code == 1:
             N = self.distribute(self.data, self.fmr, self.fmb, fmins_is.reP,
                                 self.fmn)
-            reds = [[counter] + makenux(D,R,B,P) for counter, D, R, B, P, in N]
+            reds = [[counter] + makenux(D, R, B, P)
+                    for counter, D, R, B, P, in N]
             reds = self.__planning__(reds)
             for inx in reds:
                 self.__echo__(inx)
