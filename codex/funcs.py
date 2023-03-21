@@ -550,8 +550,9 @@ class action:
         '''
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
-            args = (self.data, self.fmr, self.fmb, fmins_is.reP)
-            reds = [[x] + makenux(*args) for x in range(0, self.fmn)]
+            N = self.distribute(self.data, self.fmr, self.fmb, fmins_is.reP,
+                                self.fmn)
+            reds = [[counter] + makenux(D,R,B,P) for counter, D, R, B, P, in N]
             reds = self.__planning__(reds)
             for inx in reds:
                 self.__echo__(inx)
