@@ -121,7 +121,7 @@ def jiaoyan(r: List) -> bool:
     rex = False
     if type(r) in [list, tuple]:
         a, b, c, d = r
-        if type(a) == type(b) == int and c != [0] and d != [0]:
+        if c != d != [0]:
             rex = True
     return rex
 
@@ -524,8 +524,8 @@ class action:
         zipo = ccp(Nr, Nb)
         # 发现错误 终止执行程序
         for zR, zB in zipo:
-            dif_r = [x for x in zR if x in jhr].__len__()
-            dif_b: int = [x for x in zB if x in jhb].__len__()
+            dif_r = (set(zR) & set(jhr)).__len__()
+            dif_b: int = (set(zB) & set(jhb)).__len__()
             key = f'^{dif_r}{dif_b}[0-6]'
             difex: str = [x for x in self.diff_date if re.match(key, x)][0]
             dif_l.append(int(difex[-1]))
