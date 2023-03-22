@@ -10,6 +10,8 @@ from codex.ospath import os_path
 from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
+from codex.runingtime import runingtime
+import time
 
 maxdep: int = 3000
 prompt: str = '[+]'
@@ -164,7 +166,8 @@ def truncate(Dr: List, keys: List) -> List:
 
 
 def frommkeyx(Dx: List) -> List:
-    tmps = [x for x in {}.fromkeys(Dx).keys()]
+    #tmps = list({}.fromkeys(Dx).keys())
+    tmps = list(set(Dx))
     RDX.shuffle(tmps)
     return tmps
 
@@ -185,20 +188,21 @@ def makenux(Data: dict, Rlen: int, Blen: int, ins: re.Pattern) -> List:
         Blen B len 1 - 16
         ins '^(01|07)....'
     '''
+    #T1 = time.perf_counter()
     Dr = Data['R']
     Db = Data['B']
     depth: int = 1
+    R_keys = frommkeyx(Dr)
+    B_keys = frommkeyx(Db)
+    weights_R = truncate(Dr, R_keys)
+    weights_B = truncate(Db, B_keys)
     while True:
-        R_keys = frommkeyx(Dr)
-        B_keys = frommkeyx(Db)
-        # EDIT
-        weights_R = truncate(Dr, R_keys)
-        # avg R
-        weights_B = truncate(Db, B_keys)
+
         Rs = rdxchoices(R_keys, weights_R, Rlen)
         Bs = rdxchoices(B_keys, weights_B, Blen)
         # rinsx: mode_f = Findins(Rs, Bs, insre=ins)
         rinsx = combinations_ols(Rs, Bs, insre=ins)
+        #print(f'{prompt} runingtime {time.perf_counter() - T1:.2f} s')
         if mode_f.Ok in rinsx:
             return [depth, Rs, Bs]
         depth += 1
@@ -291,6 +295,8 @@ class action:
             'jhr': [0, 1, 2, 3, 4, 5],
             'jhb': [0]
         }
+        self.cpu = os.cpu_count()
+        self.cSize = int(self.fmn / [self.cpu, 4][self.cpu == None])
         self.fmr = Limit_input(self.fmr, Limit_i.r)
         self.fmb = Limit_input(self.fmb, Limit_i.b)
         self.buffto.append(f'date {dtime.now()}')
@@ -546,15 +552,17 @@ class action:
         '''
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
-            cpus = os.cpu_count()
-            print(f'{prompt} cpus {cpus} maxdep {maxdep}')
+            print(
+                f'{prompt} cpus {self.cpu} Chunksize {self.cSize} maxdep {maxdep}'
+            )
             N = self.distribute(self.data, self.fmr, self.fmb, fmins_is.reP,
                                 self.fmn)
-            with mlps.Pool(processes=cpus) as p:
-                Retds = p.map(makenuxe, N, chunksize=10)
-                Retds = self.__planning__(Retds)
-                for item in Retds:
-                    self.__echo__(item)
+            Retds = []
+            with mlps.Pool(processes=self.cpu) as p:
+                iRx = p.map(makenuxe, N, chunksize=self.cSize)
+            Retds = self.__planning__(iRx)
+            for item in Retds:
+                self.__echo__(item)
 
     def __planning__(self, rex: List) -> List:
         ''' 
@@ -580,12 +588,13 @@ class action:
         '''
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
-            cpus = os.cpu_count()
-            print(f'{prompt_W} cpus {cpus} maxdep {maxdep}')
+            print(
+                f'{prompt} cpus {self.cpu} Chunksize {self.cSize} maxdep {maxdep}'
+            )
             N = self.distribute(self.data, self.fmr, self.fmb, fmins_is.reP,
                                 self.fmn)
-            with mlps.Pool(processes=cpus) as p:
-                Retds = p.map(makenuxe, N, chunksize=10)
+            with mlps.Pool(processes=self.cpu) as p:
+                Retds = p.map(makenuxe, N, chunksize=self.cSize)
                 Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
                 iRex = len(Rex)
                 sum = 0.0

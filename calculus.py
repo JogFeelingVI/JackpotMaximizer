@@ -17,9 +17,9 @@ def Moni_T():
         'ins': '(.*)',
         'n': 100,
         'r': 6,
-        'b': 2,
-        'jhr': [2, 3, 7, 16, 30, 31],
-        'jhb': [6]
+        'b': 3,
+        'jhr': [7, 14, 33, 31, 29, 27],
+        'jhb': [5]
     }
     act = funcs.action(args, diff=True)
     act.Moni_Calcu()
