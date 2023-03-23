@@ -10,8 +10,7 @@ from codex.ospath import os_path
 from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
-from codex.runingtime import runingtime
-import time
+
 
 maxdep: int = 3000
 prompt: str = '[+]'
