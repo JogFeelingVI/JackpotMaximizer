@@ -366,8 +366,8 @@ class action:
         Zdict = cmds[rba]()
         for kn, vl in Zdict:
             # kn = R vl = [1,2,3,4,5,6...]
-            kn_val = self.data.get(kn)
-            fix_kn = [x for x in vl if x not in kn_val]
+            kn_val = self.data.get(kn, [0])
+            fix_kn = set(vl) ^ set(kn_val)
             if len(fix_kn) > 0:
                 self.data[kn] += fix_kn
                 print(f'{prompt} fix {kn} {fix_kn}')
