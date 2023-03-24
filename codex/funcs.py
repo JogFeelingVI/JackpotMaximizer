@@ -4,28 +4,19 @@
 # @Last Modified by:   By JogFeelingVi
 # @Last Modified time: 2022-10-03 15:26:39
 
-from typing import Union, Any, List, Iterable
-import multiprocessing as mlps, os, sys, re, json, random as RDX, enum, itertools as itr
+from typing import Any, List
+import os, re, json, enum
 from codex.ospath import os_path
 from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
-
+from codex.multip import mLpool, ccps
 
 maxdep: int = 3000
 prompt: str = '[+]'
 prompt_L = '[-]'
 prompt_W = '[!]'
 prompt_D = '[*]'
-
-
-class mode_f(enum.Enum):
-    '''
-    find mode ok, no, er
-    '''
-    Ok = 1
-    No = 2
-    Er = -1
 
 
 class Limit_i(enum.Enum):
@@ -125,28 +116,6 @@ def jiaoyan(r: List) -> bool:
     return rex
 
 
-def Findins(NR: Union[list, tuple], NB: Union[list, tuple],
-            insre: re.Pattern) -> mode_f:
-    '''
-    Find Ins 
-    Nums type list
-    inse type str
-    '''
-    if insre == re.compile('(.*)'):
-        # 不做任何限制
-        return mode_f.Ok
-    else:
-        try:
-            sNr = ' '.join([f'{x:02}' for x in NR])
-            sNb = ' '.join([f'{x:02}' for x in NB])
-            sNums = f'{sNr} + {sNb}'
-            Finx = len(insre.findall(sNums))
-            return mode_f.Ok if Finx >= 1 else mode_f.No
-        except re.error as rerror:
-            print(f'{prompt} Findins error: {rerror.msg}')
-            return mode_f.Er
-
-
 def showargs(ages: dict) -> None:
     '''
     echo debug msg
@@ -154,84 +123,6 @@ def showargs(ages: dict) -> None:
     for k, i in ages.items():
         msgs = f'{prompt_D} {k} = {i}'
         print(msgs)
-
-
-def truncate(Dr: List, keys: List) -> List:
-    #debugx(int(num*(10**n)))
-    tmps = [Dr.count(x) for x in keys]
-    #mx = max(tmps)
-    #tmps = [[mx - x, 1][x == mx] for x in tmps]
-    return tmps
-
-
-def frommkeyx(Dx: List) -> List:
-    #tmps = list({}.fromkeys(Dx).keys())
-    tmps = list(set(Dx))
-    RDX.shuffle(tmps)
-    return tmps
-
-
-def makenuxe(arglist: List) -> List:
-    '''
-    makenux for all cpu
-    '''
-    inx, D, R, B, i = arglist
-    d, r, b = makenux(Data=D, Rlen=R, Blen=B, ins=i)
-    return [inx, d, r, b]
-
-
-def makenux(Data: dict, Rlen: int, Blen: int, ins: re.Pattern) -> List:
-    '''
-        data {'r': [1,2,3...], 'b':[1-16]}
-        Rlen R len 1, 2, 3, 4, 5, 6 + Blen
-        Blen B len 1 - 16
-        ins '^(01|07)....'
-    '''
-    #T1 = time.perf_counter()
-    Dr = Data['R']
-    Db = Data['B']
-    depth: int = 1
-    R_keys = frommkeyx(Dr)
-    B_keys = frommkeyx(Db)
-    weights_R = truncate(Dr, R_keys)
-    weights_B = truncate(Db, B_keys)
-    while True:
-
-        Rs = rdxchoices(R_keys, weights_R, Rlen)
-        Bs = rdxchoices(B_keys, weights_B, Blen)
-        # rinsx: mode_f = Findins(Rs, Bs, insre=ins)
-        rinsx = combinations_ols(Rs, Bs, insre=ins)
-        #print(f'{prompt} runingtime {time.perf_counter() - T1:.2f} s')
-        if mode_f.Ok in rinsx:
-            return [depth, Rs, Bs]
-        depth += 1
-        if depth >= maxdep:
-            return [depth, [0], [0]]
-
-
-def ccp(A: Iterable, b: Iterable) -> itr.product:
-    '''
-    '''
-    Lir = itr.combinations(A, 6)
-    Lib = itr.combinations(b, 1)
-    zipo = itr.product(Lir, Lib)
-    return zipo
-
-
-def combinations_ols(Rs: List[int], Bs: List[int], insre: re.Pattern) -> list:
-    '''
-    '''
-    zipo = ccp(Rs, Bs)
-    ex_f_z = [Findins(Lr, Lb, insre) for Lr, Lb in zipo]
-    return ex_f_z
-
-
-def rdxchoices(keys: List, weights: List, k: int) -> list[int]:
-    numbers = set()
-    while (lm := numbers.__len__()) < k:
-        selected = RDX.choices(keys, weights, k=k - lm)
-        numbers |= set(selected)
-    return sorted(numbers)
 
 
 def Limit_input(r: int, input: Limit_i) -> int:
@@ -448,13 +339,12 @@ class action:
     def __fix_ass__(self, rex: str):
         _nums = re.compile('[0-9]{1,2}')
         _fixw = re.compile('(R|B)$')
-        if rex != '':
-            pfix = _fixw.findall(rex)
-            numx = [int(x) for x in _nums.findall(rex)]
-            for p in pfix:
-                self.data[p] = [x for x in self.data[p] if x not in numx]
-            if self.fmdebug == True:
-                print(f'{prompt_D} REX [{rex}] PFIX {pfix} NUM {numx}')
+        pfix = _fixw.findall(rex)
+        numx = [int(x) for x in _nums.findall(rex)]
+        for p in pfix:
+            self.data[p] = [x for x in self.data[p] if x not in numx]
+        if self.fmdebug == True:
+            print(f'{prompt_D} REX [{rex}] PFIX {pfix} NUM {numx}')
 
     def __Load_diff__(self) -> None:
         listx = '611602513504414405315216116016000300200100'
@@ -520,7 +410,7 @@ class action:
         dif_l = []
         jhr = self.fmjhr
         jhb = self.fmjhb
-        zipo = ccp(Nr, Nb)
+        zipo = ccps.ccp(Nr, Nb)
         # 发现错误 终止执行程序
         for zR, zB in zipo:
             dif_r = (set(zR) & set(jhr)).__len__()
@@ -537,10 +427,8 @@ class action:
         '''
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
-            N = self.distribute(self.data, self.fmr, self.fmb, fmins_is.reP,
-                                self.fmn)
-            reds = [[counter] + makenux(D, R, B, P)
-                    for counter, D, R, B, P, in N]
+            cp_one = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            reds = cp_one.run_works(self.fmn, mcp=False)
             reds = self.__planning__(reds)
             for inx in reds:
                 self.__echo__(inx)
@@ -551,14 +439,9 @@ class action:
         '''
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
-            print(
-                f'{prompt} cpus {self.cpu} Chunksize {self.cSize} maxdep {maxdep}'
-            )
-            N = self.distribute(self.data, self.fmr, self.fmb, fmins_is.reP,
-                                self.fmn)
-            Retds = []
-            with mlps.Pool(processes=self.cpu) as p:
-                iRx = p.map(makenuxe, N, chunksize=self.cSize)
+            print(f'{prompt} cpus {self.cpu} maxdep {maxdep}')
+            cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            iRx = cp_all.run_works(self.fmn)
             Retds = self.__planning__(iRx)
             for item in Retds:
                 self.__echo__(item)
@@ -590,42 +473,18 @@ class action:
             print(
                 f'{prompt} cpus {self.cpu} Chunksize {self.cSize} maxdep {maxdep}'
             )
-            N = self.distribute(self.data, self.fmr, self.fmb, fmins_is.reP,
-                                self.fmn)
-            with mlps.Pool(processes=self.cpu) as p:
-                Retds = p.map(makenuxe, N, chunksize=self.cSize)
-                Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
-                iRex = len(Rex)
-                sum = 0.0
-                listx = [[x, Rex.count(x)] for x in range(1, 7)]
-                for l, v in listx:
-                    print(
-                        f'{prompt_W} {l} Probability of Winning {v/iRex:>7.2%} {v}'
-                    )
-                    sum += v / iRex
-                print(f'{prompt_W} sum {sum:>7.2%} Len {iRex}')
-                #6 Probability of Winning
-
-    @staticmethod
-    def distribute(
-        D: dict,
-        R: int,
-        B: int,
-        P: re.Pattern,
-        max: int = 6,
-    ) -> list:
-        ''' '''
-        base = [0, {}, 0, 0, '(.*)']
-        Nx = [base] * max
-        counter = 1
-        while True:
-            if base in Nx:
-                index = Nx.index(base)
-                Nx[index] = [counter, D, R, B, P]
-                counter += 1
-            else:
-                break
-        return Nx
+            cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            Retds = cp_all.run_works(self.fmn)
+            Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
+            iRex = len(Rex)
+            sum = 0.0
+            listx = [[x, Rex.count(x)] for x in range(1, 7)]
+            for l, v in listx:
+                print(
+                    f'{prompt_W} {l} Probability of Winning {v/iRex:>7.2%} {v}'
+                )
+                sum += v / iRex
+            print(f'{prompt_W} sum {sum:>7.2%} Len {iRex}')
 
     def Moni_Calcu(self):
         '''

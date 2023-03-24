@@ -204,3 +204,26 @@ def rdxchoices_x(keys: List, weights: List, k: int) -> list[int]:
             choi.pop(i)
     return choi
 ```
+
+```python
+@staticmethod
+    def distribute(
+        D: dict,
+        R: int,
+        B: int,
+        P: re.Pattern,
+        max: int = 6,
+    ) -> list:
+        ''' '''
+        base = [0, {}, 0, 0, '(.*)']
+        Nx = [base] * max
+        counter = 1
+        while True:
+            if base in Nx:
+                index = Nx.index(base)
+                Nx[index] = [counter, D, R, B, P]
+                counter += 1
+            else:
+                break
+        return Nx
+```

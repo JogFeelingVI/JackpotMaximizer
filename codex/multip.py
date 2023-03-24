@@ -15,30 +15,24 @@ class mode_f(enum.Enum):
     Er = -1
 
 
+class ccps:
+
+    @staticmethod
+    def ccp(a: Iterable, b: Iterable) -> itr.product:
+        '''
+        '''
+        Lir = itr.combinations(a, 6)
+        Lib = itr.combinations(b, 1)
+        zipo = itr.product(Lir, Lib)
+        return zipo
+
+
 class mLpool:
     cpu = os.cpu_count()
     mdep = 3000
-    prompt = '[!]'
-    __rlan = 6
-    __blan = 1
+    prompt = '[=]'
 
-    @property
-    def rlan(self) -> int:
-        ''' fmkey  '''
-        return self.__rlan
-
-    @rlan.setter
-    def rlan(self, value: int):
-        self.rlan = value
-
-    @property
-    def blan(self) -> int:
-        ''' fmkey  '''
-        return self.__blan
-
-    @blan.setter
-    def blan(self, value: int):
-        self.blan = value
+    __use_weights = False
 
     def __init__(self, data: dict, R: int, B: int, iRx: re.Pattern) -> None:
         self.data = data
@@ -46,14 +40,28 @@ class mLpool:
         self.B = B
         self.iRx = iRx
 
-    def __makenuxe(self, n: int) -> List:
+    def run_works(self, n: int, mcp=True) -> List:
+        '''
+        n == self.fmn
+        mcp True use pool / False Use List
+        '''
+        N = [x for x in range(1, n + 1)]
+        if mcp:
+            with mlps.Pool(processes=self.cpu) as p:
+                csize = int(n / [self.cpu, 4][self.cpu == None])
+                self.iTx = p.map(self.makenuxe, N, chunksize=csize)
+        else:
+            self.iTx = [self.makenuxe(x) for x in N]
+        return self.iTx
+
+    def makenuxe(self, n: int) -> List:
         '''
         makenux for all cpu
         '''
-        d, r, b = self.__makenux()
+        d, r, b = self.__SpawnPoolWorker()
         return [n, d, r, b]
 
-    def __makenux(self) -> List:
+    def __SpawnPoolWorker(self) -> List:
         '''
             data {'r': [1,2,3...], 'b':[1-16]}
             Rlen R len 1, 2, 3, 4, 5, 6 + Blen
@@ -70,8 +78,8 @@ class mLpool:
         weights_B = self.__truncate(Db, B_keys)
         while True:
 
-            Rs = self.__rdxchoices(R_keys, weights_R, self.rlan)
-            Bs = self.__rdxchoices(B_keys, weights_B, self.blan)
+            Rs = self.__rdxchoices(R_keys, weights_R, self.R)
+            Bs = self.__rdxchoices(B_keys, weights_B, self.B)
             # rinsx: mode_f = Findins(Rs, Bs, insre=ins)
             rinsx = self.__combinations_ols(Rs, Bs, insre=self.iRx)
             #print(f'{prompt} runingtime {time.perf_counter() - T1:.2f} s')
@@ -97,17 +105,12 @@ class mLpool:
     def __rdxchoices(self, keys: List, weights: List, k: int) -> List[int]:
         numbers = set()
         while (lm := numbers.__len__()) < k:
-            selected = rdm.choices(keys, weights, k=k - lm)
+            if self.__use_weights:
+                selected = rdm.choices(keys, k=k - lm)
+            else:
+                selected = rdm.choices(keys, weights, k=k - lm)
             numbers |= set(selected)
         return sorted(numbers)
-
-    def __ccp(self, A: Iterable, b: Iterable) -> itr.product:
-        '''
-        '''
-        Lir = itr.combinations(A, 6)
-        Lib = itr.combinations(b, 1)
-        zipo = itr.product(Lir, Lib)
-        return zipo
 
     def __fdins(self, NR: Union[list, tuple], NB: Union[list, tuple],
                 insre: re.Pattern) -> mode_f:
@@ -134,6 +137,6 @@ class mLpool:
                            insre: re.Pattern) -> List:
         '''
         '''
-        zipo = self.__ccp(Rs, Bs)
+        zipo = ccps.ccp(Rs, Bs)
         ex_f_z = [self.__fdins(Lr, Lb, insre) for Lr, Lb in zipo]
         return ex_f_z

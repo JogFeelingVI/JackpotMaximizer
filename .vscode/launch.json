@@ -12,10 +12,9 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
+                "load",
                 "--loadins",
-                "-b14",
-                "-r16",
-                "-n5"
+                "-n100"
             ]
         }
     ]
