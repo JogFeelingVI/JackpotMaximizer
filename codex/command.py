@@ -46,6 +46,10 @@ class loading:
                                default=False,
                                action='store_true',
                                help='load insx.reg')
+        load_args.add_argument('--usew',
+                               default=False,
+                               action='store_true',
+                               help='True choices not Weights')
         load_args.add_argument('--debug',
                                default=False,
                                action='store_true',
@@ -70,7 +74,6 @@ class loading:
                                type=int,
                                help='Default 1 blue ball, max 16')
         load_args.set_defaults(subcommand='load')
-
 
     def gparse(self) -> dict:
         ''' parse_args return dict '''

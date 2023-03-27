@@ -40,6 +40,18 @@ class mLpool:
         self.B = B
         self.iRx = iRx
 
+    @property
+    def UseWeights(self) -> bool:
+        '''
+        True choices not Weights
+        False Use Weights
+        '''
+        return self.__use_weights
+
+    @UseWeights.setter
+    def UseWeights(self, value: bool):
+        self.__use_weights = value
+
     def run_works(self, n: int, mcp=True) -> List:
         '''
         n == self.fmn

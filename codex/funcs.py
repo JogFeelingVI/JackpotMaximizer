@@ -186,7 +186,6 @@ class action:
             'jhb': [0]
         }
         self.cpu = os.cpu_count()
-        self.cSize = int(self.fmn / [self.cpu, 4][self.cpu == None])
         self.fmr = Limit_input(self.fmr, Limit_i.r)
         self.fmb = Limit_input(self.fmb, Limit_i.b)
         self.buffto.append(f'date {dtime.now()}')
@@ -286,6 +285,13 @@ class action:
         value = False
         if 'debug' in self.args.keys():
             value = bool(self.args.get('debug', value))
+        return value
+
+    @property
+    def fmusew(self) -> bool:
+        value = False
+        if 'usew' in self.args.keys():
+            value = bool(self.args.get('usew', value))
         return value
 
     @property
@@ -441,6 +447,7 @@ class action:
         if fmins_is.code == 1:
             print(f'{prompt} cpus {self.cpu} maxdep {maxdep}')
             cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            cp_all.UseWeights = self.fmusew
             iRx = cp_all.run_works(self.fmn)
             Retds = self.__planning__(iRx)
             for item in Retds:
@@ -470,10 +477,9 @@ class action:
         '''
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
-            print(
-                f'{prompt} cpus {self.cpu} Chunksize {self.cSize} maxdep {maxdep}'
-            )
+            print(f'{prompt} cpus {self.cpu} maxdep {maxdep}')
             cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            cp_all.UseWeights = self.fmusew
             Retds = cp_all.run_works(self.fmn)
             Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
             iRex = len(Rex)
@@ -492,6 +498,8 @@ class action:
         self.data = loaddata()
         if self.fmloadins == True:
             self.fmins = self.loadinsx
+        if self.fmdebug == True:
+            showargs(self.args)
         if self.fmcpu != None:
             self.__cpuse__(self.fmcpu)
 
