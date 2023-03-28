@@ -60,7 +60,8 @@ class mLpool:
         N = [x for x in range(1, n + 1)]
         if mcp:
             with mlps.Pool(processes=self.cpu) as p:
-                csize = int(n / [self.cpu, 4][self.cpu == None])
+                ns = n / [self.cpu, 4][self.cpu == None]
+                csize = [int(ns), 1][ns < 1]
                 self.iTx = p.map(self.makenuxe, N, chunksize=csize)
         else:
             self.iTx = [self.makenuxe(x) for x in N]
