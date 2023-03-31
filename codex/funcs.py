@@ -483,6 +483,8 @@ class action:
             Retds = cp_all.run_works(self.fmn)
             Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
             iRex = len(Rex)
+            if iRex == 0:
+                return
             sum = 0.0
             listx = [[x, Rex.count(x)] for x in range(1, 7)]
             for l, v in listx:
