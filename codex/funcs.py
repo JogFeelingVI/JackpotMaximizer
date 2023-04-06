@@ -12,7 +12,7 @@ from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
 from codex.multip import mLpool, ccps
 
-maxdep: int = 3000
+maxdep: int = 6000
 prompt: str = '[+]'
 prompt_L = '[-]'
 prompt_W = '[!]'

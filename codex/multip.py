@@ -111,8 +111,8 @@ class mLpool:
     def __truncate(self, Dr: List, keys: List) -> List:
         #debugx(int(num*(10**n)))
         tmps = [Dr.count(x) for x in keys]
-        #mx = max(tmps)
-        #tmps = [[mx - x, 1][x == mx] for x in tmps]
+        mx = max(tmps)
+        tmps = [[mx - x, 1][x == mx] for x in tmps]
         return tmps
 
     def __rdxchoices(self, keys: List, weights: List, k: int) -> List[int]:

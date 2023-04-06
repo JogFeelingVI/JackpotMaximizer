@@ -47,7 +47,7 @@ class loading:
                                action='store_true',
                                help='load insx.reg')
         load_args.add_argument('--usew',
-                               default=True,
+                               default=False,
                                action='store_true',
                                help='True choices not Weights')
         load_args.add_argument('--debug',
