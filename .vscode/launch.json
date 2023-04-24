@@ -12,9 +12,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "load",
-                "--loadins",
-                "-n100"
+                "update",
             ]
         }
     ]
