@@ -79,7 +79,7 @@ def getdata() -> None:
                 'B': [int(x) for x in Bx],
                 'date': dtime.now().__str__()
             }
-            json_str = json.dumps(Lix, indent=4)
+            json_str = json.dumps(Lix)
             with open(data_file_path, 'w') as datajson:
                 datajson.write(json_str)
                 hszie = json_str.__sizeof__()
