@@ -1,7 +1,8 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
-# @Last Modified by:   By JogFeelingVi
-# @Last Modified time: 2023-03-23 22:38:54
+# @Last Modified by:   JogFeelingVI
+# @Last Modified time: 2023-10-15 21:58:18
+from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
 
@@ -26,6 +27,79 @@ class ccps:
         zipo = itr.product(Lir, Lib)
         return zipo
 
+class random_rb:
+    '''random R & B'''
+
+    def __init__(self, rb: List[int], L: int) -> None:
+        self.dep = [0] * L
+        self.duilie = rb
+        self.__nPool = []
+        self.__weights = None
+        self.__use_weights = False
+    
+    @property   
+    def nPool(self):
+        return self.__nPool
+    
+    @nPool.setter
+    def nPool(self, value:List) -> None:
+        self.__nPool = value
+        
+    @property
+    def weights(self):
+        return self.__weights
+    
+    @weights.setter
+    def weights(self, value:List) -> None:
+        self.__weights = value
+        
+    @property
+    def use_weights(self) -> bool:
+        return self.__use_weights
+    
+    @use_weights.setter
+    def use_weights(self, value:bool) -> None:
+        self.__use_weights = value
+
+    def find_zero(self) -> int:
+        '''find zero'''
+        if 0 in self.dep:
+            return self.dep.index(0)
+        return -1
+
+    def __initializations(self):
+        '''initialization data'''
+        if self.nPool == [] or self.weights == None:
+            counter = Counter(self.duilie)
+            total = max(counter.values())
+            inverse_freq = {k: [total - v, 1][total == v] for k, v in counter.items()}
+            self.nPool = list(inverse_freq.keys())
+            self.weights = list(inverse_freq.values())
+
+    def get_number(self):
+        find = self.find_zero()
+        if find == -1:
+            return True
+
+        if self.nPool == []:
+            self.__initializations()
+        if self.use_weights:
+            result = rdm.choices(self.nPool, weights=self.weights, k=6)
+        else:
+            result = rdm.choices(self.nPool, k=6)
+        for num in result:
+            if self.__isok(n=num, index=find):
+                self.dep[find] = num
+                if self.get_number():
+                    return True
+                self.dep[find] = 0
+        return False
+
+    def __isok(self, n: int, index: int) -> bool:
+        '''判断数字是否符合标准'''
+        if n in self.dep:
+            return False
+        return True
 
 class mLpool:
     cpu = os.cpu_count()
@@ -80,6 +154,7 @@ class mLpool:
             Rlen R len 1, 2, 3, 4, 5, 6 + Blen
             Blen B len 1 - 16
             ins '^(01|07)....'
+            这个算法不够优秀
         '''
         #T1 = time.perf_counter()
         Dr = self.data['R']
@@ -89,10 +164,11 @@ class mLpool:
         B_keys = self.__frommkeyx(Db)
         weights_R = self.__truncate(Dr, R_keys)
         weights_B = self.__truncate(Db, B_keys)
+        
         while True:
 
-            Rs = self.__rdxchoices(R_keys, weights_R, self.R)
-            Bs = self.__rdxchoices(B_keys, weights_B, self.B)
+            Rs = self.__rdxchoices_N(R_keys, weights_R, self.R)
+            Bs = self.__rdxchoices_N(B_keys, weights_B, self.B)
             # rinsx: mode_f = Findins(Rs, Bs, insre=ins)
             rinsx = self.__combinations_ols(Rs, Bs, insre=self.iRx)
             #print(f'{prompt} runingtime {time.perf_counter() - T1:.2f} s')
@@ -124,6 +200,15 @@ class mLpool:
                 selected = rdm.choices(keys, weights, k=k - lm)
             numbers |= set(selected)
         return sorted(numbers)
+    
+    def __rdxchoices_N(self, keys: List, weights: List, k: int) -> List[int]:
+        rb_rand = random_rb(self.data['R'],L=k)
+        rb_rand.nPool = keys
+        rb_rand.weights = weights
+        rb_rand.use_weights = self.UseWeights
+        rb_rand.get_number()
+        return sorted(rb_rand.dep)
+        
 
     def __fdins(self, NR: Union[list, tuple], NB: Union[list, tuple],
                 insre: re.Pattern) -> mode_f:

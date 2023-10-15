@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
-# @Last Modified by:   By JogFeelingVi
-# @Last Modified time: 2022-10-03 15:26:39
+# @Last Modified by:   JogFeelingVI
+# @Last Modified time: 2023-10-15 20:53:43
 from codex import funcs
 from codex.runingtime import runingtime
 
@@ -16,7 +16,7 @@ def Moni_T():
         'fix': 'a',
         'cpu': 'm',
         'ins': '(.*)',
-        'n': 10000,
+        'n': 1000,
         'r': 6,
         'b': 1,
         'jhr': [8,23,25,26,29,31],
