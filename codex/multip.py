@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-15 21:58:18
+# @Last Modified time: 2023-10-16 22:42:38
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
@@ -157,57 +157,27 @@ class mLpool:
             这个算法不够优秀
         '''
         #T1 = time.perf_counter()
-        Dr = self.data['R']
-        Db = self.data['B']
+        Dr = random_rb(self.data['R'], self.R)
+        Db = random_rb(self.data['B'], self.B)
         depth: int = 1
-        R_keys = self.__frommkeyx(Dr)
-        B_keys = self.__frommkeyx(Db)
-        weights_R = self.__truncate(Dr, R_keys)
-        weights_B = self.__truncate(Db, B_keys)
         
         while True:
-
-            Rs = self.__rdxchoices_N(R_keys, weights_R, self.R)
-            Bs = self.__rdxchoices_N(B_keys, weights_B, self.B)
+            Rs = self.__rdxchoices_N(Dr)
+            Bs = self.__rdxchoices_N(Db)
             # rinsx: mode_f = Findins(Rs, Bs, insre=ins)
             rinsx = self.__combinations_ols(Rs, Bs, insre=self.iRx)
-            #print(f'{prompt} runingtime {time.perf_counter() - T1:.2f} s')
+            #print(f'{self.prompt} runingtime {rinsx:.2f} s')
             if mode_f.Ok in rinsx:
                 return [depth, Rs, Bs]
             depth += 1
             if depth >= self.mdep:
                 return [depth, [0], [0]]
 
-    def __frommkeyx(self, Dx: List) -> List:
-        #tmps = list({}.fromkeys(Dx).keys())
-        tmps = list(set(Dx))
-        rdm.shuffle(tmps)
-        return tmps
-
-    def __truncate(self, Dr: List, keys: List) -> List:
-        #debugx(int(num*(10**n)))
-        tmps = [Dr.count(x) for x in keys]
-        mx = max(tmps)
-        tmps = [[mx - x, 1][x == mx] for x in tmps]
-        return tmps
-
-    def __rdxchoices(self, keys: List, weights: List, k: int) -> List[int]:
-        numbers = set()
-        while (lm := numbers.__len__()) < k:
-            if self.__use_weights:
-                selected = rdm.choices(keys, k=k - lm)
-            else:
-                selected = rdm.choices(keys, weights, k=k - lm)
-            numbers |= set(selected)
-        return sorted(numbers)
     
-    def __rdxchoices_N(self, keys: List, weights: List, k: int) -> List[int]:
-        rb_rand = random_rb(self.data['R'],L=k)
-        rb_rand.nPool = keys
-        rb_rand.weights = weights
-        rb_rand.use_weights = self.UseWeights
-        rb_rand.get_number()
-        return sorted(rb_rand.dep)
+    def __rdxchoices_N(self, rand:random_rb) -> List[int]:
+        rand.use_weights = self.UseWeights
+        rand.get_number()
+        return sorted(rand.dep)
         
 
     def __fdins(self, NR: Union[list, tuple], NB: Union[list, tuple],
