@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-19 10:25:33
+# @Last Modified time: 2023-10-19 11:47:12
 
 import unittest
 
@@ -23,7 +23,8 @@ class TestStringMethods(unittest.TestCase):
         a = [1, 4, 9, 10, 20, 33]
         c = [1, 4, 19, 21, 25, 33]
         b = [2, 3, 9, 11, 12, 17]
-        is_uncorrelated(c, b)
+        rexs = is_uncorrelated(c, b)
+        self.assertEqual(rexs, 0.3)
 
 if __name__ == '__main__':
     unittest.main()
