@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-19 09:14:34
+# @Last Modified time: 2023-10-19 16:46:43
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
@@ -178,6 +178,20 @@ class mLpool:
         rand.use_weights = self.UseWeights
         rand.get_number()
         return sorted(rand.dep)
+    
+    
+    def filters(self, NR: Union[list, tuple], NB: Union[list, tuple],
+                insre: re.Pattern) -> mode_f:
+        
+        funx = {
+            'fdins': lambda r,b,i:self.__fdins(r,b,i),
+            'lianhao': lambda r,b,i: self.__lianhao(r),
+        }
+        refilte = [f(NR,NB,insre) for k,f in funx.items()]
+        if mode_f.No in refilte:
+            return mode_f.No
+        else:
+            return mode_f.Ok
 
 
     def __fdins(self, NR: Union[list, tuple], NB: Union[list, tuple],
@@ -200,11 +214,21 @@ class mLpool:
             except re.error as rerror:
                 print(f'{self.prompt} Findins error: {rerror.msg}')
                 return mode_f.Er
+    
+    def __lianhao(self,  NR: Union[list, tuple]) -> mode_f:
+        snul = set(NR)
+        C = [0] * len(NR)
+        for i in range(len(NR) - 1):
+            _n = NR[i]
+            if {_n+1, _n-1} & snul:
+                C[i] = 1
+        rebool = [mode_f.No, mode_f.Ok][C.count(1) < 2]
+        return rebool
 
     def __combinations_ols(self, Rs: List[int], Bs: List[int],
                            insre: re.Pattern) -> List:
         '''
         '''
         zipo = ccps.ccp(Rs, Bs)
-        ex_f_z = [self.__fdins(Lr, Lb, insre) for Lr, Lb in zipo]
+        ex_f_z = [self.filters(Lr, Lb, insre) for Lr, Lb in zipo]
         return ex_f_z
