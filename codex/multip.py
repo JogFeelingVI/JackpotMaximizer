@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-16 22:42:38
+# @Last Modified time: 2023-10-19 09:14:34
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
@@ -36,27 +36,27 @@ class random_rb:
         self.__nPool = []
         self.__weights = None
         self.__use_weights = False
-    
-    @property   
+
+    @property
     def nPool(self):
         return self.__nPool
-    
+
     @nPool.setter
     def nPool(self, value:List) -> None:
         self.__nPool = value
-        
+
     @property
     def weights(self):
         return self.__weights
-    
+
     @weights.setter
     def weights(self, value:List) -> None:
         self.__weights = value
-        
+
     @property
     def use_weights(self) -> bool:
         return self.__use_weights
-    
+
     @use_weights.setter
     def use_weights(self, value:bool) -> None:
         self.__use_weights = value
@@ -160,7 +160,7 @@ class mLpool:
         Dr = random_rb(self.data['R'], self.R)
         Db = random_rb(self.data['B'], self.B)
         depth: int = 1
-        
+
         while True:
             Rs = self.__rdxchoices_N(Dr)
             Bs = self.__rdxchoices_N(Db)
@@ -173,12 +173,12 @@ class mLpool:
             if depth >= self.mdep:
                 return [depth, [0], [0]]
 
-    
+
     def __rdxchoices_N(self, rand:random_rb) -> List[int]:
         rand.use_weights = self.UseWeights
         rand.get_number()
         return sorted(rand.dep)
-        
+
 
     def __fdins(self, NR: Union[list, tuple], NB: Union[list, tuple],
                 insre: re.Pattern) -> mode_f:

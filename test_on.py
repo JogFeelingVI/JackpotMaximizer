@@ -1,8 +1,9 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
-# @Last Modified by:   By JogFeelingVi
-# @Last Modified time: 2023-03-30 23:06:20
+# @Last Modified by:   JogFeelingVI
+# @Last Modified time: 2023-10-19 10:25:33
 
+import unittest
 
 def is_uncorrelated(a, b):
     n = len(a)
@@ -16,9 +17,13 @@ def is_uncorrelated(a, b):
     pearson_corr = covariance / (n * std_dev_a * std_dev_b)
     return abs(pearson_corr) < 0.4
 
+class TestStringMethods(unittest.TestCase):
+
+    def test_upper(self):
+        a = [1, 4, 9, 10, 20, 33]
+        c = [1, 4, 19, 21, 25, 33]
+        b = [2, 3, 9, 11, 12, 17]
+        is_uncorrelated(c, b)
 
 if __name__ == '__main__':
-    a = [1, 4, 9, 10, 20, 33]
-    c = [1, 4, 19, 21, 25, 33]
-    b = [2, 3, 9, 11, 12, 17]
-    print(is_uncorrelated(c, b))
+    unittest.main()
