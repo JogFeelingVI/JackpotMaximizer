@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-19 10:08:45
+# @Last Modified time: 2023-10-19 19:01:33
 from codex import funcs
 from codex.runingtime import runingtime
 
@@ -15,7 +15,7 @@ def Moni_T():
         'usew': False,
         'fix': 'a',
         'cpu': 'm',
-        'ins': '^(08)(.*)\s\+\s(12)$',
+        'ins': '(.*)',
         'n': 1000,
         'r': 6,
         'b': 1,

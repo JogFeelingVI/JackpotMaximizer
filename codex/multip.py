@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-19 16:46:43
+# @Last Modified time: 2023-10-19 19:32:33
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
@@ -60,6 +60,10 @@ class random_rb:
     @use_weights.setter
     def use_weights(self, value:bool) -> None:
         self.__use_weights = value
+        
+    def remake(self) -> None:
+        '''重新开始'''
+        self.dep = [0] * len(self.dep)
 
     def find_zero(self) -> int:
         '''find zero'''
@@ -169,9 +173,11 @@ class mLpool:
             #print(f'{self.prompt} runingtime {rinsx:.2f} s')
             if mode_f.Ok in rinsx:
                 return [depth, Rs, Bs]
-            depth += 1
             if depth >= self.mdep:
                 return [depth, [0], [0]]
+            depth += 1
+            Dr.remake()
+            Db.remake()
 
 
     def __rdxchoices_N(self, rand:random_rb) -> List[int]:
