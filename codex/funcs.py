@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
-# @Last Modified by:   By JogFeelingVi
-# @Last Modified time: 2022-10-03 15:26:39
+# @Last Modified by:   JogFeelingVI
+# @Last Modified time: 2023-10-19 20:57:28
 
 from typing import Any, List
 import os, re, json, enum
@@ -108,6 +108,7 @@ def loaddata() -> dict[str, List[int]]:
 
 
 def jiaoyan(r: List) -> bool:
+    ''' is [0,0,0,0] '''
     rex = False
     if type(r) in [list, tuple]:
         a, b, c, d = r
@@ -453,12 +454,11 @@ class action:
             for item in Retds:
                 self.__echo__(item)
 
-    def __planning__(self, rex: List) -> List:
+    def __planning__(self, rex: List, step: int = 5) -> List:
         ''' 
         xxxxx ^ xxxxx
         '''
         glos = []
-        step = 5
         temp = [x for x in rex if jiaoyan(x)]
         lent = temp.__len__()
         for i in range(0, lent, step):

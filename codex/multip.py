@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-19 19:32:33
+# @Last Modified time: 2023-10-19 20:44:46
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
@@ -27,6 +27,7 @@ class ccps:
         zipo = itr.product(Lir, Lib)
         return zipo
 
+
 class random_rb:
     '''random R & B'''
 
@@ -42,7 +43,7 @@ class random_rb:
         return self.__nPool
 
     @nPool.setter
-    def nPool(self, value:List) -> None:
+    def nPool(self, value: List) -> None:
         self.__nPool = value
 
     @property
@@ -50,7 +51,7 @@ class random_rb:
         return self.__weights
 
     @weights.setter
-    def weights(self, value:List) -> None:
+    def weights(self, value: List) -> None:
         self.__weights = value
 
     @property
@@ -58,9 +59,9 @@ class random_rb:
         return self.__use_weights
 
     @use_weights.setter
-    def use_weights(self, value:bool) -> None:
+    def use_weights(self, value: bool) -> None:
         self.__use_weights = value
-        
+
     def remake(self) -> None:
         '''重新开始'''
         self.dep = [0] * len(self.dep)
@@ -76,7 +77,10 @@ class random_rb:
         if self.nPool == [] or self.weights == None:
             counter = Counter(self.duilie)
             total = max(counter.values())
-            inverse_freq = {k: [total - v, 1][total == v] for k, v in counter.items()}
+            inverse_freq = {
+                k: [total - v, 1][total == v]
+                for k, v in counter.items()
+            }
             self.nPool = list(inverse_freq.keys())
             self.weights = list(inverse_freq.values())
 
@@ -104,6 +108,7 @@ class random_rb:
         if n in self.dep:
             return False
         return True
+
 
 class mLpool:
     cpu = os.cpu_count()
@@ -169,7 +174,7 @@ class mLpool:
             Rs = self.__rdxchoices_N(Dr)
             Bs = self.__rdxchoices_N(Db)
             # rinsx: mode_f = Findins(Rs, Bs, insre=ins)
-            rinsx = self.__combinations_ols(Rs, Bs, insre=self.iRx)
+            rinsx = self.__combinations_ols(Rs, Bs)
             #print(f'{self.prompt} runingtime {rinsx:.2f} s')
             if mode_f.Ok in rinsx:
                 return [depth, Rs, Bs]
@@ -179,26 +184,23 @@ class mLpool:
             Dr.remake()
             Db.remake()
 
-
-    def __rdxchoices_N(self, rand:random_rb) -> List[int]:
+    def __rdxchoices_N(self, rand: random_rb) -> List[int]:
         rand.use_weights = self.UseWeights
         rand.get_number()
         return sorted(rand.dep)
-    
-    
-    def filters(self, NR: Union[list, tuple], NB: Union[list, tuple],
-                insre: re.Pattern) -> mode_f:
-        
+
+    def filters(self, NR: Union[list, tuple], NB: Union[list,
+                                                        tuple]) -> mode_f:
+
         funx = {
-            'fdins': lambda r,b,i:self.__fdins(r,b,i),
-            'lianhao': lambda r,b,i: self.__lianhao(r),
+            'fdins': lambda r, b, i: self.__fdins(r, b, i),
+            'lianhao': lambda r, b, i: self.__lianhao(r),
         }
-        refilte = [f(NR,NB,insre) for k,f in funx.items()]
+        refilte = [f(NR, NB, self.iRx) for k, f in funx.items()]
         if mode_f.No in refilte:
             return mode_f.No
         else:
             return mode_f.Ok
-
 
     def __fdins(self, NR: Union[list, tuple], NB: Union[list, tuple],
                 insre: re.Pattern) -> mode_f:
@@ -220,21 +222,20 @@ class mLpool:
             except re.error as rerror:
                 print(f'{self.prompt} Findins error: {rerror.msg}')
                 return mode_f.Er
-    
-    def __lianhao(self,  NR: Union[list, tuple]) -> mode_f:
+
+    def __lianhao(self, NR: Union[list, tuple]) -> mode_f:
         snul = set(NR)
         C = [0] * len(NR)
         for i in range(len(NR) - 1):
             _n = NR[i]
-            if {_n+1, _n-1} & snul:
+            if {_n + 1, _n - 1} & snul:
                 C[i] = 1
         rebool = [mode_f.No, mode_f.Ok][C.count(1) < 2]
         return rebool
 
-    def __combinations_ols(self, Rs: List[int], Bs: List[int],
-                           insre: re.Pattern) -> List:
+    def __combinations_ols(self, Rs: List[int], Bs: List[int]) -> List:
         '''
         '''
         zipo = ccps.ccp(Rs, Bs)
-        ex_f_z = [self.filters(Lr, Lb, insre) for Lr, Lb in zipo]
+        ex_f_z = [self.filters(Lr, Lb) for Lr, Lb in zipo]
         return ex_f_z
