@@ -13,9 +13,12 @@
             "justMyCode": true,
             "args": [
                 "load",
+                "--loadins",
                 "--cpu",
                 "o",
-                "-n1000"
+                "-n10",
+                "--ins",
+                "^(03)\s(08)\s(13)(.*)"
             ]
         }
     ]

@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-19 20:44:46
+# @Last Modified time: 2023-10-20 15:32:56
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
@@ -224,13 +224,13 @@ class mLpool:
                 return mode_f.Er
 
     def __lianhao(self, NR: Union[list, tuple]) -> mode_f:
-        snul = set(NR)
-        C = [0] * len(NR)
-        for i in range(len(NR) - 1):
-            _n = NR[i]
-            if {_n + 1, _n - 1} & snul:
-                C[i] = 1
-        rebool = [mode_f.No, mode_f.Ok][C.count(1) < 2]
+        count = []
+        for n in NR:
+            if not count or n != count[-1][-1] + 1:
+                count.append([])
+            count[-1].append(n)
+        flgrex = sorted([len(n) for n in count if len(n) > 1])
+        rebool = [mode_f.No, mode_f.Ok][flgrex in [[],[3],[2],[2,2]]]
         return rebool
 
     def __combinations_ols(self, Rs: List[int], Bs: List[int]) -> List:
