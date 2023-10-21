@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-20 15:32:56
+# @Last Modified time: 2023-10-21 08:28:30
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
@@ -119,6 +119,9 @@ class mLpool:
 
     def __init__(self, data: dict, R: int, B: int, iRx: re.Pattern) -> None:
         self.data = data
+        self.rdada = self.data['R']
+        self.groupby = [self.rdada[i:i+6] for i in range(0,len(self.rdada),6)]
+        self.last = self.rdada[-6:]
         self.R = R
         self.B = B
         self.iRx = iRx
@@ -165,9 +168,10 @@ class mLpool:
             ins '^(01|07)....'
             这个算法不够优秀
         '''
-        #T1 = time.perf_counter()
-        Dr = random_rb(self.data['R'], self.R)
-        Db = random_rb(self.data['B'], self.B)
+        fix_r = self.data['R'] + self.data.get('fix_R', [])
+        fix_b = self.data['B'] + self.data.get('fix_B', [])
+        Dr = random_rb(fix_r, self.R)
+        Db = random_rb(fix_b, self.B)
         depth: int = 1
 
         while True:
@@ -195,6 +199,8 @@ class mLpool:
         funx = {
             'fdins': lambda r, b, i: self.__fdins(r, b, i),
             'lianhao': lambda r, b, i: self.__lianhao(r),
+            'linma': lambda r,b,i: self.__linma(r),
+            'jaccard': lambda r, b, i:self.__jaccard(r),
         }
         refilte = [f(NR, NB, self.iRx) for k, f in funx.items()]
         if mode_f.No in refilte:
@@ -232,6 +238,16 @@ class mLpool:
         flgrex = sorted([len(n) for n in count if len(n) > 1])
         rebool = [mode_f.No, mode_f.Ok][flgrex in [[],[3],[2],[2,2]]]
         return rebool
+    
+    def __linma(self,  NR: Union[list, tuple]) -> mode_f:
+        count = []
+        
+        for n in NR:
+            if n +1 in self.last or n-1 in self.last:
+                count.append(n)
+        reboot =  [mode_f.No, mode_f.Ok][len(count) in [0,1,2,3]]
+        return reboot
+        
 
     def __combinations_ols(self, Rs: List[int], Bs: List[int]) -> List:
         '''
@@ -239,3 +255,17 @@ class mLpool:
         zipo = ccps.ccp(Rs, Bs)
         ex_f_z = [self.filters(Lr, Lb) for Lr, Lb in zipo]
         return ex_f_z
+    
+    def __jaccard(self, NR: Union[list, tuple]):
+        '''雅卡尔相似数'''
+        def jc(a:List, b) -> float:
+            sa = set(a)
+            sb = set(b)
+            intersection = len(sa.intersection(sb))
+            union = len(sa.union(sb))
+            return intersection / union
+        jcduilie = [jc(x, NR) for x in self.groupby]
+        reboot = [False, True][max(jcduilie)< 0.34]
+        return reboot
+        
+            

@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-19 20:57:28
+# @Last Modified time: 2023-10-20 22:37:42
 
 from typing import Any, List
 import os, re, json, enum
@@ -39,6 +39,7 @@ class insrt:
 
 
 def insregs(ins: str) -> insrt:
+    ''' --ins '^(03)\s(08)\s(13)(.*)' '''
     try:
         temp: re.Pattern = re.compile(ins)
     except re.error as er:
@@ -100,7 +101,7 @@ def loaddata() -> dict[str, List[int]]:
         if (fps := get_file_path(file_name)) != None:
             with open(fps, 'r') as rbdata:
                 json_str = json.load(rbdata)
-                print(f'{prompt} loading buffer')
+                print(f'{prompt} loading buffer P{json_str["R"][-6:]}')
         return json_str
     except FileNotFoundError:
         print(f'{prompt} failed to load data from {file_name}, file not found')
@@ -318,6 +319,7 @@ class action:
 
     @property
     def loadinsx(self) -> str:
+        '''装载insx.reg文件内容'''
         _huan = re.compile('\\n')
         _zhus = re.compile('^#.*')
         _regs = re.compile('^[^#-].*')
@@ -344,6 +346,7 @@ class action:
         return ''.join(regadd)
 
     def __fix_ass__(self, rex: str):
+        ''' 处理 - 1 2 12 as R 类型的数据 '''
         _nums = re.compile('[0-9]{1,2}')
         _fixw = re.compile('(R|B)$')
         pfix = _fixw.findall(rex)
@@ -376,7 +379,7 @@ class action:
             kn_val = self.data.get(kn, [0])
             fix_kn = set(vl) ^ set(kn_val)
             if len(fix_kn) > 0:
-                self.data[kn] += fix_kn
+                self.data[f'fix_{kn}'] = list(fix_kn)
                 print(f'{prompt} fix {kn} {fix_kn}')
 
     def __cpuse__(self, argb: str) -> None:
