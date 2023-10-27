@@ -1,10 +1,11 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-21 08:28:30
+# @Last Modified time: 2023-10-27 21:24:04
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
+from codex.rego import rego, Note
 
 
 class mode_f(enum.Enum):
@@ -110,21 +111,34 @@ class random_rb:
         return True
 
 
+# end class
 class mLpool:
     cpu = os.cpu_count()
     mdep = 3000
     prompt = '[=]'
 
     __use_weights = False
+    __reego = False
+    __class_rego = None
 
     def __init__(self, data: dict, R: int, B: int, iRx: re.Pattern) -> None:
         self.data = data
         self.rdada = self.data['R']
-        self.groupby = [self.rdada[i:i+6] for i in range(0,len(self.rdada),6)]
+        self.groupby = [
+            self.rdada[i:i + 6] for i in range(0, len(self.rdada), 6)
+        ]
         self.last = self.rdada[-6:]
         self.R = R
         self.B = B
         self.iRx = iRx
+
+    @property
+    def reego(self) -> bool:
+        return self.__reego
+
+    @reego.setter
+    def reego(self, value: bool):
+        self.__reego = value
 
     @property
     def UseWeights(self) -> bool:
@@ -148,6 +162,7 @@ class mLpool:
             with mlps.Pool(processes=self.cpu) as p:
                 ns = n / [self.cpu, 4][self.cpu == None]
                 csize = [int(ns), 1][ns < 1]
+                # 从这里开始出现错误
                 self.iTx = p.map(self.makenuxe, N, chunksize=csize)
         else:
             self.iTx = [self.makenuxe(x) for x in N]
@@ -156,6 +171,7 @@ class mLpool:
     def makenuxe(self, n: int) -> List:
         '''
         makenux for all cpu
+        这里可以修改为 r, b = Note
         '''
         d, r, b = self.__SpawnPoolWorker()
         return [n, d, r, b]
@@ -193,23 +209,28 @@ class mLpool:
         rand.get_number()
         return sorted(rand.dep)
 
-    def filters(self, NR: Union[list, tuple], NB: Union[list,
-                                                        tuple]) -> mode_f:
+    def filters(self, N: Note) -> mode_f:
 
         funx = {
-            'fdins': lambda r, b, i: self.__fdins(r, b, i),
-            'lianhao': lambda r, b, i: self.__lianhao(r),
-            'linma': lambda r,b,i: self.__linma(r),
-            'jaccard': lambda r, b, i:self.__jaccard(r),
+            'fdins': lambda n, i: self.__fdins(n, i),
+            'lianhao': lambda n, i: self.__lianhao(n),
+            'linma': lambda n, i: self.__linma(n),
+            'jaccard': lambda n, i: self.__jaccard(n),
         }
-        refilte = [f(NR, NB, self.iRx) for k, f in funx.items()]
+        refilte = [f(N, self.iRx) for k, f in funx.items()]
+        if self.reego and self.__class_rego == None:
+            self.__class_rego = rego()
+            self.__class_rego.parse()
+        if self.reego and self.__class_rego != None:
+            erbool = self.__class_rego.filtration(N)
+            refilte.append([mode_f.No, mode_f.Ok][erbool])
+
         if mode_f.No in refilte:
             return mode_f.No
         else:
             return mode_f.Ok
 
-    def __fdins(self, NR: Union[list, tuple], NB: Union[list, tuple],
-                insre: re.Pattern) -> mode_f:
+    def __fdins(self, N: Note, insre: re.Pattern) -> mode_f:
         '''
         Find Ins 
         Nums type list
@@ -220,8 +241,8 @@ class mLpool:
             return mode_f.Ok
         else:
             try:
-                sNr = ' '.join([f'{x:02}' for x in NR])
-                sNb = ' '.join([f'{x:02}' for x in NB])
+                sNr = ' '.join([f'{x:02}' for x in N.setnumber_R])
+                sNb = ' '.join([f'{x:02}' for x in N.setnumber_B])
                 sNums = f'{sNr} + {sNb}'
                 Finx = len(insre.findall(sNums))
                 return mode_f.Ok if Finx >= 1 else mode_f.No
@@ -229,43 +250,42 @@ class mLpool:
                 print(f'{self.prompt} Findins error: {rerror.msg}')
                 return mode_f.Er
 
-    def __lianhao(self, NR: Union[list, tuple]) -> mode_f:
+    def __lianhao(self, N:Note) -> mode_f:
         count = []
-        for n in NR:
+        for n in N.number:
             if not count or n != count[-1][-1] + 1:
                 count.append([])
             count[-1].append(n)
         flgrex = sorted([len(n) for n in count if len(n) > 1])
-        rebool = [mode_f.No, mode_f.Ok][flgrex in [[],[3],[2],[2,2]]]
+        rebool = [mode_f.No, mode_f.Ok][flgrex in [[], [3], [2], [2, 2]]]
         return rebool
-    
-    def __linma(self,  NR: Union[list, tuple]) -> mode_f:
+
+    def __linma(self, N:Note) -> mode_f:
         count = []
-        
-        for n in NR:
-            if n +1 in self.last or n-1 in self.last:
+
+        for n in N.number:
+            if n + 1 in self.last or n - 1 in self.last:
                 count.append(n)
-        reboot =  [mode_f.No, mode_f.Ok][len(count) in [0,1,2,3]]
+        reboot = [mode_f.No, mode_f.Ok][len(count) in [0, 1, 2, 3]]
         return reboot
-        
 
     def __combinations_ols(self, Rs: List[int], Bs: List[int]) -> List:
         '''
         '''
         zipo = ccps.ccp(Rs, Bs)
-        ex_f_z = [self.filters(Lr, Lb) for Lr, Lb in zipo]
+        ex_f_z = [self.filters(Note(Lr,Lb)) for Lr, Lb in zipo]
         return ex_f_z
-    
-    def __jaccard(self, NR: Union[list, tuple]):
+
+    def __jaccard(self, N:Note):
         '''雅卡尔相似数'''
-        def jc(a:List, b) -> float:
+
+        def jc(a: List, b) -> float:
             sa = set(a)
             sb = set(b)
             intersection = len(sa.intersection(sb))
             union = len(sa.union(sb))
             return intersection / union
-        jcduilie = [jc(x, NR) for x in self.groupby]
-        reboot = [False, True][max(jcduilie)< 0.34]
+
+        jcduilie = [jc(x, N.number) for x in self.groupby]
+        reboot = [False, True][max(jcduilie) < 0.34]
         return reboot
-        
-            

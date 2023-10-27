@@ -2,8 +2,9 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-20 22:37:42
+# @Last Modified time: 2023-10-27 21:32:05
 
+import imp
 from typing import Any, List
 import os, re, json, enum
 from codex.ospath import os_path
@@ -11,6 +12,7 @@ from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
 from codex.multip import mLpool, ccps
+from codex.rego import rego
 
 maxdep: int = 6000
 prompt: str = '[+]'
@@ -39,7 +41,7 @@ class insrt:
 
 
 def insregs(ins: str) -> insrt:
-    ''' --ins '^(03)\s(08)\s(13)(.*)' '''
+    ''' --ins '^(03) (08) (13)(.*)' '''
     try:
         temp: re.Pattern = re.compile(ins)
     except re.error as er:
@@ -236,7 +238,7 @@ class action:
         return value
 
     @fmins.setter
-    def fmins(self, value: str):
+    def fmins(self, value: str) -> None:
         dvalu = {'ins': value}
         self.args.update(dvalu)
 
@@ -316,45 +318,6 @@ class action:
         if 'subcommand' in self.args.keys():
             value = str(self.args.get('subcommand', value))
         return value
-
-    @property
-    def loadinsx(self) -> str:
-        '''装载insx.reg文件内容'''
-        _huan = re.compile('\\n')
-        _zhus = re.compile('^#.*')
-        _regs = re.compile('^[^#-].*')
-        _asrb = re.compile('^-([ 0-9]+)as [R|B]$')
-        _insx = get_file_path(Resty.Oxinsreg.tostr())
-        regadd = ['']
-        with open(file=_insx, mode='r', encoding='utf-8') as regs:
-            reglins = regs.readlines()
-            for linx in reglins:
-                if _zhus.match(linx) == None:
-                    tmp_huan = _huan.sub('', linx)
-                    if (asin := _asrb.match(tmp_huan)) != None:
-                        # <re.Match object; span=(0, 12), match='- 9 8 2 as B'>
-                        self.__fix_ass__(asin.string)
-                    # bit_ regx
-                    if _regs.match(tmp_huan) != None:
-                        regx_is = insregs(tmp_huan)
-                        if regx_is.code == 1:
-                            regadd.append(tmp_huan)
-                        else:
-                            regadd.clear()
-                            regadd.append('(.*)')
-                            break
-        return ''.join(regadd)
-
-    def __fix_ass__(self, rex: str):
-        ''' 处理 - 1 2 12 as R 类型的数据 '''
-        _nums = re.compile('[0-9]{1,2}')
-        _fixw = re.compile('(R|B)$')
-        pfix = _fixw.findall(rex)
-        numx = [int(x) for x in _nums.findall(rex)]
-        for p in pfix:
-            self.data[p] = [x for x in self.data[p] if x not in numx]
-        if self.fmdebug == True:
-            print(f'{prompt_D} REX [{rex}] PFIX {pfix} NUM {numx}')
 
     def __Load_diff__(self) -> None:
         listx = '611602513504414405315216116016000300200100'
@@ -438,6 +401,7 @@ class action:
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
             cp_one = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            cp_one.reego = self.fmloadins
             reds = cp_one.run_works(self.fmn, mcp=False)
             reds = self.__planning__(reds)
             for inx in reds:
@@ -451,6 +415,7 @@ class action:
         if fmins_is.code == 1:
             print(f'{prompt} cpus {self.cpu} maxdep {maxdep}')
             cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            cp_all.reego = self.fmloadins
             cp_all.UseWeights = self.fmusew
             iRx = cp_all.run_works(self.fmn)
             Retds = self.__planning__(iRx)
@@ -482,6 +447,7 @@ class action:
         if fmins_is.code == 1:
             print(f'{prompt} cpus {self.cpu} maxdep {maxdep}')
             cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            cp_all.reego = self.fmloadins
             cp_all.UseWeights = self.fmusew
             Retds = cp_all.run_works(self.fmn)
             Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
@@ -501,8 +467,8 @@ class action:
         '''
         '''
         self.data = loaddata()
-        if self.fmloadins == True:
-            self.fmins = self.loadinsx
+        # if self.fmloadins == True:
+        #     self.reego = self.loadinsx
         if self.fmdebug == True:
             showargs(self.args)
         if self.fmcpu != None:
@@ -519,8 +485,8 @@ class action:
             if self.fmfix != None:
                 # 执行 fix 程序
                 self.__fixrba__(self.fmfix)
-            if self.fmloadins == True:
-                self.fmins = self.loadinsx
+            # if self.fmloadins == True:
+            #     self.reego = self.loadinsx
             Prn(N=self.fmr, B=self.fmb)
             # show debug
             if self.fmdebug == True:
