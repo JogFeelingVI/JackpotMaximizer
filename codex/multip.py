@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-27 22:45:50
+# @Last Modified time: 2023-10-29 06:01:31
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
@@ -215,6 +215,7 @@ class mLpool:
             'fdins': lambda n, i: self.__fdins(n, i),
             'lianhao': lambda n, i: self.__lianhao(n),
             'linma': lambda n, i: self.__linma(n),
+            'dzx': lambda n, i: self.__dzx(n),
             'jaccard': lambda n, i: self.__jaccard(n),
         }
         refilte = [f(N, self.iRx) for k, f in funx.items()]
@@ -268,6 +269,25 @@ class mLpool:
                 count.append(n)
         reboot = [mode_f.No, mode_f.Ok][len(count) in [0, 1, 2, 3]]
         return reboot
+    
+    def __dzx(self, N:Note) -> mode_f:
+        a = range(1, 34)
+        g = [a[i:i+11] for i in range(0, len(a), 11)]
+        count = [[],[],[]]
+        for ai in N.setnumber_R:
+            index = 1
+            while True:
+                if ai in g[index]:
+                    count[index].append(ai)
+                    break
+                else:
+                    if ai < min(g[index]):
+                        index -= 1
+                    if ai > max(g[index]):
+                        index += 1
+        flgrex = [len(x) for x in count]
+        rebool = [mode_f.No, mode_f.Ok][5 not in flgrex or 6 not in flgrex]
+        return rebool
 
     def __combinations_ols(self, Rs: List[int], Bs: List[int]) -> List:
         '''
