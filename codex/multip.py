@@ -1,10 +1,11 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-29 06:01:31
+# @Last Modified time: 2023-11-01 06:09:53
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
+from codex import glns_v2
 from codex.rego import rego, Note
 
 
@@ -28,87 +29,6 @@ class ccps:
         zipo = itr.product(Lir, Lib)
         return zipo
 
-
-class random_rb:
-    '''random R & B'''
-
-    def __init__(self, rb: List[int], L: int) -> None:
-        self.dep = [0] * L
-        self.duilie = rb
-        self.__nPool = []
-        self.__weights = None
-        self.__use_weights = False
-
-    @property
-    def nPool(self):
-        return self.__nPool
-
-    @nPool.setter
-    def nPool(self, value: List) -> None:
-        self.__nPool = value
-
-    @property
-    def weights(self):
-        return self.__weights
-
-    @weights.setter
-    def weights(self, value: List) -> None:
-        self.__weights = value
-
-    @property
-    def use_weights(self) -> bool:
-        return self.__use_weights
-
-    @use_weights.setter
-    def use_weights(self, value: bool) -> None:
-        self.__use_weights = value
-
-    def remake(self) -> None:
-        '''重新开始'''
-        self.dep = [0] * len(self.dep)
-
-    def find_zero(self) -> int:
-        '''find zero'''
-        if 0 in self.dep:
-            return self.dep.index(0)
-        return -1
-
-    def __initializations(self):
-        '''initialization data'''
-        if self.nPool == [] or self.weights == None:
-            counter = Counter(self.duilie)
-            total = max(counter.values())
-            inverse_freq = {
-                k: [total - v, 1][total == v]
-                for k, v in counter.items()
-            }
-            self.nPool = list(inverse_freq.keys())
-            self.weights = list(inverse_freq.values())
-
-    def get_number(self):
-        find = self.find_zero()
-        if find == -1:
-            return True
-
-        if self.nPool == []:
-            self.__initializations()
-        if self.use_weights:
-            result = rdm.choices(self.nPool, weights=self.weights, k=6)
-        else:
-            result = rdm.choices(self.nPool, k=6)
-        for num in result:
-            if self.__isok(n=num, index=find):
-                self.dep[find] = num
-                if self.get_number():
-                    return True
-                self.dep[find] = 0
-        return False
-
-    def __isok(self, n: int, index: int) -> bool:
-        '''判断数字是否符合标准'''
-        if n in self.dep:
-            return False
-        return True
 
 
 # end class
@@ -186,8 +106,8 @@ class mLpool:
         '''
         fix_r = self.data['R'] + self.data.get('fix_R', [])
         fix_b = self.data['B'] + self.data.get('fix_B', [])
-        Dr = random_rb(fix_r, self.R)
-        Db = random_rb(fix_b, self.B)
+        Dr = glns_v2.random_rb(fix_r, self.R)
+        Db = glns_v2.random_rb(fix_b, self.B)
         depth: int = 1
 
         while True:
@@ -201,11 +121,11 @@ class mLpool:
             if depth >= self.mdep:
                 return [depth, [0], [0]]
             depth += 1
-            Dr.remake()
-            Db.remake()
+            Dr.remark()
+            Db.remark()
 
-    def __rdxchoices_N(self, rand: random_rb) -> List[int]:
-        rand.use_weights = self.UseWeights
+    def __rdxchoices_N(self, rand: glns_v2.random_rb) -> List[int]:
+        rand.usew = self.UseWeights
         rand.get_number()
         return sorted(rand.dep)
 
@@ -221,7 +141,7 @@ class mLpool:
         refilte = [f(N, self.iRx) for k, f in funx.items()]
         if self.reego and self.__class_rego == None:
             self.__class_rego = rego()
-            self.__class_rego.parse()
+            self.__class_rego.parse_v2()
         if self.reego and self.__class_rego != None:
             erbool = self.__class_rego.filtration(N)
             refilte.append([mode_f.No, mode_f.Ok][erbool])
