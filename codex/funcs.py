@@ -2,19 +2,18 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-27 21:32:05
+# @Last Modified time: 2023-11-05 20:34:54
 
-import imp
+import time
 from typing import Any, List
 import os, re, json, enum
 from codex.ospath import os_path
 from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
-from codex.multip import mLpool, ccps
-from codex.rego import rego
+from codex.multip_v2 import mLpool, ccps
 
-maxdep: int = 6000
+maxdep: int = 3000
 prompt: str = '[+]'
 prompt_L = '[-]'
 prompt_W = '[!]'
@@ -349,7 +348,7 @@ class action:
         '''
         str o one
         str a all
-        str m Moni TEST
+        str m Moni test
         '''
         cmds = {
             'o': lambda: self.__cpu_one__(),
@@ -445,7 +444,8 @@ class action:
         '''
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
-            print(f'{prompt} cpus {self.cpu} maxdep {maxdep}')
+            t1 = time.time()
+            print(f'{prompt} moni cpus {self.cpu} maxdep {maxdep}')
             cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
             cp_all.reego = self.fmloadins
             cp_all.UseWeights = self.fmusew
@@ -465,10 +465,14 @@ class action:
 
     def Moni_Calcu(self):
         '''
+        执行模拟计算
         '''
         self.data = loaddata()
         # if self.fmloadins == True:
         #     self.reego = self.loadinsx
+        if self.fmfix != None:
+                # 执行 fix 程序
+            self.__fixrba__(self.fmfix)
         if self.fmdebug == True:
             showargs(self.args)
         if self.fmcpu != None:
