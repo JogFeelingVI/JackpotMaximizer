@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-31 05:48:28
+# @Last Modified time: 2023-11-05 22:32:40
 
 from collections import Counter, deque
 import itertools
@@ -91,7 +91,7 @@ class filterN_v2:
             'dzx': self.dzx
         }
         if self.debug == False:
-            diskey = ['sixlan', 'duplicates', 'denji', 'hisdiff']
+            diskey = ['sixlan', 'duplicates', 'denji', 'hisdiff', 'ac']
             for k in diskey:
                 self.filters.pop(k)
 
@@ -263,9 +263,9 @@ class random_rb:
         if self.nPool == []:
             self.__initializations()
         if self.usew:
-            result = random.choices(self.nPool, weights=self.weights, k=7)
+            result = random.choices(self.nPool, weights=self.weights, k=6)
         else:
-            result = random.choices(self.nPool, k=7)
+            result = random.choices(self.nPool, k=6)
         for num in result:
             if self.__isok(n=num, index=find):
                 self.dep[find] = num
