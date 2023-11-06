@@ -2,9 +2,9 @@
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-01 06:04:43
+# @Last Modified time: 2023-11-06 16:28:39
 
-import re
+import re, time
 from typing import List
 import pathlib
 from codex.glns_v2 import Note
@@ -94,7 +94,7 @@ class rego:
             for _m in _match:
                 _n = re.compile('[0-9]{1,2}')
                 nm = [int(x, base=10) for x in _n.findall(_m)]
-                temp.append({'name': 'baohan', 'rb': ['R'], 'number': nm})
+                temp.append({'name': 'baohan', 'rb': '', 'number': nm})
             return temp
         return None
 
@@ -108,7 +108,7 @@ class rego:
                 _n = re.compile(r'\s([0-9]{1,2})')
                 p = re.compile(r'@bit([1-7])$').findall(_m)[0]
                 nm = [int(x, base=10) for x in _n.findall(_m)]
-                temp.append({'name': f'bit_{p}', 'rb': [], 'number': nm})
+                temp.append({'name': f'bit_{p}', 'rb': '', 'number': nm})
             return temp
         return None
 
@@ -122,7 +122,7 @@ class rego:
                 _n = re.compile(r'\s([0-9]{1,2})')
                 p = re.compile(r'@bit([1-7])$').findall(_m)[0]
                 nm = [int(x, base=10) for x in _n.findall(_m)]
-                temp.append({'name': f'bitex_{p}', 'rb': [], 'number': nm})
+                temp.append({'name': f'bitex_{p}', 'rb': '', 'number': nm})
             return temp
         return None
 
@@ -154,9 +154,8 @@ class rego:
         '''包含'''
         re_args = []
         if args['name'] == 'baohan':
-            if 'R' in args['rb']:
-                jtwo = N.setnumber_R.intersection(set(args['number']))
-                re_args.append([1, 0][jtwo.__len__() > 0])
+            jtwo = N.setnumber_R.intersection(set(args['number']))
+            re_args.append([1, 0][jtwo.__len__() > 0])
         return [False, True][1 not in re_args]
 
     @staticmethod
@@ -184,8 +183,10 @@ class rego:
 
         return [False, True][1 not in re_args]
 
-    def filtration(self, N: Note) -> bool:
+    def filtration_Olde(self, N: Note) -> bool:
+        '''这个程序急需优化'''
         if self.__parse_dict != None:
+            print(f'debug {self.__parse_dict}')
             for linex in self.__parse_dict:
                 if linex != None and isinstance(linex, dict):
                     funx = self.funcx[linex['name']]
@@ -198,3 +199,16 @@ class rego:
                         return refv
             return True
         return True
+    
+    def filtration(self, N:Note) -> bool:
+        '''优化后的程序'''
+        NLs = [N] * self.__parse_dict.__len__()
+        rext = map(self.anis, NLs, self.__parse_dict)
+        if False in rext:
+            return False
+        return True
+        
+    def anis(self, N:Note, linex:dict) -> bool:
+        '''{name: paichu, rb: [R], number: [10, 30, 15, 11]}'''
+        funx = self.funcx[linex['name']](N, linex)
+        return funx

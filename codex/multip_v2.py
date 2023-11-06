@@ -1,23 +1,13 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-05 21:14:23
+# @Last Modified time: 2023-11-06 22:47:48
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
 from codex import glns_v2
 from codex.rego import rego, Note
 import time
-
-
-class mode_f(enum.Enum):
-    '''
-    find mode ok, no, er
-    '''
-    Ok = 1
-    No = 2
-    Er = -1
-
 
 class ccps:
 
@@ -45,6 +35,7 @@ class mLpool:
     def __init__(self, data: dict, R: int, B: int, iRx: re.Pattern) -> None:
         print(f'{self.prompt} Use mLpooL V2')
         self.__glnsv2 = glns_v2.glnsMpls(data)
+        #print(f'debug {self.__glnsv2.maxjac_v2([3, 8, 19, 22, 26, 32])}')
         self.__filterv2 = glns_v2.filterN_v2()
         self.__filterv2.Last = self.__glnsv2.getlast
         self.__filterv2.Lever = self.__glnsv2.getabc
@@ -101,15 +92,16 @@ class mLpool:
             n = self.__glnsv2.creativity()
             # rinsx: mode_f = Findins(Rs, Bs, insre=ins)
             rinsx = self.__combinations_ols(N=n)
-            if mode_f.Ok in rinsx:
+            if True in rinsx:
                 #print(f'{self.prompt} runingtime {rinsx} s')
                 return [index, depth, n.number, n.tiebie]
             if depth >= self.mdep:
                 return [index, depth, [0], [0]]
             depth += 1
-
-
-    def filters(self, N: Note) -> mode_f:
+            
+    def filter_map(self, Z) -> bool:
+        Nr, Nb = Z
+        N = Note(Nr,Nb)
         # run rego
         if self.reego:
             if self.__class_rego == None:
@@ -118,22 +110,46 @@ class mLpool:
                 
             if self.__class_rego.filtration(N) == False:
                 #print(f'rego FALSE N {N}')
-                return mode_f.No
+                return False
         # fins
         if self.fdins(N, self.iRx) == False:
             #print(f'debug fdins FALSE')
-            return mode_f.No
+            return False
         # filterv2
         for kfunc in self.__filterv2.filters.values():
             if kfunc(N) == False:
                 #print(f'filters {k:>8} FALSE N {N}')
-                return mode_f.No
+                return False
         #print(f'filters True N {N}')
-        return mode_f.Ok
+        return True
+
+
+    def filters(self, N: Note) -> bool:
+        
+        # fins
+        if self.fdins(N, self.iRx) == False:
+            #print(f'debug fdins FALSE')
+            return False
+        # filterv2
+        for kfunc in self.__filterv2.filters.values():
+            if kfunc(N) == False:
+                #print(f'filters {k:>8} FALSE N {N}')
+                return False
+        # run rego
+        if self.reego:
+            if self.__class_rego == None:
+                self.__class_rego = rego()
+                self.__class_rego.parse_v2()
+                
+            if self.__class_rego.filtration(N) == False:
+                #print(f'rego FALSE N {N}')
+                return False
+        #print(f'filters True N {N}')
+        return True
     
     
 
-    def fdins(self, N: Note, insre: re.Pattern) -> mode_f:
+    def fdins(self, N: Note, insre: re.Pattern) -> bool:
         '''
         Find Ins 
         Nums type list
@@ -141,17 +157,17 @@ class mLpool:
         '''
         if insre == re.compile('(.*)'):
             # 不做任何限制
-            return mode_f.Ok
+            return True
         else:
             try:
                 sNr = ' '.join([f'{x:02}' for x in N.setnumber_R])
                 sNb = ' '.join([f'{x:02}' for x in N.setnumber_B])
                 sNums = f'{sNr} + {sNb}'
                 Finx = len(insre.findall(sNums))
-                return mode_f.Ok if Finx >= 1 else mode_f.No
+                return True if Finx >= 1 else False
             except re.error as rerror:
                 print(f'{self.prompt} Findins error: {rerror.msg}')
-                return mode_f.Er
+                return False
 
 
     def __combinations_ols(self, N:Note) -> List:
@@ -159,4 +175,5 @@ class mLpool:
         '''
         zipo = ccps.ccp(N.setnumber_R, N.setnumber_B)
         ex_f_z = [self.filters(Note(Lr,Lb)) for Lr, Lb in zipo]
+        #ex_f_z = map(self.filters, ex_f_z)
         return ex_f_z

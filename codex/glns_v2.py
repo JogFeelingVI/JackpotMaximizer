@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-05 22:32:40
+# @Last Modified time: 2023-11-06 23:17:52
 
 from collections import Counter, deque
 import itertools
@@ -357,9 +357,8 @@ class glnsMpls:
         get_b = random_rb(self.FixB, self.bLen)
         while True:
             get_r.get_number()
-            get_b.get_number()
-            #n = Note(n=get_r.dep, T=get_b.dep)
-            if self.maxjac(N=get_r.dep) < 0.24:
+            if self.maxjac_v2(N=get_r.dep) <= 0.33:
+                get_b.get_number()
                 return Note(n=get_r.dep, T=get_b.dep)
             else:
                 get_r.remark()
@@ -374,5 +373,10 @@ class glnsMpls:
             intersection = len(set_a.intersection(set_b))
             union = len(set_a.union(set_b))
             return intersection / union
-        g = [jaccard(x, N) for x in self.groupby]
+        nls = [N] * 30
+        g = map(jaccard, nls, self.groupby)
         return max(g)
+    
+    def maxjac_v2(self, N: List) -> float:
+        # [2, 6, 20, 25, 29, 33]
+        return 0.33
