@@ -2,10 +2,11 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-06 23:17:52
+# @Last Modified time: 2023-11-08 06:03:59
 
 from collections import Counter, deque
 import itertools
+import math
 import random
 from typing import List
 
@@ -52,13 +53,13 @@ class filterN_v2:
     __Lever = {}
     __Last = [0, 0, 0, 0, 0, 0]
     __debug = False
-    
+
     @property
     def debug(self) -> bool:
         return self.__debug
-    
+
     @debug.setter
-    def debug(self, value:bool) -> None:
+    def debug(self, value: bool) -> None:
         self.__debug = value
 
     @property
@@ -119,7 +120,8 @@ class filterN_v2:
     def acvalue(self, N: Note) -> bool:
         '''计算数字复杂程度 默认 P len = 6 这里操造成效率低下'''
         p = list(N.setnumber_R)
-        ac = len(set(x - y for x in p[1::] for y in p[0:5] if x > y)) - (len(p) - 1)
+        ac = len(set(x - y for x in p[1::]
+                     for y in p[0:5] if x > y)) - (len(p) - 1)
         return [False, True][ac >= 4]
 
     def linma(self, N: Note) -> bool:
@@ -354,15 +356,14 @@ class glnsMpls:
     def creativity(self) -> Note:
         '''产生号码'''
         get_r = random_rb(self.FixR, self.rLen)
-        get_b = random_rb(self.FixB, self.bLen)
         while True:
             get_r.get_number()
-            if self.maxjac_v2(N=get_r.dep) <= 0.33:
+            if self.maxjac_v2(N=get_r.dep) > 0.2:
+                get_b = random_rb(self.FixB, self.bLen)
                 get_b.get_number()
                 return Note(n=get_r.dep, T=get_b.dep)
             else:
                 get_r.remark()
-                get_b.remark()
 
     def maxjac(self, N: List) -> float:
         # [2, 6, 20, 25, 29, 33]
@@ -373,10 +374,18 @@ class glnsMpls:
             intersection = len(set_a.intersection(set_b))
             union = len(set_a.union(set_b))
             return intersection / union
+
         nls = [N] * 30
         g = map(jaccard, nls, self.groupby)
         return max(g)
-    
+
     def maxjac_v2(self, N: List) -> float:
         # [2, 6, 20, 25, 29, 33]
         return 0.33
+
+    def cosv(self, N: List) -> float:
+        dot = sum(a * b for a, b in zip(N, self.getlast))
+        normx = math.sqrt(sum([a * a for a in N]))
+        normy = math.sqrt(sum([a * a for a in self.getlast]))
+        cos = dot / (normx * normy)
+        return cos

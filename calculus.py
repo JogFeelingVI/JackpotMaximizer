@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-06 06:51:35
+# @Last Modified time: 2023-11-09 05:35:12
 from re import T
 from codex import funcs
 from codex.runingtime import runingtime
@@ -12,7 +12,7 @@ from codex.runingtime import runingtime
 def Moni_T():
     args = {
         'debug': False,
-        'loadins': True, 
+        'loadins': True,
         'usew': False,
         'fix': 'a',
         'cpu': 'm',

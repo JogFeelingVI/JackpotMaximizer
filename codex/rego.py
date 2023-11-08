@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-06 16:28:39
+# @Last Modified time: 2023-11-09 06:15:42
 
 import re, time
 from typing import List
@@ -186,7 +186,7 @@ class rego:
     def filtration_Olde(self, N: Note) -> bool:
         '''这个程序急需优化'''
         if self.__parse_dict != None:
-            print(f'debug {self.__parse_dict}')
+            #print(f'debug {self.__parse_dict}')
             for linex in self.__parse_dict:
                 if linex != None and isinstance(linex, dict):
                     funx = self.funcx[linex['name']]
@@ -199,6 +199,8 @@ class rego:
                         return refv
             return True
         return True
+    
+    
     
     def filtration(self, N:Note) -> bool:
         '''优化后的程序'''

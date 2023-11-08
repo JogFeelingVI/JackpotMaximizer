@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-03 21:09:24
+# @Last Modified time: 2023-11-08 06:17:04
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
@@ -226,5 +226,5 @@ class mLpool:
             return intersection / union
 
         jcduilie = [jc(x, N.number) for x in self.groupby]
-        reboot = [False, True][max(jcduilie) < 0.24]
+        reboot = [False, True][max(jcduilie) > 0.19]
         return reboot
