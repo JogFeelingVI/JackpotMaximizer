@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-09 06:15:42
+# @Last Modified time: 2023-11-10 20:59:01
 
 import re, time
 from typing import List
@@ -183,7 +183,7 @@ class rego:
 
         return [False, True][1 not in re_args]
 
-    def filtration_Olde(self, N: Note) -> bool:
+    def filtration_olde(self, N: Note) -> bool:
         '''这个程序急需优化'''
         if self.__parse_dict != None:
             #print(f'debug {self.__parse_dict}')

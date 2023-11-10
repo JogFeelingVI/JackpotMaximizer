@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-09 05:44:13
+# @Last Modified time: 2023-11-10 21:11:12
 
 import time
 from typing import Any, List
@@ -450,6 +450,7 @@ class action:
             cp_all.reego = self.fmloadins
             cp_all.UseWeights = self.fmusew
             Retds = cp_all.run_works(self.fmn)
+            print(f'debug {Retds[0:4]}')
             Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
             iRex = len(Rex)
             if iRex == 0:

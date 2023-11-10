@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-09 06:16:21
+# @Last Modified time: 2023-11-10 21:07:14
 from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
@@ -107,7 +107,7 @@ class mLpool:
                 self.__class_rego = rego()
                 self.__class_rego.parse_v2()
 
-            if self.__class_rego.filtration_Olde(N) == False:
+            if self.__class_rego.filtration_olde(N) == False:
                 #print(f'rego FALSE N {N}')
                 return False
         # fins

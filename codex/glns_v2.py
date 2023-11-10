@@ -2,12 +2,10 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-08 06:03:59
+# @Last Modified time: 2023-11-10 21:17:00
 
 from collections import Counter, deque
-import itertools
-import math
-import random
+import itertools, random, math, time
 from typing import List
 
 
@@ -257,6 +255,11 @@ class random_rb:
             self.nPool = list(inverse_freq.keys())
             self.weights = list(inverse_freq.values())
 
+    def get_number_v2(self):
+        if self.nPool == []:
+            self.__initializations()
+        self.dep = random.sample(self.nPool, k=self.len)
+
     def get_number(self):
         find = self.find_zero()
         if find == -1:
@@ -357,10 +360,11 @@ class glnsMpls:
         '''产生号码'''
         get_r = random_rb(self.FixR, self.rLen)
         while True:
-            get_r.get_number()
-            if self.maxjac_v2(N=get_r.dep) > 0.2:
+            #ti = time.time()
+            get_r.get_number_v2()
+            if self.maxjac(N=get_r.dep) > 0.19:
                 get_b = random_rb(self.FixB, self.bLen)
-                get_b.get_number()
+                get_b.get_number_v2()
                 return Note(n=get_r.dep, T=get_b.dep)
             else:
                 get_r.remark()
@@ -381,7 +385,7 @@ class glnsMpls:
 
     def maxjac_v2(self, N: List) -> float:
         # [2, 6, 20, 25, 29, 33]
-        return 0.33
+        return 0.2
 
     def cosv(self, N: List) -> float:
         dot = sum(a * b for a, b in zip(N, self.getlast))
