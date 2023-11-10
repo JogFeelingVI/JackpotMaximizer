@@ -2,9 +2,8 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-10 21:11:12
+# @Last Modified time: 2023-11-10 22:18:54
 
-import time
 from typing import Any, List
 import os, re, json, enum
 from codex.ospath import os_path
@@ -444,13 +443,11 @@ class action:
         '''
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
-            t1 = time.time()
             print(f'{prompt} moni cpus {self.cpu} maxdep {maxdep}')
             cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
             cp_all.reego = self.fmloadins
             cp_all.UseWeights = self.fmusew
             Retds = cp_all.run_works(self.fmn)
-            print(f'debug {Retds[0:4]}')
             Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
             iRex = len(Rex)
             if iRex == 0:
