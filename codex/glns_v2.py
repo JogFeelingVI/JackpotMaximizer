@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-10 22:08:39
+# @Last Modified time: 2023-11-10 22:42:57
 
 from collections import Counter, deque
 import itertools, random, math, time
@@ -359,7 +359,7 @@ class glnsMpls:
     def creativity(self) -> Note:
         '''产生号码'''
         get_r = random_rb(self.FixR, self.rLen)
-        while True:
+        while 1:
             get_r.get_number_v2()
             if self.maxjac(N=get_r.dep) > 0.19:
                 get_b = random_rb(self.FixB, self.bLen)
