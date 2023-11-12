@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-10 22:42:57
+# @Last Modified time: 2023-11-12 22:01:24
 
 from collections import Counter, deque
 import itertools, random, math, time
@@ -11,7 +11,7 @@ from typing import List
 
 class Note:
 
-    def __init__(self, n: List[int], T: List[int] | int) -> None:
+    def __init__(self, n: List[int]=[0,0,0,0,0,0], T: List[int] | int=0) -> None:
         """Note
 
         Args:
@@ -101,7 +101,7 @@ class filterN_v2:
         count = [[], [], []]
         for ai in N.setnumber_R:
             index = 1
-            while True:
+            while 1:
                 if ai in g[index]:
                     count[index].append(ai)
                     break
@@ -359,14 +359,17 @@ class glnsMpls:
     def creativity(self) -> Note:
         '''产生号码'''
         get_r = random_rb(self.FixR, self.rLen)
+        N = Note()
         while 1:
             get_r.get_number_v2()
             if self.maxjac(N=get_r.dep) > 0.19:
                 get_b = random_rb(self.FixB, self.bLen)
                 get_b.get_number_v2()
-                return Note(n=get_r.dep, T=get_b.dep)
+                N = Note(n=get_r.dep, T=get_b.dep)
+                break
             else:
                 get_r.remark()
+        return N
 
     def maxjac(self, N: List) -> float:
         # [2, 6, 20, 25, 29, 33]

@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-10 22:18:44
+# @Last Modified time: 2023-11-12 21:50:52
 import multiprocessing as mlps, os, re, itertools as itr
 from typing import List, Iterable
 from codex import glns_v2
@@ -86,15 +86,14 @@ class mLpool:
             这个算法不够优秀
         '''
         depth: int = 1
-        while True:
+        while depth <= self.mdep:
             n = self.__glnsv2.creativity()
             rinsx = self.__combinations_ols(N=n)
             if True in rinsx:
                 #print(f'{self.prompt} runingtime {rinsx} s')
                 return [index, depth, n.number, n.tiebie]
-            if depth >= self.mdep:
-                return [index, depth, [0], [0]]
             depth += 1
+        return [index, depth, [0], [0]]
 
     def filter_map(self, zipo_item) -> bool:
         Nr, Nb = zipo_item
