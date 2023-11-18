@@ -1,12 +1,13 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-10-19 20:57:38
+# @Last Modified time: 2023-11-17 21:30:16
 
 import unittest
 
 
 def is_uncorrelated(a, b):
+    
     '''计算数字相关度'''
     n = len(a)
     avg_a = (sum(a) / n)
