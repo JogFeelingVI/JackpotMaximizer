@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-12 22:01:24
+# @Last Modified time: 2023-11-19 14:36:37
 
 from collections import Counter, deque
 import itertools, random, math, time
@@ -362,7 +362,7 @@ class glnsMpls:
         N = Note()
         while 1:
             get_r.get_number_v2()
-            if self.maxjac(N=get_r.dep) > 0.19:
+            if self.cosv(N=get_r.dep) > 0.9:
                 get_b = random_rb(self.FixB, self.bLen)
                 get_b.get_number_v2()
                 N = Note(n=get_r.dep, T=get_b.dep)

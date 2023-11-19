@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-12 21:50:52
+# @Last Modified time: 2023-11-19 14:34:34
 import multiprocessing as mlps, os, re, itertools as itr
 from typing import List, Iterable
 from codex import glns_v2
@@ -73,9 +73,9 @@ class mLpool:
                 csize = [int(ns), 1][ns < 1]
                 # 从这里开始出现错误
                 iTx = p.map(self.SpawnPoolWorker, N, chunksize=csize)
+                return iTx
         else:
-            iTx = [self.SpawnPoolWorker(x) for x in N]
-        return iTx
+            return [self.SpawnPoolWorker(x) for x in N]
 
     def SpawnPoolWorker(self, index: int) -> List:
         '''
