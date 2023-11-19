@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-19 14:34:34
+# @Last Modified time: 2023-11-19 22:36:35
 import multiprocessing as mlps, os, re, itertools as itr
 from typing import List, Iterable
 from codex import glns_v2
@@ -33,7 +33,6 @@ class mLpool:
     def __init__(self, data: dict, R: int, B: int, iRx: re.Pattern) -> None:
         print(f'{self.prompt} Use mLpooL V2')
         self.__glnsv2 = glns_v2.glnsMpls(data)
-        #print(f'debug {self.__glnsv2.maxjac_v2([3, 8, 19, 22, 26, 32])}')
         self.__filterv2 = glns_v2.filterN_v2()
         self.__filterv2.Last = self.__glnsv2.getlast
         self.__filterv2.Lever = self.__glnsv2.getabc
@@ -69,8 +68,9 @@ class mLpool:
         N = [x for x in range(1, n + 1)]
         if mcp:
             with mlps.Pool(processes=self.cpu) as p:
-                ns = n / [self.cpu, 4][self.cpu == None]
-                csize = [int(ns), 1][ns < 1]
+                if self.cpu == None:
+                    self.cpu = 4
+                csize = n // self.cpu + [1, 0][n % self.cpu == 0]
                 # 从这里开始出现错误
                 iTx = p.map(self.SpawnPoolWorker, N, chunksize=csize)
                 return iTx
@@ -83,14 +83,12 @@ class mLpool:
             Rlen R len 1, 2, 3, 4, 5, 6 + Blen
             Blen B len 1 - 16
             ins '^(01|07)....'
-            这个算法不够优秀
         '''
         depth: int = 1
         while depth <= self.mdep:
             n = self.__glnsv2.creativity()
             rinsx = self.__combinations_ols(N=n)
             if True in rinsx:
-                #print(f'{self.prompt} runingtime {rinsx} s')
                 return [index, depth, n.number, n.tiebie]
             depth += 1
         return [index, depth, [0], [0]]

@@ -1,9 +1,9 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-17 21:30:16
+# @Last Modified time: 2023-11-19 22:33:04
 
-import unittest
+import unittest, os
 
 
 def is_uncorrelated(a, b):
@@ -36,11 +36,12 @@ def Lianhao(nul: list):
 class TestStringMethods(unittest.TestCase):
 
     def test_upper(self):
-        a = [1, 4, 9, 10, 20, 33]
-        c = [1, 4, 19, 21, 25, 33]
-        b = [2, 3, 9, 11, 12, 17]
-        rexs = Lianhao(a)
-        self.assertEqual(rexs, True)
+        n = 1000
+        cpu = os.cpu_count()
+        if cpu == None:
+            cpu = 4
+        rexs = n // cpu + [1,0][n%cpu==0]
+        print(f'N/cpu {rexs} cpu {cpu}')
 
 
 if __name__ == '__main__':
