@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-19 14:36:37
+# @Last Modified time: 2023-11-21 12:45:17
 
 from collections import Counter, deque
 import itertools, random, math, time
@@ -11,7 +11,9 @@ from typing import List
 
 class Note:
 
-    def __init__(self, n: List[int]=[0,0,0,0,0,0], T: List[int] | int=0) -> None:
+    def __init__(self,
+                 n: List[int] = [0, 0, 0, 0, 0, 0],
+                 T: List[int] | int = 0) -> None:
         """Note
 
         Args:
@@ -59,6 +61,7 @@ class filterN_v2:
     @debug.setter
     def debug(self, value: bool) -> None:
         self.__debug = value
+        self.__init__filters()
 
     @property
     def Lever(self) -> dict:
@@ -78,21 +81,25 @@ class filterN_v2:
     def Last(self, value: List[int]):
         self.__Last = value
 
-    def __init__(self) -> None:
+    def __init__filters(self) -> None:
         self.filters = {
-            'sixlan': self.sixlan,
+            'sixlan': self.sixlan,  #
+            'duplicates': self.duplicates,  #
             'linma': self.linma,
-            'duplicates': self.duplicates,
+            'hisdiff': self.hisdiff,  #
+            'dzx': self.dzx,
             'lianhao': self.lianhao,
-            'denji': self.denji,
-            'hisdiff': self.hisdiff,
             'ac': self.acvalue,
-            'dzx': self.dzx
+            'denji': self.denji,  #
         }
-        if self.debug == False:
-            diskey = ['sixlan', 'duplicates', 'denji', 'hisdiff', 'ac']
+
+        if self.__debug == False:
+            diskey = ['sixlan', 'duplicates', 'denji', 'hisdiff']
             for k in diskey:
                 self.filters.pop(k)
+
+    def __init__(self) -> None:
+        self.__init__filters()
 
     def dzx(self, N: Note) -> bool:
         '''xiao zhong da'''
@@ -163,14 +170,13 @@ class filterN_v2:
         '''
         [(4, 1), (20, 3), (7, 3), (23, 3), (21, 3), (2, 4), (29, 4), (28, 4), (5, 4), (12, 4), (17, 4)]
         '''
-        bools = False
-        if self.Lever.keys() == 0:
+        bools = True
+        if self.Lever.keys().__len__() == 0:
             return True
-        rex = []
-        for _, v in self.Lever.items():
-            vz = [x[0] for x in v]
-            rex.append(any(x in N.setnumber_R for x in vz))
-        bools = [False, True][False not in rex]
+        Levers = map(lambda x: [i[0] for i in x], self.Lever.values())
+        Rexts = map(lambda x: N.setnumber_R.intersection(x).__len__(), Levers)
+        if 0 in Rexts:
+            bools = False
         return bools
 
 
