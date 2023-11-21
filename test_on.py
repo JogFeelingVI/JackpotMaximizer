@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-21 13:05:05
+# @Last Modified time: 2023-11-21 20:04:10
 
 import unittest, os, time
 from codex import glns_v2
@@ -20,6 +20,18 @@ def is_uncorrelated(a, b):
     pearson_corr = covariance / (n * std_dev_a * std_dev_b)
     return abs(pearson_corr) < 0.4
 
+
+def tesrange():
+    '''[[6, 9], [19], [28, 30, 31]] [2,1,3]'''
+    N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
+        # debug dzx for g [range(1, 12), range(12, 23), range(23, 34)]
+    g = [range(i,i+11) for i in range(0, 33, 11)]
+    #print(f'debug {g}')
+    countofg = map(lambda x: N.setnumber_R.intersection(x).__len__(), g)
+    
+    rebool = [False, True][5 not in countofg or 6 in countofg]
+    #print(f'debug countforg {list(countofg)} {rebool}')
+    return rebool
 
 def Lianhao(nul: list):
     snul = set(nul)
@@ -71,6 +83,8 @@ def filter_test():
 class TestStringMethods(unittest.TestCase):
 
     def test_upper(self):
+        #resx = [tesrange() for i in range(1000)]
+        #tesrange()
         filter_test()
 
 

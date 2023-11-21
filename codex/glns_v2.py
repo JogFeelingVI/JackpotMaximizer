@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-21 12:45:17
+# @Last Modified time: 2023-11-21 20:05:20
 
 from collections import Counter, deque
 import itertools, random, math, time
@@ -103,23 +103,9 @@ class filterN_v2:
 
     def dzx(self, N: Note) -> bool:
         '''xiao zhong da'''
-        a = range(1, 34)
-        g = [a[i:i + 11] for i in range(0, len(a), 11)]
-        count = [[], [], []]
-        for ai in N.setnumber_R:
-            index = 1
-            while 1:
-                if ai in g[index]:
-                    count[index].append(ai)
-                    break
-                else:
-                    if ai < min(g[index]):
-                        index -= 1
-                    if ai > max(g[index]):
-                        index += 1
-
-        flgrex = [len(x) for x in count]
-        rebool = [False, True][5 not in flgrex or 6 in flgrex]
+        g = [range(i, i + 11) for i in range(0, 33, 11)]
+        countofg = map(lambda x: N.setnumber_R.intersection(x).__len__(), g)
+        rebool = [False, True][5 not in countofg or 6 in countofg]
         return rebool
 
     def acvalue(self, N: Note) -> bool:
