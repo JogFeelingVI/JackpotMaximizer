@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-19 22:36:35
+# @Last Modified time: 2023-11-23 02:36:11
 import multiprocessing as mlps, os, re, itertools as itr
 from typing import List, Iterable
 from codex import glns_v2
@@ -109,11 +109,14 @@ class mLpool:
         if self.fdins(N, self.iRx) == False:
             #print(f'debug fdins FALSE')
             return False
-        # filterv2
+        # filterv2 
         for kfunc in self.__filterv2.filters.values():
             if kfunc(N) == False:
                 #print(f'filters {k:>8} FALSE N {N}')
                 return False
+        # mapfilter = map(lambda x:x(N), self.__filterv2.filters.values())
+        # if False in mapfilter:
+        #     return False
         #print(f'filters True N {N}')
         return True
 
