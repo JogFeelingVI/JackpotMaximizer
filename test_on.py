@@ -1,47 +1,49 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-23 02:35:33
+# @Last Modified time: 2023-11-23 21:33:42
 
-import unittest, os, time
+import unittest, os, time, itertools
 from codex import glns_v2
 
 
-def is_uncorrelated(a, b):
+def chengjie_w():
+    N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
+    p = list(N.setnumber_R)
+    ac = len(set(x - y for x in p[1::]
+                 for y in p[0:5] if x > y)) - (len(p) - 1)
+    #print(f'Ac {ac}')
+
+
+def chengjie_d():
+    N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
+    p = itertools.product(N.number[1::], N.number[0:5])
+    ps =[1 for a, b in p if a-b>0.1].__len__()-1-len(N.number)
+    
+
+
+def is_uncorrelated():
     '''计算数字相关度'''
-    n = len(a)
-    avg_a = (sum(a) / n)
-    avg_b = (sum(b) / n)
 
-    covariance = sum((a[i] - avg_a) * (b[i] - avg_b) for i in range(n))
-    std_dev_a = ((sum([(x - avg_a)**2 for x in a]) / n))**0.5
-    std_dev_b = ((sum([(x - avg_b)**2 for x in b]) / n))**0.5
+    def liss(n: int):
+        return n * 0.98
 
-    pearson_corr = covariance / (n * std_dev_a * std_dev_b)
-    return abs(pearson_corr) < 0.4
+    n = range(1000)
+    Nils = map(liss, n)
+    for ns in Nils:
+        print(f'Nils {ns}')
 
 
 def tesrange():
     '''[[6, 9], [19], [28, 30, 31]] [2,1,3] '''
     N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-        # debug dzx for g [range(1, 12), range(12, 23), range(23, 34)]
-    g = [range(i,i+11) for i in range(0, 33, 11)]
+    # debug dzx for g [range(1, 12), range(12, 23), range(23, 34)]
+    g = [range(i, i + 11) for i in range(0, 33, 11)]
     #print(f'debug {g}')
     countofg = map(lambda x: N.setnumber_R.intersection(x).__len__(), g)
-    
+
     rebool = [False, True][5 not in countofg or 6 in countofg]
     #print(f'debug countforg {list(countofg)} {rebool}')
-    return rebool
-
-def Lianhao(nul: list):
-    snul = set(nul)
-    C = [0] * len(nul)
-    for i in range(len(nul) - 1):
-        _n = nul[i]
-        if {_n + 1, _n - 1} & snul:
-            C[i] = 1
-    rebool = [False, True][C.count(1) < 4]
-    print(f'count {C} {C.count(1)}')
     return rebool
 
 
@@ -78,7 +80,6 @@ def filter_test():
         rexf = set([funv(N) for i in range(1000)])
         etime = time.time()
         print(f'{k:>10} T {etime-stime:.4f}`s N {N} R {rexf}')
-    
 
 
 class TestStringMethods(unittest.TestCase):
@@ -87,6 +88,15 @@ class TestStringMethods(unittest.TestCase):
         #resx = [tesrange() for i in range(1000)]
         #tesrange()
         filter_test()
+        #is_uncorrelated()
+        # st = time.time()
+        # [chengjie_w() for _ in range(10000)]
+        # et = time.time()
+        # print(f'AC Use Time W {et-st:.4f}')
+        # st = time.time()
+        # [chengjie_d() for _ in range(10000)]
+        # et = time.time()
+        # print(f'AC Use Time D {et-st:.4f}')
 
 
 if __name__ == '__main__':

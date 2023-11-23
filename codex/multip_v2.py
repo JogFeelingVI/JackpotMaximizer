@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-23 02:36:11
+# @Last Modified time: 2023-11-23 20:45:49
 import multiprocessing as mlps, os, re, itertools as itr
 from typing import List, Iterable
 from codex import glns_v2
@@ -65,9 +65,10 @@ class mLpool:
         n == self.fmn
         mcp True use pool / False Use List
         '''
-        N = [x for x in range(1, n + 1)]
+        N = range(n)
         if mcp:
-            with mlps.Pool(processes=self.cpu) as p:
+            # processes=self.cpu
+            with mlps.Pool() as p:
                 if self.cpu == None:
                     self.cpu = 4
                 csize = n // self.cpu + [1, 0][n % self.cpu == 0]
@@ -84,6 +85,7 @@ class mLpool:
             Blen B len 1 - 16
             ins '^(01|07)....'
         '''
+        # print(f'GID {os.getpid():>10} index {index}')
         depth: int = 1
         while depth <= self.mdep:
             n = self.__glnsv2.creativity()
@@ -154,10 +156,7 @@ class mLpool:
             return True
         else:
             try:
-                sNr = ' '.join([f'{x:02}' for x in N.setnumber_R])
-                sNb = ' '.join([f'{x:02}' for x in N.setnumber_B])
-                sNums = f'{sNr} + {sNb}'
-                Finx = len(insre.findall(sNums))
+                Finx = len(insre.findall(N))
                 return True if Finx >= 1 else False
             except re.error as rerror:
                 print(f'{self.prompt} Findins error: {rerror.msg}')

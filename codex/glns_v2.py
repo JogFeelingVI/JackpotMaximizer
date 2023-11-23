@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-21 20:21:34
+# @Last Modified time: 2023-11-23 21:27:46
 
 from collections import Counter, deque
 import itertools, random, math, time
@@ -10,12 +10,13 @@ from typing import List
 
 
 class Note:
+    __set_r = None
+    __set_b = None
 
     def __init__(self,
                  n: List[int] = [0, 0, 0, 0, 0, 0],
                  T: List[int] | int = 0) -> None:
         """Note
-
         Args:
             n (List[int]): 1-33 红色号码球
             T (List[int] | int): 1-16 蓝色号码球
@@ -33,11 +34,15 @@ class Note:
 
     @property
     def setnumber_R(self):
-        return set(self.number)
+        if self.__set_r == None:
+            self.__set_r = set(self.number)
+        return self.__set_r
 
     @property
     def setnumber_B(self):
-        return set(self.tiebie)
+        if self.__set_b == None:
+            self.__set_b = set(self.tiebie)
+        return self.__set_b
 
     def __str__(self) -> str:
         n = ' '.join([f'{num:02d}' for num in self.number])
@@ -94,6 +99,7 @@ class filterN_v2:
         }
 
         if self.__debug == False:
+            #diskey = ['sixlan', 'denji']
             diskey = ['sixlan', 'duplicates', 'denji', 'hisdiff']
             for k in diskey:
                 self.filters.pop(k)
@@ -105,14 +111,12 @@ class filterN_v2:
         '''xiao zhong da'''
         g = [range(i, i + 11) for i in range(0, 33, 11)]
         countofg = map(lambda x: N.setnumber_R.intersection(x).__len__(), g)
-        rebool = [False, True][5 not in countofg or 6 in countofg]
-        return rebool
+        return [False, True][5 not in countofg or 6 in countofg]
 
     def acvalue(self, N: Note) -> bool:
         '''计算数字复杂程度 默认 P len = 6 这里操造成效率低下'''
-        p = list(N.setnumber_R)
-        ac = len(set(x - y for x in p[1::]
-                     for y in p[0:5] if x > y)) - (len(p) - 1)
+        p = itertools.product(N.number[1::], N.number[0:5])
+        ac =[1 for a, b in p if a-b>0.1].__len__()-1-len(N.number)
         return [False, True][ac >= 4]
 
     def linma(self, N: Note) -> bool:
