@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-24 17:14:04
+# @Last Modified time: 2023-11-24 17:38:09
 
 import unittest, os, time, itertools
 from codex import glns_v2
@@ -43,10 +43,8 @@ def test_change():
 
 def is_uncorrelated():
     '''计算数字相关度'''
-
     def liss(n: int):
         return n * 0.98
-
     n = range(1000)
     Nils = map(liss, n)
     for ns in Nils:
