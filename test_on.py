@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-23 21:33:42
+# @Last Modified time: 2023-11-24 17:14:04
 
 import unittest, os, time, itertools
 from codex import glns_v2
@@ -9,18 +9,37 @@ from codex import glns_v2
 
 def chengjie_w():
     N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-    p = list(N.setnumber_R)
-    ac = len(set(x - y for x in p[1::]
-                 for y in p[0:5] if x > y)) - (len(p) - 1)
-    #print(f'Ac {ac}')
+    Last = glns_v2.Note(n=[5, 10, 21, 25, 30, 33], T=[9])
+    plus_minus = 0
+    for n in N.setnumber_R:
+        if n + 1 in Last.number or n - 1 in Last.number:
+            plus_minus+=1
+            if plus_minus>3.5:
+                return False
+    return True
 
 
 def chengjie_d():
     N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-    p = itertools.product(N.number[1::], N.number[0:5])
-    ps =[1 for a, b in p if a-b>0.1].__len__()-1-len(N.number)
+    Last = glns_v2.Note(n=[5, 10, 21, 25, 30, 33], T=[9])
+    plus_minus = 0
+    for n in N.setnumber_R:
+        if any({n+1,n-1} & Last.setnumber_R):
+            plus_minus+=1
+            if plus_minus>3.5:
+                return False
+    return True
     
 
+def test_change():
+    st = time.time()
+    [chengjie_w() for _ in range(10000)]
+    et = time.time()
+    print(f'AC Use Time W {et-st:.4f}')
+    st = time.time()
+    [chengjie_d() for _ in range(10000)]
+    et = time.time()
+    print(f'AC Use Time D {et-st:.4f}')
 
 def is_uncorrelated():
     '''计算数字相关度'''
@@ -89,14 +108,7 @@ class TestStringMethods(unittest.TestCase):
         #tesrange()
         filter_test()
         #is_uncorrelated()
-        # st = time.time()
-        # [chengjie_w() for _ in range(10000)]
-        # et = time.time()
-        # print(f'AC Use Time W {et-st:.4f}')
-        # st = time.time()
-        # [chengjie_d() for _ in range(10000)]
-        # et = time.time()
-        # print(f'AC Use Time D {et-st:.4f}')
+        #test_change()
 
 
 if __name__ == '__main__':

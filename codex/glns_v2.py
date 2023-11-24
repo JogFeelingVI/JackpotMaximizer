@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-23 21:27:46
+# @Last Modified time: 2023-11-24 17:13:50
 
 from collections import Counter, deque
 import itertools, random, math, time
@@ -121,11 +121,19 @@ class filterN_v2:
 
     def linma(self, N: Note) -> bool:
         '''计算临码'''
-        plus_minus = []
+        # plus_minus = []
+        
+        # for n in N.setnumber_R:
+        #     if n + 1 in self.Last or n - 1 in self.Last:
+        #         plus_minus.append(n)
+        # return [False, True][plus_minus.__len__() in (0, 1, 2, 3)]
+        plus_minus = 0
         for n in N.setnumber_R:
             if n + 1 in self.Last or n - 1 in self.Last:
-                plus_minus.append(n)
-        return [False, True][plus_minus.__len__() in (0, 1, 2, 3)]
+                plus_minus+=1
+                if plus_minus>3.5:
+                    return False
+        return True
 
     def duplicates(self, N: Note) -> bool:
         '''计算数组是否有重复项目'''
@@ -152,8 +160,7 @@ class filterN_v2:
         hisdiff 与上一期号码对比
         '''
         diff = [abs(a - b) for a, b in itertools.product(N.number, self.Last)]
-        Rex = [False, True][diff.count(1) in [0, 1, 2]]
-        return Rex
+        return [False, True][diff.count(1) in [0, 1, 2]]
 
     def denji(self, N: Note) -> bool:
         '''
