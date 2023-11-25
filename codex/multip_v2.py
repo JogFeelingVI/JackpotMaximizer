@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-25 18:02:33
+# @Last Modified time: 2023-11-25 20:37:49
 import multiprocessing as mlps, os, re, itertools as itr
 import time
 from typing import List, Iterable
@@ -25,8 +25,7 @@ class mLpool:
     cpu = os.cpu_count()
     mdep = 3000
     prompt = '[=]'
-    
-    __class_rego = None
+
     __use_weights = False
     __reego = False
 
@@ -36,7 +35,7 @@ class mLpool:
         self.__filterv2 = glns_v2.filterN_v2()
         self.__filterv2.Last = self.__glnsv2.getlast
         self.__filterv2.Lever = self.__glnsv2.getabc
-        # self.__class_rego = rego.rego()
+        self.__class_rego = rego.rego()
         self.R = R
         self.B = B
         self.iRx = iRx
@@ -101,10 +100,10 @@ class mLpool:
         N = glns_v2.Note(Nr, Nb)
         # run rego
         if self.reego:
-            if self.__class_rego == None:
-                #st = time.time()
-                self.__class_rego = rego.rego()
-                #print(f'OSID {os.getgid()} init reego {time.time() - st:.4f}`s')
+            # if self.__class_rego == None:
+            #     #st = time.time()
+            #     self.__class_rego = rego.rego()
+            #     #print(f'OSID {os.getgid()} init reego {time.time() - st:.4f}`s')
             if self.__class_rego.filtration_olde(N) == False:
                 return False
         # fins
