@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-24 17:13:50
+# @Last Modified time: 2023-11-24 18:44:43
 
 from collections import Counter, deque
 import itertools, random, math, time
@@ -90,8 +90,7 @@ class filterN_v2:
         self.filters = {
             'sixlan': self.sixlan,  #
             'duplicates': self.duplicates,  #
-            'linma': self.linma,
-            'hisdiff': self.hisdiff,  #
+            'linma': self.linma,#
             'dzx': self.dzx,
             'lianhao': self.lianhao,
             'ac': self.acvalue,
@@ -100,7 +99,7 @@ class filterN_v2:
 
         if self.__debug == False:
             #diskey = ['sixlan', 'denji']
-            diskey = ['sixlan', 'duplicates', 'denji', 'hisdiff']
+            diskey = ['sixlan', 'duplicates', 'denji',]
             for k in diskey:
                 self.filters.pop(k)
 
@@ -155,12 +154,6 @@ class filterN_v2:
         rebool = [False, True][flgrex in [[], [3], [2], [2, 2]]]
         return rebool
 
-    def hisdiff(self, N: Note) -> bool:
-        '''
-        hisdiff 与上一期号码对比
-        '''
-        diff = [abs(a - b) for a, b in itertools.product(N.number, self.Last)]
-        return [False, True][diff.count(1) in [0, 1, 2]]
 
     def denji(self, N: Note) -> bool:
         '''

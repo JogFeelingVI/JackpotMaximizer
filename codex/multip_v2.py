@@ -1,11 +1,11 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-23 20:45:49
+# @Last Modified time: 2023-11-25 18:02:33
 import multiprocessing as mlps, os, re, itertools as itr
+import time
 from typing import List, Iterable
-from codex import glns_v2
-from codex.rego import rego, Note
+from codex import glns_v2, rego
 
 
 class ccps:
@@ -25,10 +25,10 @@ class mLpool:
     cpu = os.cpu_count()
     mdep = 3000
     prompt = '[=]'
-
+    
+    __class_rego = None
     __use_weights = False
     __reego = False
-    __class_rego = None
 
     def __init__(self, data: dict, R: int, B: int, iRx: re.Pattern) -> None:
         print(f'{self.prompt} Use mLpooL V2')
@@ -36,6 +36,7 @@ class mLpool:
         self.__filterv2 = glns_v2.filterN_v2()
         self.__filterv2.Last = self.__glnsv2.getlast
         self.__filterv2.Lever = self.__glnsv2.getabc
+        # self.__class_rego = rego.rego()
         self.R = R
         self.B = B
         self.iRx = iRx
@@ -97,21 +98,20 @@ class mLpool:
 
     def filter_map(self, zipo_item) -> bool:
         Nr, Nb = zipo_item
-        N = Note(Nr, Nb)
+        N = glns_v2.Note(Nr, Nb)
         # run rego
         if self.reego:
             if self.__class_rego == None:
-                self.__class_rego = rego()
-                self.__class_rego.parse_v2()
-
+                #st = time.time()
+                self.__class_rego = rego.rego()
+                #print(f'OSID {os.getgid()} init reego {time.time() - st:.4f}`s')
             if self.__class_rego.filtration_olde(N) == False:
-                #print(f'rego FALSE N {N}')
                 return False
         # fins
         if self.fdins(N, self.iRx) == False:
             #print(f'debug fdins FALSE')
             return False
-        # filterv2 
+        # filterv2
         for kfunc in self.__filterv2.filters.values():
             if kfunc(N) == False:
                 #print(f'filters {k:>8} FALSE N {N}')
@@ -122,8 +122,7 @@ class mLpool:
         #print(f'filters True N {N}')
         return True
 
-    def filters(self, N: Note) -> bool:
-
+    def filters(self, N: glns_v2.Note) -> bool:
         # fins
         if self.fdins(N, self.iRx) == False:
             #print(f'debug fdins FALSE')
@@ -136,7 +135,7 @@ class mLpool:
         # run rego
         if self.reego:
             if self.__class_rego == None:
-                self.__class_rego = rego()
+                self.__class_rego = rego.rego()
                 self.__class_rego.parse_v2()
 
             if self.__class_rego.filtration(N) == False:
@@ -145,7 +144,7 @@ class mLpool:
         #print(f'filters True N {N}')
         return True
 
-    def fdins(self, N: Note, insre: re.Pattern) -> bool:
+    def fdins(self, N: glns_v2.Note, insre: re.Pattern) -> bool:
         '''
         Find Ins 
         Nums type list
@@ -162,10 +161,9 @@ class mLpool:
                 print(f'{self.prompt} Findins error: {rerror.msg}')
                 return False
 
-    def __combinations_ols(self, N: Note) -> map:
+    def __combinations_ols(self, N: glns_v2.Note) -> map:
         '''
         '''
         zipo = ccps.ccp(N.setnumber_R, N.setnumber_B)
         #ex_f_z = [self.filters(Note(Lr,Lb)) for Lr, Lb in zipo]
-        ex_f_z = map(self.filter_map, zipo)
-        return ex_f_z
+        return map(self.filter_map, zipo)

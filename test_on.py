@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-24 17:38:09
+# @Last Modified time: 2023-11-24 18:44:55
 
 import unittest, os, time, itertools
 from codex import glns_v2
@@ -9,27 +9,22 @@ from codex import glns_v2
 
 def chengjie_w():
     N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-    Last = glns_v2.Note(n=[5, 10, 21, 25, 30, 33], T=[9])
-    plus_minus = 0
-    for n in N.setnumber_R:
-        if n + 1 in Last.number or n - 1 in Last.number:
-            plus_minus+=1
-            if plus_minus>3.5:
-                return False
-    return True
+    Last = [5, 10, 21, 25, 30, 33]
+    diff = [abs(a - b) for a, b in itertools.product(N.number, Last)]
+    return [False, True][diff.count(1) in [0, 1, 2]]
 
 
 def chengjie_d():
     N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-    Last = glns_v2.Note(n=[5, 10, 21, 25, 30, 33], T=[9])
-    plus_minus = 0
-    for n in N.setnumber_R:
-        if any({n+1,n-1} & Last.setnumber_R):
-            plus_minus+=1
-            if plus_minus>3.5:
-                return False
+    Last = [5, 10, 21, 25, 30, 33]
+    pxt = 0
+    for a, b in itertools.product(N.number, Last):
+        if a - b in [1, -1]:
+            pxt += 1
+        if pxt > 2.1:
+            return False
     return True
-    
+
 
 def test_change():
     st = time.time()
@@ -41,10 +36,13 @@ def test_change():
     et = time.time()
     print(f'AC Use Time D {et-st:.4f}')
 
+
 def is_uncorrelated():
     '''计算数字相关度'''
+
     def liss(n: int):
         return n * 0.98
+
     n = range(1000)
     Nils = map(liss, n)
     for ns in Nils:
