@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-25 19:59:49
+# @Last Modified time: 2023-11-26 21:01:40
 
 import unittest, os, time, itertools
 from codex import glns_v2, rego
@@ -9,9 +9,6 @@ from codex import glns_v2, rego
 
 def chengjie_w():
     N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-    Last = [5, 10, 21, 25, 30, 33]
-    diff = [abs(a - b) for a, b in itertools.product(N.number, Last)]
-    return [False, True][diff.count(1) in [0, 1, 2]]
 
 
 def chengjie_d():
@@ -31,10 +28,10 @@ def test_change():
     [chengjie_w() for _ in range(10000)]
     et = time.time()
     print(f'AC Use Time W {et-st:.4f}')
-    st = time.time()
-    [chengjie_d() for _ in range(10000)]
-    et = time.time()
-    print(f'AC Use Time D {et-st:.4f}')
+    # st = time.time()
+    # [chengjie_d() for _ in range(10000)]
+    # et = time.time()
+    # print(f'AC Use Time D {et-st:.4f}')
 
 
 def is_uncorrelated():
@@ -104,9 +101,9 @@ class TestStringMethods(unittest.TestCase):
     def test_upper(self):
         #resx = [tesrange() for i in range(1000)]
         #tesrange()
-        filter_test()
+        #filter_test()
         #is_uncorrelated()
-        #test_change()
+        test_change()
 
 
 if __name__ == '__main__':

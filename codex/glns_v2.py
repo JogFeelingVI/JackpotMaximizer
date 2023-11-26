@@ -2,8 +2,9 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-24 18:44:43
+# @Last Modified time: 2023-11-26 21:33:37
 
+from ast import Return, Tuple
 from collections import Counter, deque
 import itertools, random, math, time
 from typing import List
@@ -26,11 +27,6 @@ class Note:
         if self.number.__len__() < 6 or self.tiebie.__len__() == 0:
             raise Exception(f'Note Creation failed {self.number}')
 
-    def filter(self, func) -> None:
-        '''
-        filter jiekou
-        '''
-        self.number = list(filter(func, self.number))
 
     @property
     def setnumber_R(self):
@@ -90,7 +86,7 @@ class filterN_v2:
         self.filters = {
             'sixlan': self.sixlan,  #
             'duplicates': self.duplicates,  #
-            'linma': self.linma,#
+            'linma': self.linma,  #
             'dzx': self.dzx,
             'lianhao': self.lianhao,
             'ac': self.acvalue,
@@ -99,7 +95,11 @@ class filterN_v2:
 
         if self.__debug == False:
             #diskey = ['sixlan', 'denji']
-            diskey = ['sixlan', 'duplicates', 'denji',]
+            diskey = [
+                'sixlan',
+                'duplicates',
+                'denji',
+            ]
             for k in diskey:
                 self.filters.pop(k)
 
@@ -115,13 +115,13 @@ class filterN_v2:
     def acvalue(self, N: Note) -> bool:
         '''计算数字复杂程度 默认 P len = 6 这里操造成效率低下'''
         p = itertools.product(N.number[1::], N.number[0:5])
-        ac =[1 for a, b in p if a-b>0.1].__len__()-1-len(N.number)
+        ac = [1 for a, b in p if a - b > 0.1].__len__() - 1 - len(N.number)
         return [False, True][ac >= 4]
 
     def linma(self, N: Note) -> bool:
         '''计算临码'''
         # plus_minus = []
-        
+
         # for n in N.setnumber_R:
         #     if n + 1 in self.Last or n - 1 in self.Last:
         #         plus_minus.append(n)
@@ -129,8 +129,8 @@ class filterN_v2:
         plus_minus = 0
         for n in N.setnumber_R:
             if n + 1 in self.Last or n - 1 in self.Last:
-                plus_minus+=1
-                if plus_minus>3.5:
+                plus_minus += 1
+                if plus_minus > 3.5:
                     return False
         return True
 
@@ -153,7 +153,6 @@ class filterN_v2:
         flgrex = sorted([len(v) for v in count if len(v) > 1])
         rebool = [False, True][flgrex in [[], [3], [2], [2, 2]]]
         return rebool
-
 
     def denji(self, N: Note) -> bool:
         '''
@@ -331,8 +330,8 @@ class glnsMpls:
                 self.groupby = [
                     self.R[i:i + 6] for i in range(0, len(self.R), 6)
                 ]
-                self.FixR = self.__fixrb(max=33, n=self.R)
-                self.FixB = self.__fixrb(max=16, n=self.B)
+                self.random_r = random_rb(self.__fixrb(max=33, n=self.R), self.rLen)
+                self.random_b = random_rb(self.__fixrb(max=16, n=self.B), self.bLen)
 
     @staticmethod
     def __fixrb(max: int = 16, n: List[int] = []) -> List[int]:
@@ -350,20 +349,18 @@ class glnsMpls:
         else:
             return list(max_set)
 
-    def creativity(self) -> Note:
+    def creativity(self) -> tuple[list[int], list[int]]:
         '''产生号码'''
-        get_r = random_rb(self.FixR, self.rLen)
-        N = Note()
+        #get_r = random_rb(self.FixR, self.rLen)
+        # N = Note()
         while 1:
-            get_r.get_number_v2()
-            if self.cosv(N=get_r.dep) > 0.9:
-                get_b = random_rb(self.FixB, self.bLen)
-                get_b.get_number_v2()
-                N = Note(n=get_r.dep, T=get_b.dep)
-                break
+            self.random_r.get_number_v2()
+            if self.cosv(N=self.random_r.dep) > 0.9:
+                self.random_b.get_number_v2()
+                return (self.random_r.dep, self.random_b.dep)
             else:
-                get_r.remark()
-        return N
+                self.random_r.remark()
+        return ([0]*6, [0])
 
     def maxjac(self, N: List) -> float:
         # [2, 6, 20, 25, 29, 33]

@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-25 20:25:27
+# @Last Modified time: 2023-11-26 21:41:30
 
 import re, time
 from typing import List
@@ -17,7 +17,6 @@ except:
 
 class rego:
     '''读取rego文件并对列表进行解析'''
-    rego_lines = None
     __debug = False
 
     @property
@@ -30,8 +29,7 @@ class rego:
         return self.__debug
 
     def __init__(self) -> None:
-        self.load_rego_v2()
-        self.parse_v2()
+        self.parse_v2(self.load_rego_v2())
         self.Func = {
             'paichu_r': self.f_paichu_r,
             'paichu_b': self.f_paichu_b,
@@ -52,11 +50,11 @@ class rego:
             'bitex_7': self.f_bitex_7,
         }
 
-    def load_rego_v2(self) -> None:
+    def load_rego_v2(self) -> str:
         '''装载rego文件'''
         rego = pathlib.Path(filenam)
         with rego.open(mode='r', encoding='utf-8') as go:
-            self.rego_lines = go.read()
+            return go.read()
 
     def p_paichu(self, line: str) -> List | None:
         '''排除法检测'''
@@ -112,7 +110,7 @@ class rego:
             return temp
         return None
 
-    def parse_v2(self) -> None:
+    def parse_v2(self, filgo: str) -> None:
         '''格式化rego文件'''
         __re_dict = {
             'paichu': self.p_paichu,
@@ -120,11 +118,11 @@ class rego:
             'bit': self.p_bit,
             'bitex': self.p_bitex
         }
-        if self.rego_lines != None:
+        if filgo != None:
             self.parse_dict = {}
             index = 1
             for k, pfunc in __re_dict.items():
-                env = pfunc(self.rego_lines)
+                env = pfunc(filgo)
                 if env != None:
                     for e in env:
                         self.parse_dict.update({index: e})
@@ -155,25 +153,25 @@ class rego:
             if _n in Asnum:
                 return True
         return False
-    
+
     def f_bit_1(self, N: Note, args: dict) -> bool:
         return self.f_bit(N, args, 1)
-    
+
     def f_bit_2(self, N: Note, args: dict) -> bool:
         return self.f_bit(N, args, 2)
-    
+
     def f_bit_3(self, N: Note, args: dict) -> bool:
         return self.f_bit(N, args, 3)
-    
+
     def f_bit_4(self, N: Note, args: dict) -> bool:
         return self.f_bit(N, args, 4)
-    
+
     def f_bit_5(self, N: Note, args: dict) -> bool:
         return self.f_bit(N, args, 5)
-    
+
     def f_bit_6(self, N: Note, args: dict) -> bool:
         return self.f_bit(N, args, 6)
-    
+
     def f_bit_7(self, N: Note, args: dict) -> bool:
         Asnum = args['number']
         for _n in N.tiebie:
@@ -188,25 +186,25 @@ class rego:
             if _n not in args['number']:
                 return False
         return True
-    
+
     def f_bitex_1(self, N: Note, args: dict) -> bool:
         return self.f_bitex(N, args, 1)
-    
+
     def f_bitex_2(self, N: Note, args: dict) -> bool:
         return self.f_bitex(N, args, 2)
-    
+
     def f_bitex_3(self, N: Note, args: dict) -> bool:
         return self.f_bitex(N, args, 3)
-    
+
     def f_bitex_4(self, N: Note, args: dict) -> bool:
         return self.f_bitex(N, args, 4)
-    
+
     def f_bitex_5(self, N: Note, args: dict) -> bool:
         return self.f_bitex(N, args, 5)
-    
+
     def f_bitex_6(self, N: Note, args: dict) -> bool:
         return self.f_bitex(N, args, 6)
-    
+
     def f_bitex_7(self, N: Note, args: dict) -> bool:
         Asnum = args['number']
         for _n in N.setnumber_B:
@@ -227,28 +225,11 @@ class rego:
         这个程序急需优化
         {'name': 'paichu', 'rb': ['R'], 'number': [33, 27], 'func': <function rego.p_paichu.<locals>.<lambda> at 0x10b7c49a0>}
         '''
-        if self.parse_dict.keys() != []:
-            for _, linex in self.parse_dict.items():
-                funx = self.Func[linex['name']]
-                refv = funx(N, linex)
-                if self.debug:
-                    print(f'filtration {linex["name"]} -> {refv} args {linex}')
-                if refv is False:
-                    return refv
-            return True
-        else:
-            print(f'[R] this parse dict is None')
+        for _, linex in self.parse_dict.items():
+            funx = self.Func[linex['name']]
+            refv = funx(N, linex)
+            if self.debug:
+                print(f'filtration {linex["name"]} -> {refv} args {linex}')
+            if refv is False:
+                return refv
         return True
-
-    def filtration(self, N: Note) -> bool:
-        '''优化后的程序'''
-        NLs = [N] * self.parse_dict.keys().__len__()
-        rext = map(self.anis, NLs, self.parse_dict.values())
-        if False in rext:
-            return False
-        return True
-
-    def anis(self, N: Note, linex: dict) -> bool:
-        '''{name: paichu, rb: [R], number: [10, 30, 15, 11]}'''
-        funx = self.Func[linex['name']](N, linex)
-        return funx
