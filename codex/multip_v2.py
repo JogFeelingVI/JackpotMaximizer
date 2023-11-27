@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-26 21:35:15
+# @Last Modified time: 2023-11-27 20:05:53
 import multiprocessing as mlps, os, re, itertools as itr
 import time
 from typing import List, Iterable
@@ -60,7 +60,7 @@ class mLpool:
     def UseWeights(self, value: bool):
         self.__use_weights = value
 
-    def run_works(self, n: int, mcp=True) -> List:
+    def run_works(self, n: int, mcp=True):
         '''
         n == self.fmn
         mcp True use pool / False Use List
@@ -71,12 +71,17 @@ class mLpool:
             with mlps.Pool() as p:
                 if self.cpu == None:
                     self.cpu = 4
-                csize = n // self.cpu + [1, 0][n % self.cpu == 0]
+                csize = n // self.cpu
+                #print(f'csize {csize} {n//self.cpu} {[1, 0][n % self.cpu == 0]}  {n}')
+                N = [range(i, i + csize) for i in range(0, n, csize)]
                 # 从这里开始出现错误
-                iTx = p.map(self.SpawnPoolWorker, N, chunksize=csize)
-                return iTx
+                iTx = p.map(self.group_size, N)
+                return itr.chain.from_iterable(iTx)
         else:
             return [self.SpawnPoolWorker(x) for x in N]
+
+    def group_size(self, N: Iterable):
+        return [self.SpawnPoolWorker(x) for x in N]
 
     def SpawnPoolWorker(self, index: int) -> List:
         '''
@@ -102,12 +107,13 @@ class mLpool:
         N = glns_v2.Note(Nr, Nb)
         # run rego
         if self.reego:
+            # 这里依然是问题所在
             # st = time.time()
             for k, parst in self.__class_rego.parse_dict.items():
                 rex = self.__class_rego.Func[parst['name']](N, parst)
                 if rex == False:
                     return rex
-                
+
             # print(f'OSID {os.getpid()} init reego {time.time() - st:.4f}`s')
 
         # fins
@@ -124,8 +130,6 @@ class mLpool:
         #     return False
         #print(f'filters True N {N}')
         return True
-
-
 
     def fdins(self, N: glns_v2.Note, insre: re.Pattern) -> bool:
         '''
@@ -149,6 +153,6 @@ class mLpool:
         '''
         zipo = ccps.ccp(n, t)
         for zio in zipo:
-            if self.filter_map(zio) ==  True:
+            if self.filter_map(zio) == True:
                 return True
         return False

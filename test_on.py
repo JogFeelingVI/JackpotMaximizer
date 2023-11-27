@@ -1,9 +1,9 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-26 21:01:40
+# @Last Modified time: 2023-11-27 19:15:59
 
-import unittest, os, time, itertools
+import unittest, os, time, itertools, multiprocessing as mp
 from codex import glns_v2, rego
 
 
@@ -33,17 +33,42 @@ def test_change():
     # et = time.time()
     # print(f'AC Use Time D {et-st:.4f}')
 
+def liss(n: int):
+        if n % 2 == 1:
+            if n % 4 == 3:
+                if n% 7 ==5:
+                    return True, n
+        return False, -1
+    
+def liss_g(nl):
+    rext = [liss(x) for x in nl]
+    return rext
 
-def is_uncorrelated():
-    '''计算数字相关度'''
-
-    def liss(n: int):
-        return n * 0.98
-
-    n = range(1000)
-    Nils = map(liss, n)
-    for ns in Nils:
-        print(f'Nils {ns}')
+def mpastime():
+    '''测试集中map的效率'''
+    n = [x for x in range(1000000)]
+    st = time.time()
+    Nils = [x for x in map(liss, n)]
+    print(f'Time for map {time.time() - st:.4f}`s')
+    
+    st = time.time()
+    with mp.Pool() as mpp:
+        mp_map = mpp.map(liss, n)
+    print(f'Time for mp.pool {time.time() - st:.4f}`s')
+    
+    st = time.time()
+    mange = mp.Array('i',n)
+    with mp.Pool() as mpp:
+        mp_map = mpp.map(liss, n, chunksize=10000)
+    print(f'Time for mp.pool chunksize 1000 {time.time() - st:.4f}`s')
+        
+    st = time.time()
+    size = n.__len__() // 4
+    g = [range(i, i + size) for i in range(0, n.__len__(), size)]
+    with mp.Pool() as mpp:
+        mp_map = mpp.map(liss_g, g)
+    print(f'Time for mp.pool g size {size} {time.time() - st:.4f}`s')
+        
 
 
 def tesrange():
@@ -103,7 +128,8 @@ class TestStringMethods(unittest.TestCase):
         #tesrange()
         #filter_test()
         #is_uncorrelated()
-        test_change()
+        #test_change()
+        mpastime()
 
 
 if __name__ == '__main__':
