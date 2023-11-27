@@ -12,6 +12,7 @@ yapf = "^0.32.0"
 toml = "^0.10.2"
 ipykernel = "^6.21.1"
 setuptools = "^68.2.2"
+gprof2dot = "^2022.7.29"
 
 
 [tool.poetry.group.dev.dependencies]
