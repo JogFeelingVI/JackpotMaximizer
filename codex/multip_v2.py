@@ -1,9 +1,8 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-28 10:01:24
-import multiprocessing as mlps, os, re, itertools as itr
-import time
+# @Last Modified time: 2023-11-28 22:17:12
+import multiprocessing as mlps, re, itertools as itr, time
 from typing import List, Iterable
 from codex import glns_v2, rego
 
@@ -22,20 +21,19 @@ class ccps:
 
 # end class
 class mLpool:
-    cpu = os.cpu_count()
     mdep = 3000
     prompt = '[=]'
 
-    __use_weights = False
     __reego = False
 
     def __init__(self, data: dict, R: int, B: int, iRx: re.Pattern) -> None:
         print(f'{self.prompt} Use mLpooL V2')
+        #self.data = data
         self.__glnsv2 = glns_v2.glnsMpls(data)
         self.__filterv2 = glns_v2.filterN_v2()
         self.__filterv2.Last = self.__glnsv2.getlast
         self.__filterv2.Lever = self.__glnsv2.getabc
-        self.__class_rego = rego.rego()
+        self.class_rego = rego.rego()
         self.R = R
         self.B = B
         self.iRx = iRx
@@ -48,18 +46,6 @@ class mLpool:
     def reego(self, value: bool):
         self.__reego = value
 
-    @property
-    def UseWeights(self) -> bool:
-        '''
-        True choices not Weights
-        False Use Weights
-        '''
-        return self.__use_weights
-
-    @UseWeights.setter
-    def UseWeights(self, value: bool):
-        self.__use_weights = value
-
     def run_works(self, n: int, mcp=True):
         '''
         n == self.fmn
@@ -68,12 +54,10 @@ class mLpool:
         N = range(n)
         if mcp:
             # processes=self.cpu
-            with mlps.Pool() as p:
-                if self.cpu == None:
-                    self.cpu = 4
-                csize = n // self.cpu
+            with mlps.Pool(mlps.cpu_count()) as p:
+                csize = n // mlps.cpu_count()
                 #print(f'csize {csize} {n//self.cpu} {[1, 0][n % self.cpu == 0]}  {n}')
-                N = [N[i: i + csize] for i in range(0, n, csize)]
+                N = [N[i:i + csize] for i in range(0, n, csize)]
                 # 从这里开始出现错误
                 iTx = p.map(self.group_size, N)
                 return itr.chain.from_iterable(iTx)
@@ -109,8 +93,8 @@ class mLpool:
         if self.reego:
             # 这里依然是问题所在
             # st = time.time()
-            for k, parst in self.__class_rego.parse_dict.items():
-                rex = self.__class_rego.Func[parst['name']](N, parst)
+            for k, parst in self.class_rego.parse_dict.items():
+                rex = self.class_rego.Func[parst['name']](N, parst)
                 if rex == False:
                     return rex
 
