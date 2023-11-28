@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-27 19:15:59
+# @Last Modified time: 2023-11-28 09:18:51
 
 import unittest, os, time, itertools, multiprocessing as mp
 from codex import glns_v2, rego
@@ -46,7 +46,8 @@ def liss_g(nl):
 
 def mpastime():
     '''测试集中map的效率'''
-    n = [x for x in range(1000000)]
+    _size = 10000 * 100
+    n = [x for x in range(_size)]
     st = time.time()
     Nils = [x for x in map(liss, n)]
     print(f'Time for map {time.time() - st:.4f}`s')
@@ -57,13 +58,12 @@ def mpastime():
     print(f'Time for mp.pool {time.time() - st:.4f}`s')
     
     st = time.time()
-    mange = mp.Array('i',n)
     with mp.Pool() as mpp:
-        mp_map = mpp.map(liss, n, chunksize=10000)
+        mp_map = mpp.map(liss, n, chunksize=_size//4)
     print(f'Time for mp.pool chunksize 1000 {time.time() - st:.4f}`s')
         
     st = time.time()
-    size = n.__len__() // 4
+    size = _size // 4
     g = [range(i, i + size) for i in range(0, n.__len__(), size)]
     with mp.Pool() as mpp:
         mp_map = mpp.map(liss_g, g)

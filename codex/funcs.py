@@ -2,9 +2,9 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-25 17:15:44
+# @Last Modified time: 2023-11-28 10:00:38
 
-from typing import Any, List
+from typing import Any, Iterable, List
 import os, re, json, enum
 from codex.ospath import os_path
 from datetime import datetime as dtime
@@ -420,7 +420,7 @@ class action:
             for item in Retds:
                 self.__echo__(item)
 
-    def __planning__(self, rex: List, step: int = 5) -> List:
+    def __planning__(self, rex: Iterable, step: int = 5) -> List:
         ''' 
         xxxxx ^ xxxxx
         '''

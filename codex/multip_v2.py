@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-27 20:05:53
+# @Last Modified time: 2023-11-28 10:01:24
 import multiprocessing as mlps, os, re, itertools as itr
 import time
 from typing import List, Iterable
@@ -73,7 +73,7 @@ class mLpool:
                     self.cpu = 4
                 csize = n // self.cpu
                 #print(f'csize {csize} {n//self.cpu} {[1, 0][n % self.cpu == 0]}  {n}')
-                N = [range(i, i + csize) for i in range(0, n, csize)]
+                N = [N[i: i + csize] for i in range(0, n, csize)]
                 # 从这里开始出现错误
                 iTx = p.map(self.group_size, N)
                 return itr.chain.from_iterable(iTx)
