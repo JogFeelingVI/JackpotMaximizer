@@ -1,10 +1,10 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-28 09:18:51
+# @Last Modified time: 2023-11-29 17:12:36
 
 import unittest, os, time, itertools, multiprocessing as mp
-from codex import glns_v2, rego
+from codex import glns_v2, rego_v2
 
 
 def chengjie_w():
@@ -111,12 +111,13 @@ def filter_test():
     filterv2.Last = glnsv2.getlast
     filterv2.Lever = glnsv2.getabc
     filterv2.debug = True
-    reego = rego.rego()
+    reego = rego_v2.rego().parse_dict
     N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-    for k, funv in reego.parse_dict.items():
+    for k, funv in reego.items():
         #for k, funv in filterv2.filters.items():
         stime = time.time()
-        rexf = set([reego.Func[funv['name']](N, funv) for i in range(1000)])
+        funx = getattr(rego_v2.rego_filter, funv['name'])
+        rexf = set([funx(N, funv) for i in range(1000)])
         etime = time.time()
         print(f'{funv["name"]:>10} T {etime-stime:.4f}`s N {N} R {rexf}')
 
@@ -126,10 +127,10 @@ class TestStringMethods(unittest.TestCase):
     def test_upper(self):
         #resx = [tesrange() for i in range(1000)]
         #tesrange()
-        #filter_test()
+        filter_test()
         #is_uncorrelated()
         #test_change()
-        mpastime()
+        #mpastime()
 
 
 if __name__ == '__main__':

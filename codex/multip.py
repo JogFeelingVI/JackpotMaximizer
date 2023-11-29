@@ -6,7 +6,7 @@ from collections import Counter
 import multiprocessing as mlps, os, re, enum, random as rdm, itertools as itr
 from typing import List, Iterable, Union
 from codex import glns_v2
-from codex.rego import rego, Note
+from codex.rego_v2 import rego, Note
 
 
 class mode_f(enum.Enum):

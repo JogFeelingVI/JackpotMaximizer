@@ -2,17 +2,16 @@
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-29 20:50:42
+# @Last Modified time: 2023-11-29 21:57:08
 
-import re, time
+import re, time, pathlib
 from typing import List
-import pathlib
 try:
-    from codetest.glns_v2 import Note
-    filenam = 'rego'
-except:
     from codex.glns_v2 import Note
     filenam = 'insx.reg'
+except:
+    from Codex.glns_v2 import Note
+    filenam = 'rego'
 
 
 class rego:
@@ -30,25 +29,25 @@ class rego:
 
     def __init__(self) -> None:
         self.parse_v2(self.load_rego_v2())
-        self.Func = {
-            'paichu_r': self.f_paichu_r,
-            'paichu_b': self.f_paichu_b,
-            'baohan': self.f_baohan,
-            'bit_1': self.f_bit_1,
-            'bit_2': self.f_bit_2,
-            'bit_3': self.f_bit_3,
-            'bit_4': self.f_bit_4,
-            'bit_5': self.f_bit_5,
-            'bit_6': self.f_bit_6,
-            'bit_7': self.f_bit_7,
-            'bitex_1': self.f_bitex_1,
-            'bitex_2': self.f_bitex_2,
-            'bitex_3': self.f_bitex_3,
-            'bitex_4': self.f_bitex_4,
-            'bitex_5': self.f_bitex_5,
-            'bitex_6': self.f_bitex_6,
-            'bitex_7': self.f_bitex_7,
-        }
+        # self.Func = {
+        #     'paichu_r': self.f_paichu_r,
+        #     'paichu_b': self.f_paichu_b,
+        #     'baohan': self.f_baohan,
+        #     'bit_1': self.f_bit_1,
+        #     'bit_2': self.f_bit_2,
+        #     'bit_3': self.f_bit_3,
+        #     'bit_4': self.f_bit_4,
+        #     'bit_5': self.f_bit_5,
+        #     'bit_6': self.f_bit_6,
+        #     'bit_7': self.f_bit_7,
+        #     'bitex_1': self.f_bitex_1,
+        #     'bitex_2': self.f_bitex_2,
+        #     'bitex_3': self.f_bitex_3,
+        #     'bitex_4': self.f_bitex_4,
+        #     'bitex_5': self.f_bitex_5,
+        #     'bitex_6': self.f_bitex_6,
+        #     'bitex_7': self.f_bitex_7,
+        # }
 
     def load_rego_v2(self) -> str:
         '''装载rego文件'''
@@ -67,9 +66,9 @@ class rego:
                 rb = _p.findall(_m)
                 nm = [int(x, base=10) for x in _n.findall(_m)]
                 if 'R' in rb:
-                    temp.append({'name': 'paichu_r', 'rb': '', 'number': nm})
+                    temp.append({'name': 'f_paichu_r', 'number': nm})
                 if 'B' in rb:
-                    temp.append({'name': 'paichu_b', 'rb': '', 'number': nm})
+                    temp.append({'name': 'f_paichu_b', 'number': nm})
             return temp
         return None
 
@@ -80,7 +79,7 @@ class rego:
             for _m in _match:
                 _n = re.compile('[0-9]{1,2}')
                 nm = [int(x, base=10) for x in _n.findall(_m)]
-                temp.append({'name': 'baohan', 'rb': '', 'number': nm})
+                temp.append({'name': 'f_baohan', 'number': nm})
             return temp
         return None
 
@@ -93,7 +92,7 @@ class rego:
                 _n = re.compile(r'\s([0-9]{1,2})')
                 p = re.compile(r'@bit([1-7])$').findall(_m)[0]
                 nm = [int(x, base=10) for x in _n.findall(_m)]
-                temp.append({'name': f'bit_{p}', 'rb': '', 'number': nm})
+                temp.append({'name': f'f_bit_{p}', 'number': nm})
             return temp
         return None
 
@@ -106,7 +105,7 @@ class rego:
                 _n = re.compile(r'\s([0-9]{1,2})')
                 p = re.compile(r'@bit([1-7])$').findall(_m)[0]
                 nm = [int(x, base=10) for x in _n.findall(_m)]
-                temp.append({'name': f'bitex_{p}', 'rb': '', 'number': nm})
+                temp.append({'name': f'f_bitex_{p}', 'number': nm})
             return temp
         return None
 
@@ -130,7 +129,12 @@ class rego:
             if self.debug:
                 print(f'debug {self.parse_dict}')
 
-    def f_paichu_r(self, N: Note, args: dict) -> bool:
+
+# class rego filter
+class rego_filter:
+
+    @staticmethod
+    def f_paichu_r(N: Note, args: dict) -> bool:
         '''排除'''
         Asnum = args['number']
         for _n in N.number:
@@ -138,7 +142,8 @@ class rego:
                 return False
         return True
 
-    def f_paichu_b(self, N: Note, args: dict) -> bool:
+    @staticmethod
+    def f_paichu_b(N: Note, args: dict) -> bool:
         '''排除'''
         Asnum = args['number']
         for _n in N.tiebie:
@@ -146,7 +151,8 @@ class rego:
                 return False
         return True
 
-    def f_baohan(self, N: Note, args: dict) -> bool:
+    @staticmethod
+    def f_baohan(N: Note, args: dict) -> bool:
         '''包含'''
         Asnum = args['number']
         for _n in N.setnumber_R:
@@ -154,32 +160,40 @@ class rego:
                 return True
         return False
 
-    def f_bit_1(self, N: Note, args: dict) -> bool:
-        return self.f_bit(N, args, 1)
+    @classmethod
+    def f_bit_1(cls, N: Note, args: dict) -> bool:
+        return cls.f_bit(N, args, 1)
 
-    def f_bit_2(self, N: Note, args: dict) -> bool:
-        return self.f_bit(N, args, 2)
+    @classmethod
+    def f_bit_2(cls, N: Note, args: dict) -> bool:
+        return cls.f_bit(N, args, 2)
 
-    def f_bit_3(self, N: Note, args: dict) -> bool:
-        return self.f_bit(N, args, 3)
+    @classmethod
+    def f_bit_3(cls, N: Note, args: dict) -> bool:
+        return cls.f_bit(N, args, 3)
 
-    def f_bit_4(self, N: Note, args: dict) -> bool:
-        return self.f_bit(N, args, 4)
+    @classmethod
+    def f_bit_4(cls, N: Note, args: dict) -> bool:
+        return cls.f_bit(N, args, 4)
 
-    def f_bit_5(self, N: Note, args: dict) -> bool:
-        return self.f_bit(N, args, 5)
+    @classmethod
+    def f_bit_5(cls, N: Note, args: dict) -> bool:
+        return cls.f_bit(N, args, 5)
 
-    def f_bit_6(self, N: Note, args: dict) -> bool:
-        return self.f_bit(N, args, 6)
+    @classmethod
+    def f_bit_6(cls, N: Note, args: dict) -> bool:
+        return cls.f_bit(N, args, 6)
 
-    def f_bit_7(self, N: Note, args: dict) -> bool:
+    @staticmethod
+    def f_bit_7(N: Note, args: dict) -> bool:
         Asnum = args['number']
         for _n in N.tiebie:
             if _n in Asnum:
                 return True
         return False
 
-    def f_bit(self, N: Note, args: dict, index: int) -> bool:
+    @staticmethod
+    def f_bit(N: Note, args: dict, index: int) -> bool:
         '''定位 包含'''
         if index in [1, 2, 3, 4, 5, 6]:
             _n = N.number[index - 1]
@@ -187,49 +201,43 @@ class rego:
                 return False
         return True
 
-    def f_bitex_1(self, N: Note, args: dict) -> bool:
-        return self.f_bitex(N, args, 1)
+    @classmethod
+    def f_bitex_1(cls, N: Note, args: dict) -> bool:
+        return cls.f_bitex(N, args, 1)
 
-    def f_bitex_2(self, N: Note, args: dict) -> bool:
-        return self.f_bitex(N, args, 2)
+    @classmethod
+    def f_bitex_2(cls, N: Note, args: dict) -> bool:
+        return cls.f_bitex(N, args, 2)
 
-    def f_bitex_3(self, N: Note, args: dict) -> bool:
-        return self.f_bitex(N, args, 3)
+    @classmethod
+    def f_bitex_3(cls, N: Note, args: dict) -> bool:
+        return cls.f_bitex(N, args, 3)
 
-    def f_bitex_4(self, N: Note, args: dict) -> bool:
-        return self.f_bitex(N, args, 4)
+    @classmethod
+    def f_bitex_4(cls, N: Note, args: dict) -> bool:
+        return cls.f_bitex(N, args, 4)
 
-    def f_bitex_5(self, N: Note, args: dict) -> bool:
-        return self.f_bitex(N, args, 5)
+    @classmethod
+    def f_bitex_5(cls, N: Note, args: dict) -> bool:
+        return cls.f_bitex(N, args, 5)
 
-    def f_bitex_6(self, N: Note, args: dict) -> bool:
-        return self.f_bitex(N, args, 6)
+    @classmethod
+    def f_bitex_6(cls, N: Note, args: dict) -> bool:
+        return cls.f_bitex(N, args, 6)
 
-    def f_bitex_7(self, N: Note, args: dict) -> bool:
+    @staticmethod
+    def f_bitex_7(N: Note, args: dict) -> bool:
         Asnum = args['number']
         for _n in N.setnumber_B:
             if _n in Asnum:
                 return False
         return True
 
-    def f_bitex(self, N: Note, args: dict, index: int) -> bool:
+    @staticmethod
+    def f_bitex(N: Note, args: dict, index: int) -> bool:
         '''定位 不包含'''
         if index in [1, 2, 3, 4, 5, 6]:
             _n = N.number[index - 1]
             if _n in args['number']:
                 return False
-        return True
-
-    def filtration_olde(self, N: Note) -> bool:
-        '''
-        这个程序急需优化
-        {'name': 'paichu', 'rb': ['R'], 'number': [33, 27], 'func': <function rego.p_paichu.<locals>.<lambda> at 0x10b7c49a0>}
-        '''
-        for _, linex in self.parse_dict.items():
-            funx = self.Func[linex['name']]
-            refv = funx(N, linex)
-            if self.debug:
-                print(f'filtration {linex["name"]} -> {refv} args {linex}')
-            if refv is False:
-                return refv
         return True

@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-28 22:17:12
+# @Last Modified time: 2023-11-29 21:03:15
 import multiprocessing as mlps, re, itertools as itr, time
 from typing import List, Iterable
 from codex import glns_v2, rego
@@ -93,7 +93,8 @@ class mLpool:
         if self.reego:
             # 这里依然是问题所在
             # st = time.time()
-            for k, parst in self.class_rego.parse_dict.items():
+            for parst in self.class_rego.parse_dict.values():
+                #rex = getattr(rego_v2.rego_filter, parst['name'])(N, parst)
                 rex = self.class_rego.Func[parst['name']](N, parst)
                 if rex == False:
                     return rex
