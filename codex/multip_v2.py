@@ -1,10 +1,10 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-29 21:03:15
+# @Last Modified time: 2023-11-30 09:42:03
 import multiprocessing as mlps, re, itertools as itr, time
 from typing import List, Iterable
-from codex import glns_v2, rego
+from codex import glns_v2, rego_v2
 
 
 class ccps:
@@ -33,7 +33,8 @@ class mLpool:
         self.__filterv2 = glns_v2.filterN_v2()
         self.__filterv2.Last = self.__glnsv2.getlast
         self.__filterv2.Lever = self.__glnsv2.getabc
-        self.class_rego = rego.rego()
+        self.class_rego = rego_v2.rego().parse_dict
+        self.rego_filter = rego_v2.rego_filter()
         self.R = R
         self.B = B
         self.iRx = iRx
@@ -93,12 +94,11 @@ class mLpool:
         if self.reego:
             # 这里依然是问题所在
             # st = time.time()
-            for parst in self.class_rego.parse_dict.values():
-                #rex = getattr(rego_v2.rego_filter, parst['name'])(N, parst)
-                rex = self.class_rego.Func[parst['name']](N, parst)
+            for k, parst in self.class_rego.items():
+                rex = parst['f'](N, parst['a'])
+                #rex = self.class_rego.Func[parst['name']](N, parst)
                 if rex == False:
-                    return rex
-
+                    return False
             # print(f'OSID {os.getpid()} init reego {time.time() - st:.4f}`s')
 
         # fins
@@ -141,3 +141,5 @@ class mLpool:
             if self.filter_map(zio) == True:
                 return True
         return False
+    
+    

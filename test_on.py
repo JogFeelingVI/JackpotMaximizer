@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-29 17:12:36
+# @Last Modified time: 2023-11-30 09:50:05
 
 import unittest, os, time, itertools, multiprocessing as mp
 from codex import glns_v2, rego_v2
@@ -114,12 +114,14 @@ def filter_test():
     reego = rego_v2.rego().parse_dict
     N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
     for k, funv in reego.items():
+        f = funv['f']
+        a = funv['a']
         #for k, funv in filterv2.filters.items():
         stime = time.time()
-        funx = getattr(rego_v2.rego_filter, funv['name'])
-        rexf = set([funx(N, funv) for i in range(1000)])
+        #funx = getattr(rego_f, funv['name'])
+        rexf = set([f(N, a) for i in range(70000)])
         etime = time.time()
-        print(f'{funv["name"]:>10} T {etime-stime:.4f}`s N {N} R {rexf}')
+        print(f'{k} > {f.__name__:>10} T {etime-stime:.4f}`s N {N} R {rexf}')
 
 
 class TestStringMethods(unittest.TestCase):

@@ -2,16 +2,14 @@
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-29 21:57:08
+# @Last Modified time: 2023-11-30 09:51:27
 
 import re, time, pathlib
 from typing import List
-try:
-    from codex.glns_v2 import Note
-    filenam = 'insx.reg'
-except:
-    from Codex.glns_v2 import Note
-    filenam = 'rego'
+
+from codex.glns_v2 import Note
+
+filenam = 'insx.reg'
 
 
 class rego:
@@ -66,9 +64,9 @@ class rego:
                 rb = _p.findall(_m)
                 nm = [int(x, base=10) for x in _n.findall(_m)]
                 if 'R' in rb:
-                    temp.append({'name': 'f_paichu_r', 'number': nm})
+                    temp.append({'f': rego_filter.f_paichu_r, 'a': nm})
                 if 'B' in rb:
-                    temp.append({'name': 'f_paichu_b', 'number': nm})
+                    temp.append({'f': rego_filter.f_paichu_b, 'a': nm})
             return temp
         return None
 
@@ -79,7 +77,7 @@ class rego:
             for _m in _match:
                 _n = re.compile('[0-9]{1,2}')
                 nm = [int(x, base=10) for x in _n.findall(_m)]
-                temp.append({'name': 'f_baohan', 'number': nm})
+                temp.append({'f': rego_filter.f_baohan, 'a': nm})
             return temp
         return None
 
@@ -92,7 +90,8 @@ class rego:
                 _n = re.compile(r'\s([0-9]{1,2})')
                 p = re.compile(r'@bit([1-7])$').findall(_m)[0]
                 nm = [int(x, base=10) for x in _n.findall(_m)]
-                temp.append({'name': f'f_bit_{p}', 'number': nm})
+                funx = getattr(rego_filter, f'f_bit_{p}')
+                temp.append({'f': funx, 'a': nm})
             return temp
         return None
 
@@ -105,7 +104,8 @@ class rego:
                 _n = re.compile(r'\s([0-9]{1,2})')
                 p = re.compile(r'@bit([1-7])$').findall(_m)[0]
                 nm = [int(x, base=10) for x in _n.findall(_m)]
-                temp.append({'name': f'f_bitex_{p}', 'number': nm})
+                funx = getattr(rego_filter, f'f_bitex_{p}')
+                temp.append({'f': funx, 'a': nm})
             return temp
         return None
 
@@ -134,110 +134,105 @@ class rego:
 class rego_filter:
 
     @staticmethod
-    def f_paichu_r(N: Note, args: dict) -> bool:
+    def f_paichu_r(N: Note, args: List) -> bool:
         '''排除'''
-        Asnum = args['number']
         for _n in N.number:
-            if _n in Asnum:
+            if _n in args:
                 return False
         return True
 
     @staticmethod
-    def f_paichu_b(N: Note, args: dict) -> bool:
+    def f_paichu_b(N: Note, args: List) -> bool:
         '''排除'''
-        Asnum = args['number']
         for _n in N.tiebie:
-            if _n in Asnum:
+            if _n in args:
                 return False
         return True
 
     @staticmethod
-    def f_baohan(N: Note, args: dict) -> bool:
+    def f_baohan(N: Note, args: List) -> bool:
         '''包含'''
-        Asnum = args['number']
         for _n in N.setnumber_R:
-            if _n in Asnum:
+            if _n in args:
                 return True
         return False
 
     @classmethod
-    def f_bit_1(cls, N: Note, args: dict) -> bool:
+    def f_bit_1(cls, N: Note, args: List) -> bool:
         return cls.f_bit(N, args, 1)
 
     @classmethod
-    def f_bit_2(cls, N: Note, args: dict) -> bool:
+    def f_bit_2(cls, N: Note, args: List) -> bool:
         return cls.f_bit(N, args, 2)
 
     @classmethod
-    def f_bit_3(cls, N: Note, args: dict) -> bool:
+    def f_bit_3(cls, N: Note, args: List) -> bool:
         return cls.f_bit(N, args, 3)
 
     @classmethod
-    def f_bit_4(cls, N: Note, args: dict) -> bool:
+    def f_bit_4(cls, N: Note, args: List) -> bool:
         return cls.f_bit(N, args, 4)
 
     @classmethod
-    def f_bit_5(cls, N: Note, args: dict) -> bool:
+    def f_bit_5(cls, N: Note, args: List) -> bool:
         return cls.f_bit(N, args, 5)
 
     @classmethod
-    def f_bit_6(cls, N: Note, args: dict) -> bool:
+    def f_bit_6(cls, N: Note, args: List) -> bool:
         return cls.f_bit(N, args, 6)
 
     @staticmethod
-    def f_bit_7(N: Note, args: dict) -> bool:
-        Asnum = args['number']
+    def f_bit_7(N: Note, args: List) -> bool:
         for _n in N.tiebie:
-            if _n in Asnum:
+            if _n in args:
                 return True
         return False
 
     @staticmethod
-    def f_bit(N: Note, args: dict, index: int) -> bool:
+    def f_bit(N: Note, args: List, index: int) -> bool:
         '''定位 包含'''
         if index in [1, 2, 3, 4, 5, 6]:
             _n = N.number[index - 1]
-            if _n not in args['number']:
+            if _n not in args:
                 return False
         return True
 
     @classmethod
-    def f_bitex_1(cls, N: Note, args: dict) -> bool:
+    def f_bitex_1(cls, N: Note, args: List) -> bool:
         return cls.f_bitex(N, args, 1)
 
     @classmethod
-    def f_bitex_2(cls, N: Note, args: dict) -> bool:
+    def f_bitex_2(cls, N: Note, args: List) -> bool:
         return cls.f_bitex(N, args, 2)
 
     @classmethod
-    def f_bitex_3(cls, N: Note, args: dict) -> bool:
+    def f_bitex_3(cls, N: Note, args: List) -> bool:
         return cls.f_bitex(N, args, 3)
 
     @classmethod
-    def f_bitex_4(cls, N: Note, args: dict) -> bool:
+    def f_bitex_4(cls, N: Note, args: List) -> bool:
         return cls.f_bitex(N, args, 4)
 
     @classmethod
-    def f_bitex_5(cls, N: Note, args: dict) -> bool:
+    def f_bitex_5(cls, N: Note, args: List) -> bool:
         return cls.f_bitex(N, args, 5)
 
     @classmethod
-    def f_bitex_6(cls, N: Note, args: dict) -> bool:
+    def f_bitex_6(cls, N: Note, args: List) -> bool:
         return cls.f_bitex(N, args, 6)
 
     @staticmethod
-    def f_bitex_7(N: Note, args: dict) -> bool:
-        Asnum = args['number']
-        for _n in N.setnumber_B:
-            if _n in Asnum:
+    def f_bitex_7(N: Note, args: List) -> bool:
+        for _n in N.tiebie:
+            if _n in args:
                 return False
         return True
 
     @staticmethod
-    def f_bitex(N: Note, args: dict, index: int) -> bool:
+    def f_bitex(N: Note, args: List, index: int) -> bool:
         '''定位 不包含'''
         if index in [1, 2, 3, 4, 5, 6]:
             _n = N.number[index - 1]
-            if _n in args['number']:
+            if _n in args:
                 return False
         return True
