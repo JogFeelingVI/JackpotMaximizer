@@ -1,8 +1,8 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-30 09:42:03
-import multiprocessing as mlps, re, itertools as itr, time
+# @Last Modified time: 2023-11-30 21:52:48
+import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
 from codex import glns_v2, rego_v2
 
@@ -28,13 +28,11 @@ class mLpool:
 
     def __init__(self, data: dict, R: int, B: int, iRx: re.Pattern) -> None:
         print(f'{self.prompt} Use mLpooL V2')
-        #self.data = data
-        self.__glnsv2 = glns_v2.glnsMpls(data)
-        self.__filterv2 = glns_v2.filterN_v2()
-        self.__filterv2.Last = self.__glnsv2.getlast
-        self.__filterv2.Lever = self.__glnsv2.getabc
+        self.glnsv2 = glns_v2.glnsMpls(data)
+        self.filterv2 = glns_v2.filterN_v2()
+        self.filterv2.Last = self.glnsv2.getlast
+        self.filterv2.Lever = self.glnsv2.getabc
         self.class_rego = rego_v2.rego().parse_dict
-        self.rego_filter = rego_v2.rego_filter()
         self.R = R
         self.B = B
         self.iRx = iRx
@@ -55,20 +53,15 @@ class mLpool:
         N = range(n)
         if mcp:
             # processes=self.cpu
-            with mlps.Pool(mlps.cpu_count()) as p:
-                csize = n // mlps.cpu_count()
-                #print(f'csize {csize} {n//self.cpu} {[1, 0][n % self.cpu == 0]}  {n}')
-                N = [N[i:i + csize] for i in range(0, n, csize)]
+            with mlps.Pool() as p:
+                csize = int(n*0.083)
                 # 从这里开始出现错误
-                iTx = p.map(self.group_size, N)
-                return itr.chain.from_iterable(iTx)
+                iTx = p.map(self.SpawnPoolWorker, N, chunksize=csize)
+                return iTx
         else:
             return [self.SpawnPoolWorker(x) for x in N]
 
-    def group_size(self, N: Iterable):
-        return [self.SpawnPoolWorker(x) for x in N]
-
-    def SpawnPoolWorker(self, index: int) -> List:
+    def SpawnPoolWorker(self, index:int) -> List:
         '''
             data {'r': [1,2,3...], 'b':[1-16]}
             Rlen R len 1, 2, 3, 4, 5, 6 + Blen
@@ -79,7 +72,7 @@ class mLpool:
         depth: int = 1
         while depth <= self.mdep:
             #st = time.time()
-            n, t = self.__glnsv2.creativity()
+            n, t = self.glnsv2.creativity()
             rinsx = self.__combinations_ols(n, t)
             if rinsx == True:
                 #print(f'OSID {os.getpid()} SpawnPoolWorker {time.time() - st:.4f}`s')
@@ -93,20 +86,18 @@ class mLpool:
         # run rego
         if self.reego:
             # 这里依然是问题所在
-            # st = time.time()
             for k, parst in self.class_rego.items():
                 rex = parst['f'](N, parst['a'])
                 #rex = self.class_rego.Func[parst['name']](N, parst)
                 if rex == False:
                     return False
-            # print(f'OSID {os.getpid()} init reego {time.time() - st:.4f}`s')
 
         # fins
         if self.fdins(N, self.iRx) == False:
             #print(f'debug fdins FALSE')
             return False
         # filterv2
-        for kfunc in self.__filterv2.filters.values():
+        for kfunc in self.filterv2.filters.values():
             if kfunc(N) == False:
                 #print(f'filters {k:>8} FALSE N {N}')
                 return False

@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-30 09:50:05
+# @Last Modified time: 2023-11-30 21:43:56
 
 import unittest, os, time, itertools, multiprocessing as mp
 from codex import glns_v2, rego_v2
@@ -46,7 +46,7 @@ def liss_g(nl):
 
 def mpastime():
     '''测试集中map的效率'''
-    _size = 10000 * 100
+    _size = 1000
     n = [x for x in range(_size)]
     st = time.time()
     Nils = [x for x in map(liss, n)]
@@ -59,9 +59,18 @@ def mpastime():
     
     st = time.time()
     with mp.Pool() as mpp:
-        mp_map = mpp.map(liss, n, chunksize=_size//4)
+        mp_map = mpp.map(liss, n, chunksize=int(_size*0.3757))
     print(f'Time for mp.pool chunksize 1000 {time.time() - st:.4f}`s')
         
+    
+    cs = _size // 4
+    csl = [cs // x for x in range(1, 10, 1)]
+    for ci in csl:
+        st = time.time()
+        with mp.Pool() as mpp:
+            mp_map = mpp.map(liss, n, chunksize=ci)
+        print(f'Time for mp.pool cs {cs} {ci} {time.time() - st:.4f}`s')
+    
     st = time.time()
     size = _size // 4
     g = [range(i, i + size) for i in range(0, n.__len__(), size)]
@@ -83,6 +92,9 @@ def tesrange():
     #print(f'debug countforg {list(countofg)} {rebool}')
     return rebool
 
+def filter_for_rego(N:glns_v2.Note, dice):
+    '''filter'''
+    return True
 
 def filter_test():
     '''test'''
@@ -129,10 +141,10 @@ class TestStringMethods(unittest.TestCase):
     def test_upper(self):
         #resx = [tesrange() for i in range(1000)]
         #tesrange()
-        filter_test()
+        #filter_test()
         #is_uncorrelated()
         #test_change()
-        #mpastime()
+        mpastime()
 
 
 if __name__ == '__main__':
