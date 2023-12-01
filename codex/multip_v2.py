@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-01 21:51:36
+# @Last Modified time: 2023-12-01 22:16:35
 import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
 from codex import glns_v2, rego_v2
@@ -53,11 +53,11 @@ class mLpool:
         N = range(n)
         if mcp:
             # processes=self.cpu
+            csize = int(n * 0.083)
+            if csize <= 30:
+                return [self.SpawnPoolWorker(x) for x in N]
             with mlps.Pool() as p:
-                csize = int(n * 0.083)
-                # 从这里开始出现错误
-                iTx = p.map(self.SpawnPoolWorker, N, chunksize=csize)
-                return iTx
+                return p.map(self.SpawnPoolWorker, N, chunksize=csize)
         else:
             return [self.SpawnPoolWorker(x) for x in N]
 
@@ -113,7 +113,7 @@ class mLpool:
         Nums type list
         inse type str
         '''
-        if insre == re.compile(f'(.*)'):
+        if insre == re.compile('(.*)'):
             # 不做任何限制
             return True
         else:

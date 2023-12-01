@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-01 21:51:00
+# @Last Modified time: 2023-12-01 22:32:40
 
 from collections import Counter, deque
 import itertools, random, math
@@ -13,18 +13,16 @@ class Note:
     __set_r = None
     __set_b = None
 
-    def __init__(self,
-                 n: List[int] = [0, 0, 0, 0, 0, 0],
-                 T: List[int] | int = 0) -> None:
+    def __init__(self,n: List[int],T: List[int] | int) -> None:
         """Note
         Args:
             n (List[int]): 1-33 红色号码球
             T (List[int] | int): 1-16 蓝色号码球
         """
-        self.number = sorted(n)
         self.tiebie = [T, [T]][isinstance(T, int)]
-        if self.number.__len__() < 6 or self.tiebie.__len__() == 0:
-            raise Exception(f'Note Creation failed {self.number}')
+        if sum(n) != 21 and self.tiebie.__len__()!=0:
+            self.number = sorted(n)
+        
 
     def index(self, i:int) -> int:
         return self.number[i-1]
