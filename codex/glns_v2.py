@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-28 22:26:26
+# @Last Modified time: 2023-12-01 21:51:00
 
 from collections import Counter, deque
 import itertools, random, math
@@ -26,6 +26,8 @@ class Note:
         if self.number.__len__() < 6 or self.tiebie.__len__() == 0:
             raise Exception(f'Note Creation failed {self.number}')
 
+    def index(self, i:int) -> int:
+        return self.number[i-1]
 
     @property
     def setnumber_R(self):
@@ -229,7 +231,7 @@ class random_rb:
 
 
     def get_number_v2(self):
-        self.dep = random.sample(self.nPool, k=self.len)
+        self.dep = sorted(random.sample(self.nPool, k=self.len))
 
     # 已经删除
     # def get_number(self):

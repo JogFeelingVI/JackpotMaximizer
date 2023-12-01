@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-30 21:52:48
+# @Last Modified time: 2023-12-01 21:51:36
 import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
 from codex import glns_v2, rego_v2
@@ -54,14 +54,14 @@ class mLpool:
         if mcp:
             # processes=self.cpu
             with mlps.Pool() as p:
-                csize = int(n*0.083)
+                csize = int(n * 0.083)
                 # 从这里开始出现错误
                 iTx = p.map(self.SpawnPoolWorker, N, chunksize=csize)
                 return iTx
         else:
             return [self.SpawnPoolWorker(x) for x in N]
 
-    def SpawnPoolWorker(self, index:int) -> List:
+    def SpawnPoolWorker(self, index: int) -> List:
         '''
             data {'r': [1,2,3...], 'b':[1-16]}
             Rlen R len 1, 2, 3, 4, 5, 6 + Blen
@@ -76,7 +76,7 @@ class mLpool:
             rinsx = self.__combinations_ols(n, t)
             if rinsx == True:
                 #print(f'OSID {os.getpid()} SpawnPoolWorker {time.time() - st:.4f}`s')
-                return [index, depth, sorted(n), sorted(t)]
+                return [index, depth, n, t]
             depth += 1
         return [index, depth, [0], [0]]
 
@@ -113,7 +113,7 @@ class mLpool:
         Nums type list
         inse type str
         '''
-        if insre == re.compile('(.*)'):
+        if insre == re.compile(f'(.*)'):
             # 不做任何限制
             return True
         else:
@@ -132,5 +132,3 @@ class mLpool:
             if self.filter_map(zio) == True:
                 return True
         return False
-    
-    

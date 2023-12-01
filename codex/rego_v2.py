@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-30 09:51:27
+# @Last Modified time: 2023-12-01 21:47:43
 
 import re, time, pathlib
 from typing import List
@@ -27,25 +27,6 @@ class rego:
 
     def __init__(self) -> None:
         self.parse_v2(self.load_rego_v2())
-        # self.Func = {
-        #     'paichu_r': self.f_paichu_r,
-        #     'paichu_b': self.f_paichu_b,
-        #     'baohan': self.f_baohan,
-        #     'bit_1': self.f_bit_1,
-        #     'bit_2': self.f_bit_2,
-        #     'bit_3': self.f_bit_3,
-        #     'bit_4': self.f_bit_4,
-        #     'bit_5': self.f_bit_5,
-        #     'bit_6': self.f_bit_6,
-        #     'bit_7': self.f_bit_7,
-        #     'bitex_1': self.f_bitex_1,
-        #     'bitex_2': self.f_bitex_2,
-        #     'bitex_3': self.f_bitex_3,
-        #     'bitex_4': self.f_bitex_4,
-        #     'bitex_5': self.f_bitex_5,
-        #     'bitex_6': self.f_bitex_6,
-        #     'bitex_7': self.f_bitex_7,
-        # }
 
     def load_rego_v2(self) -> str:
         '''装载rego文件'''
@@ -192,7 +173,7 @@ class rego_filter:
     def f_bit(N: Note, args: List, index: int) -> bool:
         '''定位 包含'''
         if index in [1, 2, 3, 4, 5, 6]:
-            _n = N.number[index - 1]
+            _n = N.index(i=index)
             if _n not in args:
                 return False
         return True
@@ -232,7 +213,7 @@ class rego_filter:
     def f_bitex(N: Note, args: List, index: int) -> bool:
         '''定位 不包含'''
         if index in [1, 2, 3, 4, 5, 6]:
-            _n = N.number[index - 1]
+            _n = N.index(i=index)
             if _n in args:
                 return False
         return True

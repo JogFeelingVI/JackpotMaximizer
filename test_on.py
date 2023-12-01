@@ -1,26 +1,27 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-30 21:43:56
+# @Last Modified time: 2023-12-01 21:56:04
 
 import unittest, os, time, itertools, multiprocessing as mp
 from codex import glns_v2, rego_v2
 
 
 def chengjie_w():
-    N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
+    n = 16
+    if n < 30:
+        if n > 10:
+            if n % 2 == 0:
+                if n % 3 == 1:
+                    return True
+    return False
 
 
 def chengjie_d():
-    N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-    Last = [5, 10, 21, 25, 30, 33]
-    pxt = 0
-    for a, b in itertools.product(N.number, Last):
-        if a - b in [1, -1]:
-            pxt += 1
-        if pxt > 2.1:
-            return False
-    return True
+    n = 16
+    if n < 30 and n > 10 and n % 2 == 0 and n % 3 == 1:
+        return True
+    return False
 
 
 def test_change():
@@ -28,73 +29,11 @@ def test_change():
     [chengjie_w() for _ in range(10000)]
     et = time.time()
     print(f'AC Use Time W {et-st:.4f}')
-    # st = time.time()
-    # [chengjie_d() for _ in range(10000)]
-    # et = time.time()
-    # print(f'AC Use Time D {et-st:.4f}')
-
-def liss(n: int):
-        if n % 2 == 1:
-            if n % 4 == 3:
-                if n% 7 ==5:
-                    return True, n
-        return False, -1
-    
-def liss_g(nl):
-    rext = [liss(x) for x in nl]
-    return rext
-
-def mpastime():
-    '''测试集中map的效率'''
-    _size = 1000
-    n = [x for x in range(_size)]
     st = time.time()
-    Nils = [x for x in map(liss, n)]
-    print(f'Time for map {time.time() - st:.4f}`s')
-    
-    st = time.time()
-    with mp.Pool() as mpp:
-        mp_map = mpp.map(liss, n)
-    print(f'Time for mp.pool {time.time() - st:.4f}`s')
-    
-    st = time.time()
-    with mp.Pool() as mpp:
-        mp_map = mpp.map(liss, n, chunksize=int(_size*0.3757))
-    print(f'Time for mp.pool chunksize 1000 {time.time() - st:.4f}`s')
-        
-    
-    cs = _size // 4
-    csl = [cs // x for x in range(1, 10, 1)]
-    for ci in csl:
-        st = time.time()
-        with mp.Pool() as mpp:
-            mp_map = mpp.map(liss, n, chunksize=ci)
-        print(f'Time for mp.pool cs {cs} {ci} {time.time() - st:.4f}`s')
-    
-    st = time.time()
-    size = _size // 4
-    g = [range(i, i + size) for i in range(0, n.__len__(), size)]
-    with mp.Pool() as mpp:
-        mp_map = mpp.map(liss_g, g)
-    print(f'Time for mp.pool g size {size} {time.time() - st:.4f}`s')
-        
+    [chengjie_d() for _ in range(10000)]
+    et = time.time()
+    print(f'AC Use Time D {et-st:.4f}')
 
-
-def tesrange():
-    '''[[6, 9], [19], [28, 30, 31]] [2,1,3] '''
-    N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-    # debug dzx for g [range(1, 12), range(12, 23), range(23, 34)]
-    g = [range(i, i + 11) for i in range(0, 33, 11)]
-    #print(f'debug {g}')
-    countofg = map(lambda x: N.setnumber_R.intersection(x).__len__(), g)
-
-    rebool = [False, True][5 not in countofg or 6 in countofg]
-    #print(f'debug countforg {list(countofg)} {rebool}')
-    return rebool
-
-def filter_for_rego(N:glns_v2.Note, dice):
-    '''filter'''
-    return True
 
 def filter_test():
     '''test'''
@@ -143,8 +82,8 @@ class TestStringMethods(unittest.TestCase):
         #tesrange()
         #filter_test()
         #is_uncorrelated()
-        #test_change()
-        mpastime()
+        test_change()
+        #mpastime()
 
 
 if __name__ == '__main__':
