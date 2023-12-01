@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-01 22:32:40
+# @Last Modified time: 2023-12-01 22:37:39
 
 from collections import Counter, deque
 import itertools, random, math
@@ -19,9 +19,10 @@ class Note:
             n (List[int]): 1-33 红色号码球
             T (List[int] | int): 1-16 蓝色号码球
         """
-        self.tiebie = [T, [T]][isinstance(T, int)]
-        if sum(n) != 21 and self.tiebie.__len__()!=0:
+        _T = [T, [T]][isinstance(T, int)]
+        if sum(n) > 21 and _T.__len__()!=0:
             self.number = sorted(n)
+            self.tiebie = sorted(_T)
         
 
     def index(self, i:int) -> int:
