@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-01 22:37:39
+# @Last Modified time: 2023-12-02 17:11:01
 
 from collections import Counter, deque
 import itertools, random, math
@@ -90,6 +90,7 @@ class filterN_v2:
             'lianhao': self.lianhao,
             'ac': self.acvalue,
             'denji': self.denji,  #
+            'mod3': self.mod3
         }
 
         if self.__debug == False:
@@ -152,9 +153,21 @@ class filterN_v2:
         flgrex = sorted([len(v) for v in count if len(v) > 1])
         rebool = [False, True][flgrex in [[], [3], [2], [2, 2]]]
         return rebool
+    
+    def mod3(self, n: Note) -> bool:
+        '''mod 3 not in [[6], [5,1],[3,3]]'''
+        f = lambda x: x % 3
+        cts =[[6], [5,1]]
+        s = sorted(n.number, key=f)
+        modg = itertools.groupby(s, key=f)
+        counts = sorted([len(list(g[1])) for g in modg])
+        if counts in cts:
+            return False
+        return True
 
     def denji(self, N: Note) -> bool:
         '''
+        这个方法会造成命中率降低弃用
         [(4, 1), (20, 3), (7, 3), (23, 3), (21, 3), (2, 4), (29, 4), (28, 4), (5, 4), (12, 4), (17, 4)]
         '''
         if self.Lever.keys().__len__() == 0:
