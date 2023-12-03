@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-01 22:16:35
+# @Last Modified time: 2023-12-03 11:07:57
 import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
 from codex import glns_v2, rego_v2
@@ -83,6 +83,7 @@ class mLpool:
     def filter_map(self, zipo_item) -> bool:
         Nr, Nb = zipo_item
         N = glns_v2.Note(Nr, Nb)
+        
         # run rego
         if self.reego:
             # 这里依然是问题所在

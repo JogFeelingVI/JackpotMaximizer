@@ -2,31 +2,36 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-02 17:11:01
+# @Last Modified time: 2023-12-03 13:11:48
 
 from collections import Counter, deque
 import itertools, random, math
 from typing import List
 
+def Range_M(M: int = 16) -> List:
+    '''
+    M is 33 or 16
+    修复 R B 中缺失的数字
+    '''
+    max_set = [x for x in range(1, M + 1)]
+    return max_set
 
 class Note:
     __set_r = None
     __set_b = None
 
-    def __init__(self,n: List[int],T: List[int] | int) -> None:
+    def __init__(self, n: List[int], T: List[int] | int) -> None:
         """Note
         Args:
             n (List[int]): 1-33 红色号码球
             T (List[int] | int): 1-16 蓝色号码球
         """
         _T = [T, [T]][isinstance(T, int)]
-        if sum(n) > 21 and _T.__len__()!=0:
-            self.number = sorted(n)
-            self.tiebie = sorted(_T)
-        
+        self.number = sorted(n)
+        self.tiebie = sorted(_T)
 
-    def index(self, i:int) -> int:
-        return self.number[i-1]
+    def index(self, i: int) -> int:
+        return self.number[i - 1]
 
     @property
     def setnumber_R(self):
@@ -84,19 +89,22 @@ class filterN_v2:
     def __init__filters(self) -> None:
         self.filters = {
             'sixlan': self.sixlan,  #
+            'dx16': self.dx16,
+            'zhihe': self.zhihe,
+            'mod3': self.mod3,
+            'mod2': self.mod2,
             'duplicates': self.duplicates,  #
             'linma': self.linma,  #
             'dzx': self.dzx,
             'lianhao': self.lianhao,
             'ac': self.acvalue,
             'denji': self.denji,  #
-            'mod3': self.mod3
         }
 
         if self.__debug == False:
             #diskey = ['sixlan', 'denji']
             diskey = [
-                'sixlan',
+                #'sixlan',
                 #'duplicates',
                 'denji',
             ]
@@ -153,11 +161,48 @@ class filterN_v2:
         flgrex = sorted([len(v) for v in count if len(v) > 1])
         rebool = [False, True][flgrex in [[], [3], [2], [2, 2]]]
         return rebool
-    
+
     def mod3(self, n: Note) -> bool:
         '''mod 3 not in [[6], [5,1],[3,3]]'''
         f = lambda x: x % 3
-        cts =[[6], [5,1]]
+        cts = [[6], [5, 1]]
+        s = sorted(n.number, key=f)
+        modg = itertools.groupby(s, key=f)
+        counts = sorted([len(list(g[1])) for g in modg])
+        if counts in cts:
+            return False
+        return True
+    
+    def mod2(self, n: Note) -> bool:
+        '''mod 2 not in [[6], [5,1],[3,3]]'''
+        f = lambda x: x % 2
+        cts = [[6], [0]]
+        s = sorted(n.number, key=f)
+        modg = itertools.groupby(s, key=f)
+        counts = sorted([len(list(g[1])) for g in modg])
+        if counts in cts:
+            return False
+        return True
+    
+    def dx16(self, n:Note) -> bool:
+        '''
+        da:xiao 1:5 n > 16.02 is da
+        '''
+        f = lambda x: x > 16.02
+        cts = [[6], [0]]
+        s = sorted(n.number, key=f)
+        modg = itertools.groupby(s, key=f)
+        counts = sorted([len(list(g[1])) for g in modg])
+        if counts in cts:
+            return False
+        return True
+    
+    def zhihe(self, n:Note) -> bool:
+        '''
+        da:xiao 1:5 n > 16.02 is da
+        '''
+        f = lambda x: x in (1,2,3,5,7,11,13,17,19,23,29,31)
+        cts = [[6], [0]]
         s = sorted(n.number, key=f)
         modg = itertools.groupby(s, key=f)
         counts = sorted([len(list(g[1])) for g in modg])
@@ -227,49 +272,12 @@ class random_rb:
     '''random R & B'''
 
     def __init__(self, rb: List, L: int) -> None:
-        self.dep = [0] * L
         self.len = L
         self.nPool = rb
 
-
-    def remark(self):
-        self.dep = [0] * self.len
-
-    def find_zero(self) -> int:
-        '''find zero'''
-        if 0 in self.dep:
-            return self.dep.index(0)
-        return -1
-
-
     def get_number_v2(self):
-        self.dep = sorted(random.sample(self.nPool, k=self.len))
-
-    # 已经删除
-    # def get_number(self):
-    #     find = self.find_zero()
-    #     if find == -1:
-    #         return True
-
-    #     if self.nPool == []:
-    #         self.__initializations()
-    #     if self.usew:
-    #         result = random.choices(self.nPool, weights=self.weights, k=6)
-    #     else:
-    #         result = random.choices(self.nPool, k=6)
-    #     for num in result:
-    #         if self.__isok(n=num, index=find):
-    #             self.dep[find] = num
-    #             if self.get_number():
-    #                 return True
-    #             self.dep[find] = 0
-    #     return False
-
-    # def __isok(self, n: int, index: int) -> bool:
-    #     '''判断数字是否符合标准'''
-    #     if n in self.dep:
-    #         return False
-    #     return True
+        dep = sorted(random.sample(self.nPool, k=self.len))
+        return dep
 
 
 class glnsMpls:
@@ -323,48 +331,20 @@ class glnsMpls:
                 self.groupby = [
                     self.R[i:i + 6] for i in range(0, len(self.R), 6)
                 ]
-                self.random_r = random_rb(self.__fixrb(max=33), self.rLen)
-                self.random_b = random_rb(self.__fixrb(max=16), self.bLen)
+                self.random_r = random_rb(Range_M(M=33), self.rLen)
+                self.random_b = random_rb(Range_M(M=16), self.bLen)
             # print(f'glns init done')
 
-    @staticmethod
-    def __fixrb(max: int = 16) -> List:
-        '''
-        修复 R B 中缺失的数字
-        '''
-        max_set = [x for x in range(1, max+1)]
-        return max_set
 
     def creativity(self) -> tuple[list[int], list[int]]:
         '''产生号码'''
         #get_r = random_rb(self.FixR, self.rLen)
         # N = Note()
         while 1:
-            self.random_r.get_number_v2()
-            if self.cosv(N=self.random_r.dep) > 0.9:
-                self.random_b.get_number_v2()
-                return (self.random_r.dep, self.random_b.dep)
-            else:
-                self.random_r.remark()
-        return ([0]*6, [0])
-
-    def maxjac(self, N: List) -> float:
-        # [2, 6, 20, 25, 29, 33]
-        def jaccard(A: List, B: List) -> float:
-            '''相似度 雅卡尔指数'''
-            set_a = set(A)
-            set_b = set(B)
-            intersection = len(set_a.intersection(set_b))
-            union = len(set_a.union(set_b))
-            return intersection / union
-
-        nls = [N] * 30
-        g = map(jaccard, nls, self.groupby)
-        return max(g)
-
-    def maxjac_v2(self, N: List) -> float:
-        # [2, 6, 20, 25, 29, 33]
-        return 0.2
+            r = self.random_r.get_number_v2()
+            if self.cosv(N=r) > 0.9:
+                return (r, self.random_b.get_number_v2())
+        return ([0] * 6, [0])
 
     def cosv(self, N: List) -> float:
         dot = sum(a * b for a, b in zip(N, self.getlast))
