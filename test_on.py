@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-03 11:53:14
+# @Last Modified time: 2023-12-04 23:12:58
 
 import unittest, os, time, itertools, multiprocessing as mp
 from codex import glns_v2, rego_v2
@@ -28,18 +28,18 @@ def chengjie_w():
         "date":
         "2023-11-12 07:00:33.370573"
     }
-    #glnsv2 = glns_v2.glnsMpls(data)
+    glnsv2 = glns_v2.glnsMpls(data)
     rand = glns_v2.random_rb(glns_v2.Range_M(M=33), L=6)
-    nLS = [rand.get_number_v2() for x in range(30)]
-    f = lambda x: x in (1,2,3,5,7,11,13,17,19,23,29,31)
-    cts =[[6], [0], [5,1]]
+    nLS = [rand.get_number_v2() for x in range(50)]
+    f = lambda x: x % 5
+    cts =[4, 5, 6]
     for n in nLS:
         s = sorted(n, key=f)
         modg = itertools.groupby(s, key=f)
         counts = [len(list(g[1])) for g in modg]
         ns = map(str, n)
         nct = map(str, counts)
-        print(f'debug N {" ".join(ns):>17} ZH {":".join(nct):>6} in CTS {counts in cts}')
+        print(f'debug N {" ".join(ns):>17} ZH {":".join(nct):>9} in CTS {max(counts) in cts}')
     
 
 

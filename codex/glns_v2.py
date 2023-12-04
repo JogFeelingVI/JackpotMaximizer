@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-03 13:11:48
+# @Last Modified time: 2023-12-04 23:23:13
 
 from collections import Counter, deque
 import itertools, random, math
@@ -91,6 +91,7 @@ class filterN_v2:
             'sixlan': self.sixlan,  #
             'dx16': self.dx16,
             'zhihe': self.zhihe,
+            'mod5': self.mod5,
             'mod3': self.mod3,
             'mod2': self.mod2,
             'duplicates': self.duplicates,  #
@@ -180,6 +181,17 @@ class filterN_v2:
         s = sorted(n.number, key=f)
         modg = itertools.groupby(s, key=f)
         counts = sorted([len(list(g[1])) for g in modg])
+        if counts in cts:
+            return False
+        return True
+    
+    def mod5(self, n: Note) -> bool:
+        '''mod 5 not in [[6], [5,1],[3,3]]'''
+        f = lambda x: x % 5
+        cts = [4, 5, 6]
+        s = sorted(n.number, key=f)
+        modg = itertools.groupby(s, key=f)
+        counts = max([len(list(g[1])) for g in modg])
         if counts in cts:
             return False
         return True
