@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-04 23:12:58
+# @Last Modified time: 2023-12-05 21:01:55
 
 import unittest, os, time, itertools, multiprocessing as mp
 from codex import glns_v2, rego_v2
@@ -30,35 +30,35 @@ def chengjie_w():
     }
     glnsv2 = glns_v2.glnsMpls(data)
     rand = glns_v2.random_rb(glns_v2.Range_M(M=33), L=6)
-    nLS = [rand.get_number_v2() for x in range(50)]
-    f = lambda x: x % 5
-    cts =[4, 5, 6]
+    nLS = [rand.get_number_v2() for x in range(100)] 
+    f = lambda x: x % 7
+    cts =[3,4,5, 6]
     for n in nLS:
         s = sorted(n, key=f)
         modg = itertools.groupby(s, key=f)
         counts = [len(list(g[1])) for g in modg]
         ns = map(str, n)
         nct = map(str, counts)
-        print(f'debug N {" ".join(ns):>17} ZH {":".join(nct):>9} in CTS {max(counts) in cts}')
+        print(f'debug N {" ".join(ns):>17} MOD 7 {":".join(nct):>13} in CTS {counts.__len__() in cts}')
     
 
 
 def chengjie_d():
-    n = 16
-    if n < 30 and n > 10 and n % 2 == 0 and n % 3 == 1:
-        return True
-    return False
+    rand = glns_v2.random_rb(glns_v2.Range_M(M=33), L=6)
+    nLS = [rand.get_number_v2() for x in range(5)] 
+    for n in nLS:
+        print(f'mod_old {glns_v2.mod_old(n, 3)} mod {glns_v2.mod(n, 3)}')
 
 
 def test_change():
-    st = time.time()
-    [chengjie_w() for _ in range(1)]
-    et = time.time()
-    print(f'AC Use Time W {et-st:.4f}')
     # st = time.time()
-    # [chengjie_d() for _ in range(10000)]
+    # [chengjie_w() for _ in range(1)]
     # et = time.time()
-    # print(f'AC Use Time D {et-st:.4f}')
+    # print(f'AC Use Time W {et-st:.4f}')
+    st = time.time()
+    [chengjie_d() for _ in range(1)]
+    et = time.time()
+    print(f'AC Use Time D {et-st:.4f}')
 
 
 def filter_test():
@@ -90,23 +90,21 @@ def filter_test():
     filterv2.debug = True
     reego = rego_v2.rego().parse_dict
     N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-    for k, funv in reego.items():
-        f = funv['f']
-        a = funv['a']
+    for k, funv in filterv2.filters.items():
         #for k, funv in filterv2.filters.items():
         stime = time.time()
         #funx = getattr(rego_f, funv['name'])
-        rexf = set([f(N, a) for i in range(70000)])
+        rexf = set([funv(N) for i in range(70000)])
         etime = time.time()
-        print(f'{k} > {f.__name__:>10} T {etime-stime:.4f}`s N {N} R {rexf}')
+        print(f'{k:>10} > T {etime-stime:.4f}`s N {N} R {rexf}')
 
 
 class TestStringMethods(unittest.TestCase):
 
     def test_upper(self):
         #resx = [tesrange() for i in range(1000)]
-        test_change()
-        #mpastime()
+        #filter_test()
+        chengjie_d()
 
 
 if __name__ == '__main__':
