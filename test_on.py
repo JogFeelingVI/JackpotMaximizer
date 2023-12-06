@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-05 21:01:55
+# @Last Modified time: 2023-12-06 17:07:51
 
 import unittest, os, time, itertools, multiprocessing as mp
 from codex import glns_v2, rego_v2
@@ -45,9 +45,12 @@ def chengjie_w():
 
 def chengjie_d():
     rand = glns_v2.random_rb(glns_v2.Range_M(M=33), L=6)
-    nLS = [rand.get_number_v2() for x in range(5)] 
+    nLS = [rand.get_number_v2() for x in range(50)] 
     for n in nLS:
-        print(f'mod_old {glns_v2.mod_old(n, 3)} mod {glns_v2.mod(n, 3)}')
+        C = set([x%10 for x in n])
+        sc = ' '.join(map(lambda x: f'{x}', C))
+        s = ' '.join(map(lambda x: f'{x:02}', n))
+        print(f'n {s:>20} ->> {sc:<11} len {len(C)}')
 
 
 def test_change():

@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-05 21:06:47
+# @Last Modified time: 2023-12-06 16:42:43
 
 from collections import Counter, deque
 import itertools, random, math
@@ -117,6 +117,7 @@ class filterN_v2:
             'ac': self.acvalue,
             'mod2': self.mod2,
             'mod3': self.mod3,
+            'mod4': self.mod4,
             'mod5': self.mod5,
             'mod6': self.mod6,
             'mod7': self.mod7,
@@ -149,15 +150,9 @@ class filterN_v2:
         return [False, True][ac >= 4]
 
     def linma(self, N: Note) -> bool:
-        '''计算临码'''
-        # plus_minus = []
-
-        # for n in N.setnumber_R:
-        #     if n + 1 in self.Last or n - 1 in self.Last:
-        #         plus_minus.append(n)
-        # return [False, True][plus_minus.__len__() in (0, 1, 2, 3)]
+        '''计算邻码'''
         plus_minus = 0
-        for n in N.setnumber_R:
+        for n in N.number:
             if n + 1 in self.Last or n - 1 in self.Last:
                 plus_minus += 1
                 if plus_minus > 3.5:
@@ -176,7 +171,7 @@ class filterN_v2:
 
     def lianhao(self, n: Note) -> bool:
         count = []
-        for v in n.setnumber_R:
+        for v in n.number:
             if not count or v != count[-1][-1] + 1:
                 count.append([])
             count[-1].append(v)
@@ -189,6 +184,12 @@ class filterN_v2:
         cts = [[6], [5, 1]]
         counts = sorted(mod(n.number, 3))
         if counts in cts:
+            return False
+        return True
+    
+    def mod4(self, n:Note) ->bool:
+        counts = mod(n.number, 4)
+        if max(counts) > 4.01:
             return False
         return True
 
