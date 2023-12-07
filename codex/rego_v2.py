@@ -2,11 +2,11 @@
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-01 21:47:43
+# @Last Modified time: 2023-12-07 22:38:20
 
 import re, time, pathlib
 from typing import List
-
+from codex import ospath
 from codex.glns_v2 import Note
 
 filenam = 'insx.reg'
@@ -30,7 +30,8 @@ class rego:
 
     def load_rego_v2(self) -> str:
         '''装载rego文件'''
-        rego = pathlib.Path(filenam)
+        insx = ospath.os_path.file_path(filenam)
+        rego = pathlib.Path(insx)
         with rego.open(mode='r', encoding='utf-8') as go:
             return go.read()
 
