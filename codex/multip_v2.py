@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-03 11:07:57
+# @Last Modified time: 2023-12-09 17:33:12
 import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
 from codex import glns_v2, rego_v2
@@ -26,9 +26,16 @@ class mLpool:
 
     __reego = False
 
-    def __init__(self, data: dict, R: int, B: int, iRx: re.Pattern) -> None:
-        print(f'{self.prompt} Use mLpooL V2')
-        self.glnsv2 = glns_v2.glnsMpls(data)
+    def __init__(self,
+                 data: dict,
+                 R: int,
+                 B: int,
+                 iRx: re.Pattern,
+                 w: bool = False) -> None:
+        '''
+        w False is not usew
+        '''
+        self.glnsv2 = glns_v2.glnsMpls(data, w=w)
         self.filterv2 = glns_v2.filterN_v2()
         self.filterv2.Last = self.glnsv2.getlast
         self.filterv2.Lever = self.glnsv2.getabc
@@ -36,6 +43,7 @@ class mLpool:
         self.R = R
         self.B = B
         self.iRx = iRx
+        print(f'{self.prompt} Use mLpooL V2')
 
     @property
     def reego(self) -> bool:
@@ -83,7 +91,7 @@ class mLpool:
     def filter_map(self, zipo_item) -> bool:
         Nr, Nb = zipo_item
         N = glns_v2.Note(Nr, Nb)
-        
+
         # run rego
         if self.reego:
             # 这里依然是问题所在

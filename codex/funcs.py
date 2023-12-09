@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-11-30 16:21:53
+# @Last Modified time: 2023-12-09 17:51:43
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -412,7 +412,7 @@ class action:
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
             print(f'{prompt} cpus {self.cpu} maxdep {maxdep}')
-            cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP, w=self.fmusew)
             cp_all.reego = self.fmloadins
             iRx = cp_all.run_works(self.fmn)
             Retds = self.__planning__(iRx)
@@ -443,7 +443,7 @@ class action:
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
             print(f'{prompt} moni cpus {self.cpu} maxdep {maxdep}')
-            cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP, self.fmusew)
             cp_all.reego = self.fmloadins
             Retds = cp_all.run_works(self.fmn)
             Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
