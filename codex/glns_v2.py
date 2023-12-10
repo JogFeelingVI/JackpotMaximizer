@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-09 22:16:08
+# @Last Modified time: 2023-12-10 00:05:33
 
 from collections import Counter, deque
 import itertools, random, math
@@ -350,11 +350,10 @@ class random_rb_f:
 
     def get_number_v2(self):
         '''get number v2'''
-        # rext = []
-        # while set(rext).__len__() != self.len:
-        #     rext = random.choices(self.nPool, weights=self.weights, k=self.len)
-        # return sorted(rext)
-        return sorted(random.sample(self.nPool, k=self.len))
+        rext = []
+        while set(rext).__len__() != self.len:
+            rext = random.choices(self.nPool, weights=self.weights, k=self.len)
+        return sorted(rext)
 
 
 class random_rb:
