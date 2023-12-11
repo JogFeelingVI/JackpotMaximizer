@@ -1,11 +1,11 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-09 22:05:00
+# @Last Modified time: 2023-12-11 16:50:18
 
 from collections import Counter
 import unittest, os, time, itertools, multiprocessing as mp
-from codex import glns_v2, rego_v2
+from codex import glns_v2, rego_v2, Tonji
 
 data = {
     "R": [
@@ -83,22 +83,36 @@ def filter_test():
     filterv2.Lever = glnsv2.getabc
     filterv2.debug = True
     reego = rego_v2.rego().parse_dict
-    N = glns_v2.Note(n=[6, 9, 19, 28, 30, 31], T=[6])
-    for k, funv in filterv2.filters.items():
-        #for k, funv in filterv2.filters.items():
-        stime = time.time()
-        #funx = getattr(rego_f, funv['name'])
-        rexf = set([funv(N) for i in range(70000)])
-        etime = time.time()
-        print(f'{k:>10} > T {etime-stime:.4f}`s N {N} R {rexf}')
+    tongji = Tonji.tjone()
+    tongji.set_tongji_index([1,2,3])
+    rand = glns_v2.random_rb(glns_v2.Range_M(M=33), L=6)
+    band = glns_v2.random_rb(glns_v2.Range_M(M=16), L=1)
+    Nist = []
+    while len(tongji.nLopp) <= 1000:
+        returnd = True
+        r = rand.get_number_v2()
+        b = band.get_number_v2()
+        N = glns_v2.Note(r, b)
+        for k, parst in reego.items():
+            rex = parst['f'](N, parst['a'])
+            if rex == False:
+                returnd = False
+                break
+        for k, func in filterv2.filters.items():
+            if func(N) == False:
+                returnd = False
+                break
+        if returnd == True:
+            tongji.add(N)
+    tongji.echo()
 
 
 class TestStringMethods(unittest.TestCase):
 
     def test_upper(self):
         #resx = [tesrange() for i in range(1000)]
-        #filter_test()
-        frekhz()
+        filter_test()
+        #frekhz()
 
 
 if __name__ == '__main__':
