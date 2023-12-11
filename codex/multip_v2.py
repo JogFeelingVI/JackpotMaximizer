@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-09 17:33:12
+# @Last Modified time: 2023-12-11 22:09:05
 import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
 from codex import glns_v2, rego_v2

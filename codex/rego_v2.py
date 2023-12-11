@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-07 22:38:20
+# @Last Modified time: 2023-12-11 22:08:28
 
 import re, time, pathlib
 from typing import List
@@ -90,6 +90,19 @@ class rego:
                 temp.append({'f': funx, 'a': nm})
             return temp
         return None
+    
+    def p_combin(self, line:str) -> List | None:
+        temp = []
+        recombing = re.compile(r'-\s[ 0-9]+@combin$', re.M)
+        if (_match := recombing.findall(line))!= None:
+            for _m in _match:
+                _com = re.compile(r'[0-9]+')
+                combing = _com.findall(_m)
+                funx = getattr(rego_filter, 'f_combin')
+                temp.append({'f': funx, 'a': combing})
+            return temp
+                
+        return None
 
     def parse_v2(self, filgo: str) -> None:
         '''格式化rego文件'''
@@ -97,12 +110,13 @@ class rego:
             'paichu': self.p_paichu,
             'baohan': self.p_baohan,
             'bit': self.p_bit,
-            'bitex': self.p_bitex
+            'bitex': self.p_bitex,
+            'combin': self.p_combin
         }
         if filgo != None:
             self.parse_dict = {}
             index = 1
-            for k, pfunc in __re_dict.items():
+            for pfunc in __re_dict.values():
                 env = pfunc(filgo)
                 if env != None:
                     for e in env:
@@ -114,6 +128,15 @@ class rego:
 
 # class rego filter
 class rego_filter:
+    
+    @staticmethod
+    def f_combin(N:Note, args:List) -> bool:
+        '''paichu combing ['021617', '020416'] '''
+        _s = ''.join((f'{x:02}' for x in N.number))
+        for _c in args:
+            if _c in _s:
+                return False
+        return True
 
     @staticmethod
     def f_paichu_r(N: Note, args: List) -> bool:
