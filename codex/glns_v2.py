@@ -108,11 +108,12 @@ class filterN_v2:
 
     def __init__filters(self) -> None:
         self.filters = {
-            'sixlan': self.sixlan,  #
+            'sixlan': self.sixlan, 
+            'onesixdiff': self.onesixdiff,
             'dx16': self.dx16,
             'zhihe': self.zhihe,
-            'duplicates': self.duplicates,  #
-            'linma': self.linma,  #
+            'duplicates': self.duplicates,  
+            'linma': self.linma,  
             'dzx': self.dzx,
             'lianhao': self.lianhao,
             'ac': self.acvalue,
@@ -122,7 +123,7 @@ class filterN_v2:
             'mod5': self.mod5,
             'mod6': self.mod6,
             'mod7': self.mod7,
-            'denji': self.denji,  #
+            'denji': self.denji, 
         }
 
         if self.__debug == False:
@@ -262,6 +263,12 @@ class filterN_v2:
         Levers = map(lambda x: [i[0] for i in x], self.Lever.values())
         Rexts = map(lambda x: n.setnumber_R.intersection(x).__len__(), Levers)
         if 0 in Rexts:
+            return False
+        return True
+    
+    def onesixdiff(self, n:Note) -> bool:
+        '''1 - 6 diff > 15.06'''
+        if abs(n.index(1) - n.index(6))< 15.09:
             return False
         return True
 

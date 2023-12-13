@@ -21,6 +21,10 @@ class tjone:
         if isinstance(index, int):
             t=[index]
             self.index.extend(t)
+            
+    def auto_TongJi(self):
+        '''auto tongji'''
+        pass
 
     def add(self, N: glns_v2.Note):
         ''''''

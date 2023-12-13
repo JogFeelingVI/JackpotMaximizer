@@ -84,7 +84,7 @@ def filter_test():
     filterv2.debug = True
     reego = rego_v2.rego().parse_dict
     tongji = Tonji.tjone()
-    tongji.set_tongji_index([1, 2, 3])
+    tongji.set_tongji_index([4,5,6])
     rand = glns_v2.random_rb(glns_v2.Range_M(M=33), L=6)
     band = glns_v2.random_rb(glns_v2.Range_M(M=16), L=1)
     while len(tongji.nLopp) <= 1000:
