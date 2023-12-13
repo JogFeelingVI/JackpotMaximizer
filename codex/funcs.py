@@ -452,12 +452,21 @@ class action:
                 return
             sum = 0.0
             listx = [[x, Rex.count(x)] for x in range(1, 7)]
+            cyn = iRex * 2
             for l, v in listx:
                 print(
                     f'{prompt_W} {l} Probability of Winning {v/iRex:>7.2%} {v}'
                 )
+                if l == 3:
+                    cyn=cyn-3000*v
+                if l == 4:
+                    cyn=cyn-200*v
+                if l == 5:
+                    cyn=cyn-10*v
+                if l == 6:
+                    cyn=cyn-5*v
                 sum += v / iRex
-            print(f'{prompt_W} sum {sum:>7.2%} Len {iRex}')
+            print(f'{prompt_W} sum {sum:>7.2%} Len {iRex} cyn {cyn} $')
 
     def Moni_Calcu(self):
         '''

@@ -22,16 +22,13 @@ class tjone:
             t=[index]
             self.index.extend(t)
             
-    def auto_TongJi(self):
-        '''auto tongji'''
-        pass
 
     def add(self, N: glns_v2.Note):
         ''''''
         self.nLopp.append(N)
         key = ''.join((f'{N.index(x):02}' for x in self.index))
         vis = self.dLoop.get(key, 0) + 1
-        self.dLoop.update({key: vis})
+        self.dLoop.update({key: vis})    
 
     def echo(self):
         combing = []
@@ -39,5 +36,6 @@ class tjone:
         for k, v in sorted(self.dLoop.items(), key=f):
             if v == 1:
                 combing.append(k)
-            print(f'TongJi Key {k:>2}  {v}')
+            print(f'TongJi key {k} vount {v}')
         print(f'combin for 1 {" ".join(combing[0:15])}')
+        return combing
