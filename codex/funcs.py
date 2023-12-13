@@ -388,7 +388,7 @@ class action:
             dif_b: int = (set(zB) & set(jhb)).__len__()
             key = f'^{dif_r}{dif_b}[0-6]'
             difex: str = [x for x in self.diff_date if re.match(key, x)][0]
-            dif_l.append(int(difex[-1]))
+            dif_l.append([int(difex[-1]), zR, zB])
             #print(f'Diff info  -> {Nr} {Nb}')
         return dif_l
 
@@ -446,12 +446,16 @@ class action:
             cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP, self.fmusew)
             cp_all.reego = self.fmloadins
             Retds = cp_all.run_works(self.fmn)
-            Rex: list[int] = [y for x in Retds for y in self.__diff__(x)]
+            Rex = [y for x in Retds for y in self.__diff__(x)]
             iRex = len(Rex)
             if iRex == 0:
                 return
             sum = 0.0
-            listx = [[x, Rex.count(x)] for x in range(1, 7)]
+            f = lambda x,R: [(r,b) for m,r,b in R if m==x].__len__()
+            listx = [[x, f(x,Rex)] for x in range(1, 7)]
+            with open('fps.log', 'w') as sto:
+                for slog in Rex:
+                    sto.writelines(f'{slog}\n')
             cyn = iRex * 2
             for l, v in listx:
                 print(
