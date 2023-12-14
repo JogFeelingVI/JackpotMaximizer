@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-13 20:25:19
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-14 15:08:41
+# @Last Modified time: 2023-12-14 15:13:58
 
 from collections import Counter
 from heapq import nlargest
@@ -96,10 +96,11 @@ def step_one():
             if x == line:
                 continue
             tjon.add(x)
-        for k, v in tjon.dLoop.items():
-            if v == 2 and key == k:
-                print(f'  key {k} VA {v}')
-                read_save.append(nLidata[i])
+        kv = tjon.dLoop[key]
+        if kv == 2:
+            print(f'  key {key} VA {kv}')
+            read_save.append(nLidata[i])
+                
     return read_save
 
 
