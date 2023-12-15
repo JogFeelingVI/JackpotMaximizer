@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-13 20:25:19
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-14 15:13:58
+# @Last Modified time: 2023-12-15 15:57:28
 
 from collections import Counter
 from heapq import nlargest
@@ -51,19 +51,16 @@ def fromat_str(s: str):
 def step_two(rs: list, index: list):
     '''第二步'''
     over = []
+    tjon = Tonji.tjone()
+    tjon.set_tongji_index(index)
     for i, line in enumerate(rs):
-        tjon = Tonji.tjone()
-        tjon.set_tongji_index(index)
         tjon.add(line)
-        key = list(tjon.dLoop.keys())[0]
-        #print(f'step two {key} {index}')
-        for x in rs:
-            if x == line:
-                continue
-            tjon.add(x)
-        ov = tjon.dLoop[key]
-        if ov > 1.01:
-            over.append([ov, line])
+    for k, v in tjon.dLoop.items():
+        if v < 2.09:
+            kindex = tjon.where_key(key=k)
+            if kindex!=None:
+                rindex = ((v, tjon.nLopp[x]) for x in kindex)
+                over.extend(rindex)
     f = lambda x: x[0]
     over = sorted(over, key=f)
     for k, n in over:
@@ -83,24 +80,22 @@ def step_one():
         read_save = logr.readlines()
     for line in read_save:
         n = fromat_str(line)
-        nLidata.append(n)
+        if n!='N/A':
+            nLidata.append(n)
     print(f'Note Conversion completed len {nLidata.__len__()}')
     read_save.clear()
+    tjon = Tonji.tjone()
+    tjon.set_tongji_index([2, 3, 4, 5])
     for i, line in enumerate(nLidata):
-        tjon = Tonji.tjone()
-        tjon.set_tongji_index([2, 3, 4, 5])
         tjon.add(line)
-        key = list(tjon.dLoop.keys())[0]
-        print(f'Start the first -{i:^5} \\ {key} - Statistics')
-        for x in nLidata:
-            if x == line:
-                continue
-            tjon.add(x)
-        kv = tjon.dLoop[key]
-        if kv == 2:
-            print(f'  key {key} VA {kv}')
-            read_save.append(nLidata[i])
-                
+    for k, v in tjon.dLoop.items():
+        if v == 2:
+            index = tjon.where_key(k)
+            if index != None:
+                rindex = (tjon.nLopp[x] for x in index)
+                read_save.extend(rindex)
+                print(f'tjone key {k} value {v}')  
+            #read_save.append()          
     return read_save
 
 
@@ -110,7 +105,7 @@ class TestStringMethods(unittest.TestCase):
         #resx = [tesrange() for i in range(1000)]
         rs = step_one()
         rs = step_two(rs=rs, index=[1, 2, 3])
-        rs = step_two(rs=rs, index=[4,5,6])
+        # rs = step_two(rs=rs, index=[4,5,6])
 
 
 if __name__ == '__main__':
