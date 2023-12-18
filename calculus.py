@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-17 10:04:26
+# @Last Modified time: 2023-12-18 22:32:21
 from codex import funcs
 from codex.runingtime import runingtime
 
@@ -12,15 +12,15 @@ def Moni_T():
     args = {
         'debug': False,
         'loadins': True,
-        'usew': False,
+        'usew': True,
         'fix': 'a',
         'cpu': 'm',
         'ins': '(.*)',
         'n': 1000,
         'r': 6,
         'b': 1,
-        'jhr': [4, 10, 17, 22, 23, 32],
-        'jhb': [16]
+        'jhr': [7, 10, 21, 22, 23, 24],
+        'jhb': [11]
     }
     act = funcs.action(args, diff=True)
     act.Moni_Calcu()

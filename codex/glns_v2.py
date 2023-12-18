@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-10 00:05:33
+# @Last Modified time: 2023-12-18 22:33:52
 
 from collections import Counter, deque
 import itertools, random, math
@@ -329,7 +329,7 @@ class random_rb_f:
         self.len = L
         if rb != None:
             self.__init_frequency(rb=rb)
-        print(f'[F] use random rb is F')
+        print(f'[F] use random rb is Frequency')
 
     @staticmethod
     def __fixrb(rb: List[int], debug: str = '') -> List[int]:
