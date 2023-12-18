@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-11 22:35:23
+# @Last Modified time: 2023-12-16 23:38:38
 
 from collections import Counter
 import unittest, os, time, itertools, multiprocessing as mp
@@ -84,7 +84,7 @@ def filter_test():
     filterv2.debug = True
     reego = rego_v2.rego().parse_dict
     tongji = Tonji.tjone()
-    tongji.set_tongji_index([2,3,4])
+    tongji.set_tongji_index([4, 5, 6])
     rand = glns_v2.random_rb(glns_v2.Range_M(M=33), L=6)
     band = glns_v2.random_rb(glns_v2.Range_M(M=16), L=1)
     while len(tongji.nLopp) <= 1000:

@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-13 20:25:19
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-15 15:57:28
+# @Last Modified time: 2023-12-17 10:07:22
 
 from collections import Counter
 from heapq import nlargest
@@ -58,7 +58,7 @@ def step_two(rs: list, index: list):
     for k, v in tjon.dLoop.items():
         if v < 2.09:
             kindex = tjon.where_key(key=k)
-            if kindex!=None:
+            if kindex != None:
                 rindex = ((v, tjon.nLopp[x]) for x in kindex)
                 over.extend(rindex)
     f = lambda x: x[0]
@@ -66,7 +66,7 @@ def step_two(rs: list, index: list):
     for k, n in over:
         print(f'count {k}, N {n}')
     print(f'step two end over len {over.__len__()}')
-    return [n for _,n in over]
+    return [n for _, n in over]
 
 
 def step_one():
@@ -80,7 +80,7 @@ def step_one():
         read_save = logr.readlines()
     for line in read_save:
         n = fromat_str(line)
-        if n!='N/A':
+        if n != 'N/A':
             nLidata.append(n)
     print(f'Note Conversion completed len {nLidata.__len__()}')
     read_save.clear()
@@ -94,8 +94,8 @@ def step_one():
             if index != None:
                 rindex = (tjon.nLopp[x] for x in index)
                 read_save.extend(rindex)
-                print(f'tjone key {k} value {v}')  
-            #read_save.append()          
+                print(f'tjone key {k} value {v}')
+            #read_save.append()
     return read_save
 
 
@@ -105,7 +105,7 @@ class TestStringMethods(unittest.TestCase):
         #resx = [tesrange() for i in range(1000)]
         rs = step_one()
         rs = step_two(rs=rs, index=[1, 2, 3])
-        # rs = step_two(rs=rs, index=[4,5,6])
+        rs = step_two(rs=rs, index=[4, 5, 6])
 
 
 if __name__ == '__main__':
