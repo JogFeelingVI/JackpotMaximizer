@@ -77,20 +77,17 @@ def test_change():
 
 def filter_test():
     '''test'''
-    glnsv2 = glns_v2.glnsMpls(data)
+    glnsv2 = glns_v2.glnsMpls(data, w=True)
     filterv2 = glns_v2.filterN_v2()
     filterv2.Last = glnsv2.getlast
     filterv2.Lever = glnsv2.getabc
     filterv2.debug = True
     reego = rego_v2.rego().parse_dict
     tongji = Tonji.tjone()
-    tongji.set_tongji_index([4, 5, 6])
-    rand = glns_v2.random_rb(glns_v2.Range_M(M=33), L=6)
-    band = glns_v2.random_rb(glns_v2.Range_M(M=16), L=1)
+    tongji.set_tongji_index([4,5,6])
     while len(tongji.nLopp) <= 1000:
         returnd = True
-        r = rand.get_number_v2()
-        b = band.get_number_v2()
+        r,b = glnsv2.creativity()
         N = glns_v2.Note(r, b)
         for k, parst in reego.items():
             rex = parst['f'](N, parst['a'])
