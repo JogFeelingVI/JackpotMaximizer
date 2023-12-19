@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-18 22:33:52
+# @Last Modified time: 2023-12-19 08:51:07
 
 from collections import Counter, deque
 import itertools, random, math
@@ -430,8 +430,8 @@ class glnsMpls:
                     self.random_r = random_rb(Range_M(M=33), self.rLen)
                     self.random_b = random_rb(Range_M(M=16), self.bLen)
                 else:
-                    self.random_r = random_rb_f(self.R, self.rLen)
-                    self.random_b = random_rb_f(self.B, self.bLen)
+                    self.random_r = random_rb_f(self.R, self.rLen, 'vvv')
+                    self.random_b = random_rb_f(self.B, self.bLen, 'vvv')
             # print(f'glns init done')
 
     def creativity(self) -> tuple[list[int], list[int]]:
