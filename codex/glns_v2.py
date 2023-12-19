@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-19 08:51:07
+# @Last Modified time: 2023-12-19 21:48:46
 
 from collections import Counter, deque
 import itertools, random, math
@@ -108,12 +108,12 @@ class filterN_v2:
 
     def __init__filters(self) -> None:
         self.filters = {
-            'sixlan': self.sixlan, 
+            'sixlan': self.sixlan,
             'onesixdiff': self.onesixdiff,
             'dx16': self.dx16,
             'zhihe': self.zhihe,
-            'duplicates': self.duplicates,  
-            'linma': self.linma,  
+            'duplicates': self.duplicates,
+            'linma': self.linma,
             'dzx': self.dzx,
             'lianhao': self.lianhao,
             'ac': self.acvalue,
@@ -123,7 +123,7 @@ class filterN_v2:
             'mod5': self.mod5,
             'mod6': self.mod6,
             'mod7': self.mod7,
-            'denji': self.denji, 
+            'denji': self.denji,
         }
 
         if self.__debug == False:
@@ -265,10 +265,10 @@ class filterN_v2:
         if 0 in Rexts:
             return False
         return True
-    
-    def onesixdiff(self, n:Note) -> bool:
+
+    def onesixdiff(self, n: Note) -> bool:
         '''1 - 6 diff > 15.06'''
-        if abs(n.index(1) - n.index(6))< 15.09:
+        if abs(n.index(1) - n.index(6)) < 15.09:
             return False
         return True
 
@@ -315,6 +315,34 @@ class formation:
             return self.DuLie.__len__()
         except:
             return -1
+
+
+class random_rb_k:
+    ''''''
+    bit_1 = {
+        1: 598,
+        2: 481,
+        3: 387,
+        4: 319,
+        5: 278,
+        6: 225,
+        7: 169,
+        8: 146,
+        9: 135,
+        10: 89,
+        11: 65,
+        12: 62,
+        13: 39,
+        14: 29,
+        15: 23,
+        16: 19,
+        17: 7,
+        21: 5,
+        18: 4,
+        19: 4,
+        20: 2,
+        22: 2
+    }
 
 
 class random_rb_f:
@@ -440,7 +468,7 @@ class glnsMpls:
         # N = Note()
         while 1:
             r = self.random_r.get_number_v2()
-            if self.cosv(N=r) > 0.9:
+            if self.cosv(N=r) > 0.91:
                 return (r, self.random_b.get_number_v2())
         return ([0] * 6, [0])
 
