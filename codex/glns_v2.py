@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-20 21:43:41
+# @Last Modified time: 2023-12-21 07:57:03
 import itertools, random, math
 from collections import Counter, deque
 from codex import groove
@@ -430,10 +430,12 @@ class glnsMpls:
                     self.random_r = random_rb(Range_M(M=33), self.rLen)
                     self.random_b = random_rb(Range_M(M=16), self.bLen)
                 else:
-                    js_data = groove.bitx_read()
-                    if js_data != None:
-                        self.random_r = groove.random_ex(json_data=js_data, max_length=self.rLen, RBC=groove.RC)
-                        self.random_b = groove.random_ex(json_data=js_data, max_length=self.bLen, RBC=groove.BC)
+                    # js_data = groove.bitx_read()
+                    # if js_data != None:
+                    #     self.random_r = groove.random_ex(json_data=js_data, max_length=self.rLen, RBC=groove.RC)
+                    #     self.random_b = groove.random_ex(json_data=js_data, max_length=self.bLen, RBC=groove.BC)
+                    self.random_r = random_rb_f(self.R,self.rLen)
+                    self.random_b = random_rb_f(self.B,self.bLen)
             # print(f'glns init done')
 
     def creativity(self) -> tuple[list[int], list[int]]:
