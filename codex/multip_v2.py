@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-15 15:15:21
+# @Last Modified time: 2023-12-20 14:58:02
 from datetime import datetime as dtime
 import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
@@ -84,6 +84,7 @@ class mLpool:
         while depth <= self.mdep:
             #st = time.time()
             n, t = self.glnsv2.creativity()
+            
             rinsx = self.__combinations_ols(n, t)
             if rinsx == True:
                 #print(f'OSID {os.getpid()} SpawnPoolWorker {time.time() - st:.4f}`s')

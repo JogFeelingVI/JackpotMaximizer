@@ -2,10 +2,10 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-19 21:48:46
-
-from collections import Counter, deque
+# @Last Modified time: 2023-12-20 21:43:41
 import itertools, random, math
+from collections import Counter, deque
+from codex import groove
 from typing import Any, List
 
 
@@ -317,34 +317,6 @@ class formation:
             return -1
 
 
-class random_rb_k:
-    ''''''
-    bit_1 = {
-        1: 598,
-        2: 481,
-        3: 387,
-        4: 319,
-        5: 278,
-        6: 225,
-        7: 169,
-        8: 146,
-        9: 135,
-        10: 89,
-        11: 65,
-        12: 62,
-        13: 39,
-        14: 29,
-        15: 23,
-        16: 19,
-        17: 7,
-        21: 5,
-        18: 4,
-        19: 4,
-        20: 2,
-        22: 2
-    }
-
-
 class random_rb_f:
     '''根据频率来随机数列'''
 
@@ -458,8 +430,10 @@ class glnsMpls:
                     self.random_r = random_rb(Range_M(M=33), self.rLen)
                     self.random_b = random_rb(Range_M(M=16), self.bLen)
                 else:
-                    self.random_r = random_rb_f(self.R, self.rLen, 'vvv')
-                    self.random_b = random_rb_f(self.B, self.bLen, 'vvv')
+                    js_data = groove.bitx_read()
+                    if js_data != None:
+                        self.random_r = groove.random_ex(json_data=js_data, max_length=self.rLen, RBC=groove.RC)
+                        self.random_b = groove.random_ex(json_data=js_data, max_length=self.bLen, RBC=groove.BC)
             # print(f'glns init done')
 
     def creativity(self) -> tuple[list[int], list[int]]:
