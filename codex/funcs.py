@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-22 09:40:45
+# @Last Modified time: 2023-12-22 21:04:38
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -349,12 +349,14 @@ class action:
         str a all
         str m Moni test
         '''
-        cmds = {
-            'o': lambda: self.__cpu_one__(),
-            'a': lambda: self.__cpu_all__(),
-            'm': lambda: self.__cpu_all_moni__(),
-        }
-        cmds[argb]()
+        match argb:
+            case 'o':
+                self.__cpu_one__()
+            case 'a':
+                self.__cpu_all__()
+            case 'm':
+                self.__cpu_all_moni__()
+    
 
     def __echo__(self, Rexs: List) -> None:
         '''
@@ -466,14 +468,15 @@ class action:
                 print(
                     f'{prompt_W} {l} Probability of Winning {v/iRex:>7.2%} {v}'
                 )
-                if l == 3:
-                    cyn = cyn - 3000 * v
-                if l == 4:
-                    cyn = cyn - 200 * v
-                if l == 5:
-                    cyn = cyn - 10 * v
-                if l == 6:
-                    cyn = cyn - 5 * v
+                match l:
+                    case 3:
+                        cyn = cyn - 3000 * v
+                    case 4:
+                        cyn = cyn - 200 * v
+                    case 5:
+                        cyn = cyn - 10 * v
+                    case 6:
+                        cyn = cyn - 5 * v
                 sum += v / iRex
             print(f'{prompt_W} sum {sum:>7.2%} Len {iRex} cyn {cyn} $')
 

@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-22 09:04:52
+# @Last Modified time: 2023-12-22 20:58:45
 import itertools, random, math
 from collections import Counter, deque
 from codex import groove
@@ -425,20 +425,21 @@ class glnsMpls:
                 self.groupby = [
                     self.R[i:i + 6] for i in range(0, len(self.R), 6)
                 ]
-                if w == 's':
-                    self.random_r = random_rb(Range_M(M=33), self.rLen)
-                    self.random_b = random_rb(Range_M(M=16), self.bLen)
-                    print('[s] use sample')
-                if w == 'c':
-                    self.random_r = random_rb_f(self.R,self.rLen)
-                    self.random_b = random_rb_f(self.B,self.bLen)
-                    print('[c] use choices')
-                if w == 'g':
-                    js_data = groove.bitx_read()
-                    if js_data != None:
-                        self.random_r = groove.random_ex(json_data=js_data, max_length=self.rLen, RBC=groove.RC)
-                        self.random_b = groove.random_ex(json_data=js_data, max_length=self.bLen, RBC=groove.BC)
-                        print('[g] use Groove')
+                match w:
+                    case 's':
+                        self.random_r = random_rb(Range_M(M=33), self.rLen)
+                        self.random_b = random_rb(Range_M(M=16), self.bLen)
+                        print('[s] use sample')
+                    case 'c':
+                        self.random_r = random_rb_f(self.R,self.rLen)
+                        self.random_b = random_rb_f(self.B,self.bLen)
+                        print('[c] use choices')
+                    case 'g':
+                        js_data = groove.bitx_read()
+                        if js_data != None:
+                            self.random_r = groove.random_ex(json_data=js_data, max_length=self.rLen, RBC=groove.RC)
+                            self.random_b = groove.random_ex(json_data=js_data, max_length=self.bLen, RBC=groove.BC)
+                            print('[g] use Groove')
                     
             # print(f'glns init done')
 
