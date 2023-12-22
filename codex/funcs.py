@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-22 09:07:44
+# @Last Modified time: 2023-12-22 09:40:45
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -412,7 +412,11 @@ class action:
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
             print(f'{prompt} cpus {self.cpu} maxdep {maxdep}')
-            cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP, w=self.fmusew)
+            cp_all = mLpool(self.data,
+                            self.fmr,
+                            self.fmb,
+                            fmins_is.reP,
+                            w=self.fmusew)
             cp_all.reego = self.fmloadins
             iRx = cp_all.run_works(self.fmn)
             Retds = self.__planning__(iRx)
@@ -443,7 +447,8 @@ class action:
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
             print(f'{prompt} moni cpus {self.cpu} maxdep {maxdep}')
-            cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP, self.fmusew)
+            cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP,
+                            self.fmusew)
             cp_all.reego = self.fmloadins
             Retds = cp_all.run_works(self.fmn)
             Rex = [y for x in Retds for y in self.__diff__(x)]
@@ -451,8 +456,8 @@ class action:
             if iRex == 0:
                 return
             sum = 0.0
-            f = lambda x,R: [(r,b) for m,r,b in R if m==x].__len__()
-            listx = [[x, f(x,Rex)] for x in range(1, 7)]
+            f = lambda x, R: [(r, b) for m, r, b in R if m == x].__len__()
+            listx = [[x, f(x, Rex)] for x in range(1, 7)]
             with open('fps.log', 'w') as sto:
                 for slog in Rex:
                     sto.writelines(f'{slog}\n')
@@ -462,13 +467,13 @@ class action:
                     f'{prompt_W} {l} Probability of Winning {v/iRex:>7.2%} {v}'
                 )
                 if l == 3:
-                    cyn=cyn-3000*v
+                    cyn = cyn - 3000 * v
                 if l == 4:
-                    cyn=cyn-200*v
+                    cyn = cyn - 200 * v
                 if l == 5:
-                    cyn=cyn-10*v
+                    cyn = cyn - 10 * v
                 if l == 6:
-                    cyn=cyn-5*v
+                    cyn = cyn - 5 * v
                 sum += v / iRex
             print(f'{prompt_W} sum {sum:>7.2%} Len {iRex} cyn {cyn} $')
 
