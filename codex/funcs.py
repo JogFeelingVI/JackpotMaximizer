@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-09 17:51:43
+# @Last Modified by:   Your name
+# @Last Modified time: 2023-12-22 09:07:44
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -290,10 +290,10 @@ class action:
         return value
 
     @property
-    def fmusew(self) -> bool:
-        value = False
+    def fmusew(self) -> str:
+        value = 'c'
         if 'usew' in self.args.keys():
-            value = bool(self.args.get('usew', value))
+            value = str(self.args.get('usew', value))
         return value
 
     @property

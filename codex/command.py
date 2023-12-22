@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 17:48:34
-# @Last Modified by:   By JogFeelingVi
-# @Last Modified time: 2022-10-03 17:48:34
+# @Last Modified by:   Your name
+# @Last Modified time: 2023-12-22 08:59:46
 import argparse
 
 
@@ -47,8 +47,9 @@ class loading:
                                action='store_true',
                                help='load insx.reg')
         load_args.add_argument('--usew',
-                               default=False,
-                               action='store_true',
+                               type=str,
+                               default='c',
+                               choices=['s', 'c', 'g'],
                                help='True choices not Weights')
         load_args.add_argument('--debug',
                                default=False,

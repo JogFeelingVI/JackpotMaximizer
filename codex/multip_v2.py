@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-20 14:58:02
+# @Last Modified by:   Your name
+# @Last Modified time: 2023-12-22 09:15:58
 from datetime import datetime as dtime
 import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
@@ -32,7 +32,7 @@ class mLpool:
                  R: int,
                  B: int,
                  iRx: re.Pattern,
-                 w: bool = False) -> None:
+                 w: str = 'w') -> None:
         '''
         w False is not usew
         '''
@@ -44,7 +44,6 @@ class mLpool:
         self.R = R
         self.B = B
         self.iRx = iRx
-        print(f'{self.prompt} Use mLpooL V2')
 
     @property
     def reego(self) -> bool:

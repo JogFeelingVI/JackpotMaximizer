@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-16 23:38:38
+# @Last Modified by:   Your name
+# @Last Modified time: 2023-12-22 08:59:56
 
 from collections import Counter
 import unittest, os, time, itertools, multiprocessing as mp
@@ -77,7 +77,7 @@ def test_change():
 
 def filter_test():
     '''test'''
-    glnsv2 = glns_v2.glnsMpls(data, w=True)
+    glnsv2 = glns_v2.glnsMpls(data, w='c')
     filterv2 = glns_v2.filterN_v2()
     filterv2.Last = glnsv2.getlast
     filterv2.Lever = glnsv2.getabc

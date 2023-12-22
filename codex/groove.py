@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2023-12-20 09:02:19
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-20 14:59:14
+# @Last Modified by:   Your name
+# @Last Modified time: 2023-12-22 09:13:13
 import heapq, random, json, pathlib
 from typing import Any, List
 
@@ -47,7 +47,6 @@ class random_ex:
 
             self.max_length = max_length
             self.bitx = {k: v for k, v in json_data.items() if k in RBC}
-            print(f'[g] Use gvoove mode')
             self._init_complete = True
         except ValueError as e:
             print(e)

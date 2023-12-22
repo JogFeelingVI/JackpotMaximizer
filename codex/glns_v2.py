@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-21 07:57:03
+# @Last Modified by:   Your name
+# @Last Modified time: 2023-12-22 09:04:52
 import itertools, random, math
 from collections import Counter, deque
 from codex import groove
@@ -329,7 +329,6 @@ class random_rb_f:
         self.len = L
         if rb != None:
             self.__init_frequency(rb=rb)
-        print(f'[F] use random rb is Frequency')
 
     @staticmethod
     def __fixrb(rb: List[int], debug: str = '') -> List[int]:
@@ -418,7 +417,7 @@ class glnsMpls:
         level3 = counter_list[level_size * 2:]
         return {'I': level1, 'II': level2, 'III': level3}
 
-    def __init__(self, cdic: dict, w: bool = False) -> None:
+    def __init__(self, cdic: dict, w: str = 'c') -> None:
         if 'R' in cdic and 'B' in cdic:
             self.R = cdic.get('R', [])
             self.B = cdic.get('B', [])
@@ -426,16 +425,21 @@ class glnsMpls:
                 self.groupby = [
                     self.R[i:i + 6] for i in range(0, len(self.R), 6)
                 ]
-                if w == False:
+                if w == 's':
                     self.random_r = random_rb(Range_M(M=33), self.rLen)
                     self.random_b = random_rb(Range_M(M=16), self.bLen)
-                else:
-                    # js_data = groove.bitx_read()
-                    # if js_data != None:
-                    #     self.random_r = groove.random_ex(json_data=js_data, max_length=self.rLen, RBC=groove.RC)
-                    #     self.random_b = groove.random_ex(json_data=js_data, max_length=self.bLen, RBC=groove.BC)
+                    print('[s] use sample')
+                if w == 'c':
                     self.random_r = random_rb_f(self.R,self.rLen)
                     self.random_b = random_rb_f(self.B,self.bLen)
+                    print('[c] use choices')
+                if w == 'g':
+                    js_data = groove.bitx_read()
+                    if js_data != None:
+                        self.random_r = groove.random_ex(json_data=js_data, max_length=self.rLen, RBC=groove.RC)
+                        self.random_b = groove.random_ex(json_data=js_data, max_length=self.bLen, RBC=groove.BC)
+                        print('[g] use Groove')
+                    
             # print(f'glns init done')
 
     def creativity(self) -> tuple[list[int], list[int]]:
