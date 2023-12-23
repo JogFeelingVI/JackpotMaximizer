@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-23 21:58:56
+# @Last Modified time: 2023-12-23 22:02:04
 import itertools, random, math
 from collections import Counter, deque
 from codex import groove
@@ -259,7 +259,7 @@ class filterN_v2:
         [(4, 1), (20, 3), (7, 3), (23, 3), (21, 3), (2, 4), (29, 4), (28, 4), (5, 4), (12, 4), (17, 4)]
         '''
         ninc = self.Lever.intersection(n.number).__len__()
-        if ninc == 0 or 5 < ninc < 3:
+        if ninc == 0 or 5.0 < ninc <= 2.9:
             return False
         return True
 
