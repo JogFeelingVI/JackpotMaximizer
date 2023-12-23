@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-22 08:59:56
+# @Last Modified time: 2023-12-23 21:54:51
 
 from collections import Counter
 import unittest, os, time, itertools, multiprocessing as mp
@@ -28,6 +28,13 @@ data = {
     "2023-11-12 07:00:33.370573"
 }
 
+def jissuangailv():
+    counter = Counter(data['R'])
+    print(f'{counter.most_common()}')
+    cold = [n for n,f in counter.most_common() if f<5.01]
+    print(f'cold {cold}')
+    n = set([5,6,14,16,19,32]).intersection(cold)
+    print(f'baohan jige cold {n}')
 
 def chengjie_w():
 
@@ -81,6 +88,8 @@ def filter_test():
     filterv2 = glns_v2.filterN_v2()
     filterv2.Last = glnsv2.getlast
     filterv2.Lever = glnsv2.getabc
+    print(f'debug {filterv2.Lever}')
+    time.sleep(5)
     filterv2.debug = True
     reego = rego_v2.rego().parse_dict
     tongji = Tonji.tjone()
@@ -107,7 +116,7 @@ class TestStringMethods(unittest.TestCase):
 
     def test_upper(self):
         #resx = [tesrange() for i in range(1000)]
-        filter_test()
+        jissuangailv()
         #frekhz()
 
 

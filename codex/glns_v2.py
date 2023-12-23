@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-22 20:58:45
+# @Last Modified time: 2023-12-23 21:58:56
 import itertools, random, math
 from collections import Counter, deque
 from codex import groove
@@ -75,7 +75,7 @@ class filterN_v2:
     ''' 对Note进行过滤 '''
     filters = {}
 
-    __Lever = {}
+    __Lever = set()
     __Last = [0, 0, 0, 0, 0, 0]
     __debug = False
 
@@ -89,12 +89,12 @@ class filterN_v2:
         self.__init__filters()
 
     @property
-    def Lever(self) -> dict:
+    def Lever(self) -> set[Any]:
         ''' 出号频率等级 '''
         return self.__Lever
 
     @Lever.setter
-    def Lever(self, value: dict) -> None:
+    def Lever(self, value: set[Any]) -> None:
         self.__Lever = value
 
     @property
@@ -123,7 +123,7 @@ class filterN_v2:
             'mod5': self.mod5,
             'mod6': self.mod6,
             'mod7': self.mod7,
-            'denji': self.denji,
+            'coldns': self.coldns,
         }
 
         if self.__debug == False:
@@ -131,7 +131,7 @@ class filterN_v2:
             diskey = [
                 #'sixlan',
                 #'duplicates',
-                'denji',
+                #'denji',
             ]
             for k in diskey:
                 self.filters.pop(k)
@@ -253,16 +253,13 @@ class filterN_v2:
             return False
         return True
 
-    def denji(self, n: Note) -> bool:
+    def coldns(self, n: Note) -> bool:
         '''
         这个方法会造成命中率降低弃用
         [(4, 1), (20, 3), (7, 3), (23, 3), (21, 3), (2, 4), (29, 4), (28, 4), (5, 4), (12, 4), (17, 4)]
         '''
-        if self.Lever.keys().__len__() == 0:
-            return True
-        Levers = map(lambda x: [i[0] for i in x], self.Lever.values())
-        Rexts = map(lambda x: n.setnumber_R.intersection(x).__len__(), Levers)
-        if 0 in Rexts:
+        ninc = self.Lever.intersection(n.number).__len__()
+        if ninc == 0 or 5 < ninc < 3:
             return False
         return True
 
@@ -403,19 +400,11 @@ class glnsMpls:
         return self.R[-6:]
 
     @property
-    def getabc(self) -> dict:
+    def getabc(self):# -> set[Any]:
         '''get {I...II...III}'''
         counter = Counter(self.R)
-        counter_list = list(counter.items())
-        # 按频率对列表进行排序
-        counter_list.sort(key=lambda x: x[1])
-        # 计算每个等级的元素数量
-        level_size = len(counter_list) // 3
-        # 将列表分成三个等级
-        level1 = counter_list[:level_size]
-        level2 = counter_list[level_size:level_size * 2]
-        level3 = counter_list[level_size * 2:]
-        return {'I': level1, 'II': level2, 'III': level3}
+        cold = [n for n,f in counter.most_common() if f<5.01]
+        return set(cold)
 
     def __init__(self, cdic: dict, w: str = 'c') -> None:
         if 'R' in cdic and 'B' in cdic:
