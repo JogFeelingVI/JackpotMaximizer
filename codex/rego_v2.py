@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-11 22:08:28
+# @Last Modified by:   Your name
+# @Last Modified time: 2023-12-27 08:53:23
+
+#! 此核心解释器已经废弃
 
 import re, time, pathlib
 from typing import List

@@ -1,11 +1,11 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-22 21:05:31
+# @Last Modified time: 2023-12-27 08:51:01
 from datetime import datetime as dtime
 import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
-from codex import glns_v2, rego_v2
+from codex import glns_v2, rego_v3
 
 
 class ccps:
@@ -40,7 +40,7 @@ class mLpool:
         self.filterv2 = glns_v2.filterN_v2()
         self.filterv2.Last = self.glnsv2.getlast
         self.filterv2.Lever = self.glnsv2.getabc
-        self.class_rego = rego_v2.rego().parse_dict
+        self.class_rego = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
         self.R = R
         self.B = B
         self.iRx = iRx
@@ -99,7 +99,7 @@ class mLpool:
         if self.reego:
             # 这里依然是问题所在
             for k, parst in self.class_rego.items():
-                rex = parst['f'](N, parst['a'])
+                rex = parst(N)
                 #rex = self.class_rego.Func[parst['name']](N, parst)
                 if rex == False:
                     return False
