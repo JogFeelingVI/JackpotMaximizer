@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2023-12-26 20:55:18
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-27 09:55:30
+# @Last Modified time: 2023-12-27 16:42:44
 
 from typing import List
 from functools import partial
@@ -10,7 +10,7 @@ import pathlib, re
 
 from codex import note
 
-filenam = 'insx.reg'
+filenam = 'insx.rego'
 
 
 def load_rego_v2() -> str:
