@@ -1,11 +1,11 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-27 09:54:19
+# @Last Modified time: 2023-12-27 16:52:17
 
 from collections import Counter
 import unittest, os, time, itertools, multiprocessing as mp
-from codex import glns_v2, rego_v2, Tonji, note
+from codex import glns_v2, rego_v3, Tonji, note
 
 data = {
     "R": [
@@ -91,15 +91,15 @@ def filter_test():
     print(f'debug {filterv2.Lever}')
     time.sleep(5)
     filterv2.debug = True
-    reego = rego_v2.rego().parse_dict
+    reego = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
     tongji = Tonji.tjone()
-    tongji.set_tongji_index([4,5,6])
+    tongji.set_tongji_index([1,2,3])
     while len(tongji.nLopp) <= 1000:
         returnd = True
         r,b = glnsv2.creativity()
         N = note.Note(r, b)
         for k, parst in reego.items():
-            rex = parst['f'](N, parst['a'])
+            rex = parst(N)
             if rex == False:
                 returnd = False
                 break
@@ -116,7 +116,7 @@ class TestStringMethods(unittest.TestCase):
 
     def test_upper(self):
         #resx = [tesrange() for i in range(1000)]
-        jissuangailv()
+        filter_test()
         #frekhz()
 
 
