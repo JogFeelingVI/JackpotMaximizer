@@ -2,13 +2,13 @@
 # @Author: Your name
 # @Date:   2023-12-26 20:55:18
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-27 08:51:34
+# @Last Modified time: 2023-12-27 09:55:30
 
 from typing import List
 from functools import partial
 import pathlib, re
 
-from codex.glns_v2 import Note
+from codex import note
 
 filenam = 'insx.reg'
 
@@ -106,7 +106,7 @@ class Lexer:
 class rego_filter:
 
     @staticmethod
-    def f_paichu_r(N: Note, args: List) -> bool:
+    def f_paichu_r(N: note.Note, args: List) -> bool:
         '''排除'''
         for _n in N.number:
             if _n in args:
@@ -114,7 +114,7 @@ class rego_filter:
         return True
 
     @staticmethod
-    def f_paichu_b(N: Note, args: List) -> bool:
+    def f_paichu_b(N: note.Note, args: List) -> bool:
         '''排除'''
         for _n in N.tiebie:
             if _n in args:
@@ -122,7 +122,7 @@ class rego_filter:
         return True
 
     @staticmethod
-    def f_baohan(N: Note, args: List) -> bool:
+    def f_baohan(N: note.Note, args: List) -> bool:
         '''包含'''
         for _n in N.setnumber_R:
             if _n in args:
@@ -130,7 +130,7 @@ class rego_filter:
         return False
 
     @staticmethod
-    def f_bit(N: Note, args: List, index: int) -> bool:
+    def f_bit(N: note.Note, args: List, index: int) -> bool:
         '''定位 包含'''
         match index:
             case 1 | 2 | 3 | 4 | 5 | 6:
@@ -144,7 +144,7 @@ class rego_filter:
         return True
 
     @staticmethod
-    def f_bitex(N: Note, args: List, index: int) -> bool:
+    def f_bitex(N: note.Note, args: List, index: int) -> bool:
         '''定位 不包含'''
         match index:
             case 1 | 2 | 3 | 4 | 5 | 6:

@@ -1,11 +1,11 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-23 21:54:51
+# @Last Modified time: 2023-12-27 09:54:19
 
 from collections import Counter
 import unittest, os, time, itertools, multiprocessing as mp
-from codex import glns_v2, rego_v2, Tonji
+from codex import glns_v2, rego_v2, Tonji, note
 
 data = {
     "R": [
@@ -97,7 +97,7 @@ def filter_test():
     while len(tongji.nLopp) <= 1000:
         returnd = True
         r,b = glnsv2.creativity()
-        N = glns_v2.Note(r, b)
+        N = note.Note(r, b)
         for k, parst in reego.items():
             rex = parst['f'](N, parst['a'])
             if rex == False:

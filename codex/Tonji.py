@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2023-12-10 20:02:11
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-15 15:57:46
+# @Last Modified by:   Your name
+# @Last Modified time: 2023-12-27 09:54:55
 import re
 from typing import Any, List, Generator
-from codex import glns_v2, rego_v2
+from codex import glns_v2, note
 
 
 class tjone:
@@ -30,7 +30,7 @@ class tjone:
             t = [index]
             self.keys.extend(t)
 
-    def add(self, N: glns_v2.Note):
+    def add(self, N: note.Note):
         ''''''
         self.nLopp.append(N)
         key = ''.join((f'{N.index(x):02}' for x in self.keys))

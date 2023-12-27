@@ -1,11 +1,11 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-27 08:51:01
+# @Last Modified time: 2023-12-27 09:52:17
 from datetime import datetime as dtime
 import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
-from codex import glns_v2, rego_v3
+from codex import glns_v2, rego_v3, note
 
 
 class ccps:
@@ -93,7 +93,7 @@ class mLpool:
 
     def filter_map(self, zipo_item) -> bool:
         Nr, Nb = zipo_item
-        N = glns_v2.Note(Nr, Nb)
+        N = note.Note(Nr, Nb)
 
         # run rego
         if self.reego:
@@ -119,7 +119,7 @@ class mLpool:
         #print(f'filters True N {N}')
         return True
 
-    def fdins(self, N: glns_v2.Note, insre: re.Pattern) -> bool:
+    def fdins(self, N: note.Note, insre: re.Pattern) -> bool:
         '''
         Find Ins 
         Nums type list

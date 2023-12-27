@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2023-12-13 20:25:19
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-17 10:07:22
+# @Last Modified by:   Your name
+# @Last Modified time: 2023-12-27 09:56:50
 
 from collections import Counter
 from heapq import nlargest
 from token import NL
 import unittest, os, time, itertools, multiprocessing as mp, pathlib, re
-from codex import glns_v2, rego_v2, Tonji
+from codex import glns_v2, rego_v2, Tonji, note
 
 data = {
     "R": [
@@ -44,7 +44,7 @@ def fromat_str(s: str):
         _, *r, b = match.groups()
         nR = [int(x) for x in r]
         nB = int(b)
-        return glns_v2.Note(nR, nB)
+        return note.Note(nR, nB)
     return 'N/A'
 
 

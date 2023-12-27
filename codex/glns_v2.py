@@ -2,10 +2,10 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-23 22:02:04
+# @Last Modified time: 2023-12-27 09:51:37
 import itertools, random, math
 from collections import Counter, deque
-from codex import groove
+from codex import groove, note
 from typing import Any, List
 
 
@@ -34,41 +34,6 @@ def Range_M(M: int = 16) -> List:
     '''
     max_set = [x for x in range(1, M + 1)]
     return max_set
-
-
-class Note:
-    __set_r = None
-    __set_b = None
-
-    def __init__(self, n: List[int], T: List[int] | int) -> None:
-        """Note
-        Args:
-            n (List[int]): 1-33 红色号码球
-            T (List[int] | int): 1-16 蓝色号码球
-        """
-        _T = [T, [T]][isinstance(T, int)]
-        self.number = sorted(n)
-        self.tiebie = sorted(_T)
-
-    def index(self, i: int) -> int:
-        return self.number[i - 1]
-
-    @property
-    def setnumber_R(self):
-        if self.__set_r == None:
-            self.__set_r = set(self.number)
-        return self.__set_r
-
-    @property
-    def setnumber_B(self):
-        if self.__set_b == None:
-            self.__set_b = set(self.tiebie)
-        return self.__set_b
-
-    def __str__(self) -> str:
-        n = ' '.join([f'{num:02d}' for num in self.number])
-        t = ' '.join([f'{num:02d}' for num in self.tiebie])
-        return f'{n} + {t}'
 
 
 class filterN_v2:
@@ -139,19 +104,19 @@ class filterN_v2:
     def __init__(self) -> None:
         self.__init__filters()
 
-    def dzx(self, N: Note) -> bool:
+    def dzx(self, N: note.Note) -> bool:
         '''xiao zhong da'''
         g = [range(i, i + 11) for i in range(0, 33, 11)]
         countofg = map(lambda x: N.setnumber_R.intersection(x).__len__(), g)
         return [False, True][5 not in countofg or 6 in countofg]
 
-    def acvalue(self, N: Note) -> bool:
+    def acvalue(self, N: note.Note) -> bool:
         '''计算数字复杂程度 默认 P len = 6 这里操造成效率低下'''
         p = itertools.product(N.number[1::], N.number[0:5])
         ac = [1 for a, b in p if a - b > 0.1].__len__() - 1 - len(N.number)
         return [False, True][ac >= 4]
 
-    def linma(self, N: Note) -> bool:
+    def linma(self, N: note.Note) -> bool:
         '''计算邻码'''
         plus_minus = 0
         for n in N.number:
@@ -161,17 +126,17 @@ class filterN_v2:
                     return False
         return True
 
-    def duplicates(self, N: Note) -> bool:
+    def duplicates(self, N: note.Note) -> bool:
         '''计算数组是否有重复项目'''
         duplic = N.setnumber_R & set(self.Last)
         return [False, True][duplic.__len__() in (0, 1, 2)]
 
-    def sixlan(self, N: Note) -> bool:
+    def sixlan(self, N: note.Note) -> bool:
         '''判断红色区域是否等于 1, 2, 3, 4, 5, 6, 7'''
         rb = [False, True][max(N.setnumber_R) != 6]
         return rb
 
-    def lianhao(self, n: Note) -> bool:
+    def lianhao(self, n: note.Note) -> bool:
         count = []
         for v in n.number:
             if not count or v != count[-1][-1] + 1:
@@ -181,7 +146,7 @@ class filterN_v2:
         rebool = [False, True][flgrex in [[], [3], [2], [2, 2]]]
         return rebool
 
-    def mod3(self, n: Note) -> bool:
+    def mod3(self, n: note.Note) -> bool:
         '''mod 3 not in [[6], [5,1],[3,3]]'''
         cts = [[6], [5, 1]]
         counts = sorted(mod(n.number, 3))
@@ -189,13 +154,13 @@ class filterN_v2:
             return False
         return True
 
-    def mod4(self, n: Note) -> bool:
+    def mod4(self, n: note.Note) -> bool:
         counts = mod(n.number, 4)
         if max(counts) > 4.01:
             return False
         return True
 
-    def mod2(self, n: Note) -> bool:
+    def mod2(self, n: note.Note) -> bool:
         '''mod 2 not in [[6], [5,1],[3,3]]'''
         cts = [[6], [5, 1]]
         counts = sorted(mod(n.number, 2))
@@ -203,7 +168,7 @@ class filterN_v2:
             return False
         return True
 
-    def mod5(self, n: Note) -> bool:
+    def mod5(self, n: note.Note) -> bool:
         '''mod 5 not in [[6], [5,1],[3,3]]'''
         cts = [4, 5, 6]
         counts = max(mod(n.number, 5))
@@ -211,7 +176,7 @@ class filterN_v2:
             return False
         return True
 
-    def mod6(self, n: Note) -> bool:
+    def mod6(self, n: note.Note) -> bool:
         '''mod 5 not in [[6], [5,1],[3,3]]'''
         cts = [4, 5, 3]
         counts = len(mod(n.number, 6))
@@ -219,7 +184,7 @@ class filterN_v2:
             return False
         return True
 
-    def mod7(self, n: Note) -> bool:
+    def mod7(self, n: note.Note) -> bool:
         '''mod 5 not in [[6], [5,1],[3,3]]'''
         cts = [4, 5, 3, 6]
         counts = len(mod(n.number, 7))
@@ -227,7 +192,7 @@ class filterN_v2:
             return False
         return True
 
-    def dx16(self, n: Note) -> bool:
+    def dx16(self, n: note.Note) -> bool:
         '''
         da:xiao 1:5 n > 16.02 is da
         '''
@@ -240,7 +205,7 @@ class filterN_v2:
             return False
         return True
 
-    def zhihe(self, n: Note) -> bool:
+    def zhihe(self, n: note.Note) -> bool:
         '''
         da:xiao 1:5 n > 16.02 is da
         '''
@@ -253,7 +218,7 @@ class filterN_v2:
             return False
         return True
 
-    def coldns(self, n: Note) -> bool:
+    def coldns(self, n: note.Note) -> bool:
         '''
         这个方法会造成命中率降低弃用
         [(4, 1), (20, 3), (7, 3), (23, 3), (21, 3), (2, 4), (29, 4), (28, 4), (5, 4), (12, 4), (17, 4)]
@@ -263,7 +228,7 @@ class filterN_v2:
             return False
         return True
 
-    def onesixdiff(self, n: Note) -> bool:
+    def onesixdiff(self, n: note.Note) -> bool:
         '''1 - 6 diff > 15.06'''
         if abs(n.index(1) - n.index(6)) < 15.09:
             return False
@@ -306,7 +271,7 @@ class formation:
         self.maxlen = max
         self.__dulie = deque([], maxlen=self.maxlen)
 
-    def addNote(self, n: Note) -> int:
+    def addNote(self, n: note.Note) -> int:
         try:
             self.DuLie.append(n)
             return self.DuLie.__len__()
@@ -400,10 +365,10 @@ class glnsMpls:
         return self.R[-6:]
 
     @property
-    def getabc(self):# -> set[Any]:
+    def getabc(self):  # -> set[Any]:
         '''get {I...II...III}'''
         counter = Counter(self.R)
-        cold = [n for n,f in counter.most_common() if f<5.01]
+        cold = [n for n, f in counter.most_common() if f < 5.01]
         return set(cold)
 
     def __init__(self, cdic: dict, w: str = 'c') -> None:
@@ -420,16 +385,22 @@ class glnsMpls:
                         self.random_b = random_rb(Range_M(M=16), self.bLen)
                         print('[s] use sample')
                     case 'c':
-                        self.random_r = random_rb_f(self.R,self.rLen)
-                        self.random_b = random_rb_f(self.B,self.bLen)
+                        self.random_r = random_rb_f(self.R, self.rLen)
+                        self.random_b = random_rb_f(self.B, self.bLen)
                         print('[c] use choices')
                     case 'g':
                         js_data = groove.bitx_read()
                         if js_data != None:
-                            self.random_r = groove.random_ex(json_data=js_data, max_length=self.rLen, RBC=groove.RC)
-                            self.random_b = groove.random_ex(json_data=js_data, max_length=self.bLen, RBC=groove.BC)
+                            self.random_r = groove.random_ex(
+                                json_data=js_data,
+                                max_length=self.rLen,
+                                RBC=groove.RC)
+                            self.random_b = groove.random_ex(
+                                json_data=js_data,
+                                max_length=self.bLen,
+                                RBC=groove.BC)
                             print('[g] use Groove')
-                    
+
             # print(f'glns init done')
 
     def creativity(self) -> tuple[list[int], list[int]]:

@@ -2,14 +2,14 @@
 # @Author: JogFeelingVI
 # @Date:   2023-10-24 19:04:50
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-27 08:53:23
+# @Last Modified time: 2023-12-27 09:53:29
 
 #! 此核心解释器已经废弃
 
 import re, time, pathlib
 from typing import List
 from codex import ospath
-from codex.glns_v2 import Note
+from codex import note
 
 filenam = 'insx.reg'
 
@@ -92,18 +92,18 @@ class rego:
                 temp.append({'f': funx, 'a': nm})
             return temp
         return None
-    
-    def p_combin(self, line:str) -> List | None:
+
+    def p_combin(self, line: str) -> List | None:
         temp = []
         recombing = re.compile(r'-\s[ 0-9]+@combin$', re.M)
-        if (_match := recombing.findall(line))!= None:
+        if (_match := recombing.findall(line)) != None:
             for _m in _match:
                 _com = re.compile(r'[0-9]+')
                 combing = _com.findall(_m)
                 funx = getattr(rego_filter, 'f_combin')
                 temp.append({'f': funx, 'a': combing})
             return temp
-                
+
         return None
 
     def parse_v2(self, filgo: str) -> None:
@@ -130,9 +130,9 @@ class rego:
 
 # class rego filter
 class rego_filter:
-    
+
     @staticmethod
-    def f_combin(N:Note, args:List) -> bool:
+    def f_combin(N: note.Note, args: List) -> bool:
         '''paichu combing ['021617', '020416'] '''
         _s = ''.join((f'{x:02}' for x in N.number))
         for _c in args:
@@ -141,7 +141,7 @@ class rego_filter:
         return True
 
     @staticmethod
-    def f_paichu_r(N: Note, args: List) -> bool:
+    def f_paichu_r(N: note.Note, args: List) -> bool:
         '''排除'''
         for _n in N.number:
             if _n in args:
@@ -149,7 +149,7 @@ class rego_filter:
         return True
 
     @staticmethod
-    def f_paichu_b(N: Note, args: List) -> bool:
+    def f_paichu_b(N: note.Note, args: List) -> bool:
         '''排除'''
         for _n in N.tiebie:
             if _n in args:
@@ -157,7 +157,7 @@ class rego_filter:
         return True
 
     @staticmethod
-    def f_baohan(N: Note, args: List) -> bool:
+    def f_baohan(N: note.Note, args: List) -> bool:
         '''包含'''
         for _n in N.setnumber_R:
             if _n in args:
@@ -165,38 +165,38 @@ class rego_filter:
         return False
 
     @classmethod
-    def f_bit_1(cls, N: Note, args: List) -> bool:
+    def f_bit_1(cls, N: note.Note, args: List) -> bool:
         return cls.f_bit(N, args, 1)
 
     @classmethod
-    def f_bit_2(cls, N: Note, args: List) -> bool:
+    def f_bit_2(cls, N: note.Note, args: List) -> bool:
         return cls.f_bit(N, args, 2)
 
     @classmethod
-    def f_bit_3(cls, N: Note, args: List) -> bool:
+    def f_bit_3(cls, N: note.Note, args: List) -> bool:
         return cls.f_bit(N, args, 3)
 
     @classmethod
-    def f_bit_4(cls, N: Note, args: List) -> bool:
+    def f_bit_4(cls, N: note.Note, args: List) -> bool:
         return cls.f_bit(N, args, 4)
 
     @classmethod
-    def f_bit_5(cls, N: Note, args: List) -> bool:
+    def f_bit_5(cls, N: note.Note, args: List) -> bool:
         return cls.f_bit(N, args, 5)
 
     @classmethod
-    def f_bit_6(cls, N: Note, args: List) -> bool:
+    def f_bit_6(cls, N: note.Note, args: List) -> bool:
         return cls.f_bit(N, args, 6)
 
     @staticmethod
-    def f_bit_7(N: Note, args: List) -> bool:
+    def f_bit_7(N: note.Note, args: List) -> bool:
         for _n in N.tiebie:
             if _n in args:
                 return True
         return False
 
     @staticmethod
-    def f_bit(N: Note, args: List, index: int) -> bool:
+    def f_bit(N: note.Note, args: List, index: int) -> bool:
         '''定位 包含'''
         if index in [1, 2, 3, 4, 5, 6]:
             _n = N.index(i=index)
@@ -205,38 +205,38 @@ class rego_filter:
         return True
 
     @classmethod
-    def f_bitex_1(cls, N: Note, args: List) -> bool:
+    def f_bitex_1(cls, N: note.Note, args: List) -> bool:
         return cls.f_bitex(N, args, 1)
 
     @classmethod
-    def f_bitex_2(cls, N: Note, args: List) -> bool:
+    def f_bitex_2(cls, N: note.Note, args: List) -> bool:
         return cls.f_bitex(N, args, 2)
 
     @classmethod
-    def f_bitex_3(cls, N: Note, args: List) -> bool:
+    def f_bitex_3(cls, N: note.Note, args: List) -> bool:
         return cls.f_bitex(N, args, 3)
 
     @classmethod
-    def f_bitex_4(cls, N: Note, args: List) -> bool:
+    def f_bitex_4(cls, N: note.Note, args: List) -> bool:
         return cls.f_bitex(N, args, 4)
 
     @classmethod
-    def f_bitex_5(cls, N: Note, args: List) -> bool:
+    def f_bitex_5(cls, N: note.Note, args: List) -> bool:
         return cls.f_bitex(N, args, 5)
 
     @classmethod
-    def f_bitex_6(cls, N: Note, args: List) -> bool:
+    def f_bitex_6(cls, N: note.Note, args: List) -> bool:
         return cls.f_bitex(N, args, 6)
 
     @staticmethod
-    def f_bitex_7(N: Note, args: List) -> bool:
+    def f_bitex_7(N: note.Note, args: List) -> bool:
         for _n in N.tiebie:
             if _n in args:
                 return False
         return True
 
     @staticmethod
-    def f_bitex(N: Note, args: List, index: int) -> bool:
+    def f_bitex(N: note.Note, args: List, index: int) -> bool:
         '''定位 不包含'''
         if index in [1, 2, 3, 4, 5, 6]:
             _n = N.index(i=index)
