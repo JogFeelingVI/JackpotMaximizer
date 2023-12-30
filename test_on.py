@@ -1,11 +1,11 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-30 23:06:20
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-27 16:52:17
+# @Last Modified time: 2023-12-30 11:10:01
 
 from collections import Counter
 import unittest, os, time, itertools, multiprocessing as mp
-from codex import glns_v2, rego_v3, Tonji, note
+from codex import glns_v2, rego_v3, Tonji, note,Bayesian
 
 data = {
     "R": [
@@ -29,12 +29,9 @@ data = {
 }
 
 def jissuangailv():
-    counter = Counter(data['R'])
-    print(f'{counter.most_common()}')
-    cold = [n for n,f in counter.most_common() if f<5.01]
-    print(f'cold {cold}')
-    n = set([5,6,14,16,19,32]).intersection(cold)
-    print(f'baohan jige cold {n}')
+    BYS = Bayesian.bayes(data['R'])
+    nlis = [x for x in range(1, 34)]
+    BYS.PLM(EHL=nlis)
 
 def chengjie_w():
 
@@ -116,7 +113,7 @@ class TestStringMethods(unittest.TestCase):
 
     def test_upper(self):
         #resx = [tesrange() for i in range(1000)]
-        filter_test()
+        jissuangailv()
         #frekhz()
 
 
