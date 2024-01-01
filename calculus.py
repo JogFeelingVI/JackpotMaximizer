@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-22 09:16:16
+# @Last Modified time: 2024-01-01 22:58:00
 from codex import funcs
 from codex.runingtime import runingtime
 
@@ -19,8 +19,8 @@ def Moni_T():
         'n': 1000,
         'r': 6,
         'b': 1,
-        'jhr': [7, 10, 21, 22, 23, 24],
-        'jhb': [11]
+        'jhr': [1, 15, 16, 20, 25, 27],
+        'jhb': [5]
     }
     act = funcs.action(args, diff=True)
     act.Moni_Calcu()

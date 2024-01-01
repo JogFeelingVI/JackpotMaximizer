@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 12:25:40
-# @Last Modified by:   By JogFeelingVi
-# @Last Modified time: 2022-10-03 12:25:40
+# @Last Modified by:   Your name
+# @Last Modified time: 2024-01-01 22:55:19
 import json, enum
 from codex.ospath import os_path
 
@@ -11,7 +11,7 @@ class Resty(enum.Enum):
     OxStr = './String.json'
     Oxinsreg = './insx.reg'
     OxSave = './save.log'
-    OxData = './rbdata.json'
+    OxData = './DataFrame.json'
 
     def tostr(self) -> str:
         return self.value
