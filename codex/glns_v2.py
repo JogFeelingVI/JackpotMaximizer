@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-27 09:51:37
+# @Last Modified time: 2024-01-01 23:02:04
 import itertools, random, math
 from collections import Counter, deque
 from codex import groove, note
@@ -88,7 +88,7 @@ class filterN_v2:
             'mod5': self.mod5,
             'mod6': self.mod6,
             'mod7': self.mod7,
-            'coldns': self.coldns,
+            #'coldns': self.coldns,
         }
 
         if self.__debug == False:
