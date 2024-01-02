@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-20 09:02:19
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-22 09:13:13
+# @Last Modified time: 2024-01-02 15:29:11
 import heapq, random, json, pathlib
 from typing import Any, List
 
@@ -40,19 +40,20 @@ class random_ex:
                     raise ValueError(
                         "max_length value exceeds the limit, bit_7 is 1~8")
 
-            if 'bit_4' in RBC:
+            if 'bit_7' not in RBC:
                 if 6 <= max_length >= 19:
                     raise ValueError(
                         "max_length value exceeds the limit, bit_1~6 is 6~19")
 
             self.max_length = max_length
             self.bitx = {k: v for k, v in json_data.items() if k in RBC}
+            print(f'debuf {self.bitx}')
             self._init_complete = True
         except ValueError as e:
             print(e)
 
     def randbitx(self, sink: int):
-        '''from bitx random'''
+        '''from bitx random 这里有很大的问题'''
         if self.max_length == 6:
             name = f'bit_{sink + 1}'
             key = self.bitx.get(name, {})
@@ -73,8 +74,8 @@ class random_ex:
             random_number = random.choices(np, weights=wp, k=3)
             return random_number
         return [
-            random.randint(1, 33),
-            random.randint(1, 33),
+            random.randint(1, 34),
+            random.randint(1, 17),
         ]
 
     def creation(self):
@@ -112,7 +113,7 @@ def main():
     print(f"Hello, World! {RC}")
     ex = bitx_read()
     if ex != None:
-        r = random_ex(ex, 7, BC)
+        r = random_ex(ex, 6, RC)
         print(f'debug {r.creation()}')
 
 
