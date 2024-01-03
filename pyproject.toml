@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "quicklck"
+name = "JackpotMaximize"
 version = "0.1.0"
-description = "Quick luck S2Q"
+description = "JackpotMaximize S2Q"
 authors = ["JogfeeingVI <lifelse@outlook.com>"]
 license = "GLP3.0"
 readme = "README.md"
