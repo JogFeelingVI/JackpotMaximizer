@@ -1,5 +1,5 @@
 {
-    "command_info": "Quickly generating numbers that compound the two-colour rule",
+    "command_info": "JackpotMaximizer generating numbers that compound the two-colour rule",
     "NL": "Use buffering and do not update the latest data --NL",
     "help": "Show all parameters, --help",
     "n": "-n [Number] -n 10 def 5",

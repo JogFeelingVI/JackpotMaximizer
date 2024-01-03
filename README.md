@@ -1,20 +1,20 @@
-# QuickLCK
-> Generate lucky numbers
-> usage: qls.command load [-h] [--save] [--noinx] [--fix {r,b,a}] [--cpu {a,o}] [--loadins] [--usew {s,c,g}] [--debug] [--ins INS] [-n N] [-r R] [-b B]
+# JackpotMaximizer
+> `JackpotMaximizer`：这个名字突出了程序可以帮助用户赢得头奖
+###### usage: jpm.command load [-h] [--save] [--noinx] [--fix {r,b,a}] [--cpu {a,o}] [--loadins] [--usew {s,c,g}] [--debug] [--ins INS] [-n N] [-r R] [-b B]
 
-options:
-  -h, --help      show this help message and exit
-  --save          save to files
-  --noinx         No Show ID DEPTH
-  --fix {r,b,a}   repair data
-  --cpu {a,o}     repair data
-  --loadins       load insx.reg
-  --usew {s,c,g}  True choices not Weights
-  --debug         show debug info
-  --ins INS       Filtering numbers using regular expressions exp --ins ^(02|03|05)
-  -n N            Generate 10 pieces of data
-  -r R            Red number default 6, max 19
-  -b B            Default 1 blue ball, max 8
+* options:
+  * -h, --help      show this help message and exit
+  * --save          save to files
+  * --noinx         No Show ID DEPTH
+  * --fix {r,b,a}   repair data
+  * --cpu {a,o}     repair data
+  * --loadins       load insx.reg
+  * --usew {s,c,g}  True choices not Weights
+  * --debug         show debug info
+  * --ins INS       Filtering numbers using regular expressions exp --ins ^(02|03|05)
+  * -n N            Generate 10 pieces of data
+  * -r R            Red number default 6, max 19
+  * -b B            Default 1 blue ball, max 8
  
 ```shell
 glns load -n10 --loadins                                                                                                                                                                      08:29:39
@@ -38,7 +38,7 @@ glns load -n10 --loadins                                                        
 [+] Total 10 Notes
 [+] runingtime 0.32 s
 ```
-#### python3 qls.command
+#### python3 jpm.command
 > 执行主程序
 
 #### --save
@@ -75,7 +75,7 @@ glns load -n10 --loadins                                                        
 
 ```shell
 function glns
-    python /data/data/com.termux/files/home/storage/downloads/github/QuickLCK/qls.command $argv
+    python /data/data/com.termux/files/home/storage/downloads/github/JackpotMaximizer/jpm.command $argv
 end
 ```
 > `$argv` 传递参数
@@ -139,4 +139,11 @@ python3 calculus.py                                                             
 [!] sum  28.12% Len 729 cyn -6267 $
 [+] runingtime 11.72 s
 ```
-##### 在不计算一等奖和二等奖这类浮动奖金的情况下，每一千注彩票可以获得6267元纯收益。
+> 在不计算一等奖和二等奖这类浮动奖金的情况下，每一千注彩票可以获得6267元纯收益。
+
+#### 名字的由来
+* LuckyPicker：这个名字简单易记，并且与程序的功能相关。
+* LotteryOptimizer：这个名字突出了程序的功能，即优化乐透型彩票的中奖概率。
+* ChanceEnhancer：这个名字传达了程序可以提高中奖概率的信息。
+* FortuneBooster：这个名字暗示了程序可以带来好运和财富。
+* `JackpotMaximizer`：这个名字突出了程序可以帮助用户赢得头奖。
