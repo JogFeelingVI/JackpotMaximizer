@@ -2,18 +2,20 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-20 09:02:19
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-03 16:38:04
+# @Last Modified time: 2024-01-03 22:19:22
 import heapq, random, json, pathlib
 from typing import Any, List
+from codex import ospath
 
 RC = [f'bit_{x}' for x in range(1, 7)]
 BC = ['bit_7']
 
 
 def bitx_read() -> dict | None:
-    bitx = pathlib.Path('bitx.json')
-    if bitx.exists():
-        with bitx.open(mode='r', encoding='utf-8') as bit:
+    bitx = ospath.findAbsp.file_path('bitx.json')
+    bitp = pathlib.Path(bitx)
+    if bitp.exists():
+        with bitp.open(mode='r', encoding='utf-8') as bit:
             return json.loads(bit.read())
     return
 
@@ -76,7 +78,6 @@ class random_ex:
                 return self.whereiskey(key=keyd)
             case _:
                 keyr = f'bit_{random.randint(1, 7)}'
-                print(f'this use keyr {keyr}')
                 return self.whereiskey(key=keyr)
 
     def creation(self):

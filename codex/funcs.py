@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-03 17:48:02
+# @Last Modified time: 2024-01-03 22:58:49
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -453,7 +453,7 @@ class action:
                             self.fmusew)
             cp_all.reego = self.fmloadins
             Retds = cp_all.run_works(self.fmn)
-            Rex = [y for x in Retds for y in self.__diff__(x)]
+            Rex: list = [y for x in Retds for y in self.__diff__(x)]
             iRex = len(Rex)
             if iRex == 0:
                 return
@@ -462,7 +462,10 @@ class action:
             listx = [[x, f(x, Rex)] for x in range(1, 7)]
             with open('fps.log', 'w') as sto:
                 for slog in Rex:
-                    sto.writelines(f'{slog}\n')
+                    lv, n, t = slog
+                    n = ' '.join((f'{x:02}' for x in n))
+                    t = ' '.join((f'{x:02}' for x in t))
+                    sto.writelines(f'L:{lv} N:{n} T:{t}\n')
             cyn = iRex * 2
             for l, v in listx:
                 print(

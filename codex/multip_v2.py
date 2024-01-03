@@ -1,9 +1,9 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-03 19:03:19
+# @Last Modified time: 2024-01-03 22:17:14
 from datetime import datetime as dtime
-import multiprocessing as mlps, re, itertools as itr, time, os
+import multiprocessing as mlps, re, itertools as itr
 from typing import List, Iterable
 from codex import glns_v2, rego_v3, note
 from functools import partial
@@ -37,11 +37,9 @@ class mLpool:
         '''
         w False is not usew
         '''
-        self.kwargs = [data,R,B,w]
-        
+        self.kwargs = [data, R, B, w]
+
         self.iRx = iRx
-        
-    
 
     @property
     def reego(self) -> bool:
@@ -63,45 +61,49 @@ class mLpool:
         filterv2.Last = glnsv2.getlast
         filterv2.Lever = glnsv2.getabc
         class_rego = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
-        kwargs = [(x, glnsv2.producer,filterv2,class_rego) for x in range(n)]
+        Kw = itr.product(range(n),[glnsv2.producer], [filterv2.filters], [class_rego])
+        
         if mcp:
             # processes=self.cpu
             csize = int(n * 0.083)
             if csize <= 30:
-                return [self.SpawnPoolWorker(x) for x in kwargs]
+                return [self.SpawnPoolWorker(x) for x in Kw]
             with mlps.Pool() as p:
                 print(f'{self.prompt} data {dtime.now()}')
-                return p.map(self.SpawnPoolWorker, kwargs, chunksize=csize)
+                return p.map(self.SpawnPoolWorker, Kw, chunksize=csize)
         else:
-            return [self.SpawnPoolWorker(x) for x in kwargs]
+            return [self.SpawnPoolWorker(x) for x in Kw]
 
-    def SpawnPoolWorker(self, kw) -> List:
+    def SpawnPoolWorker(self, Kw) -> List:
         '''
             kw = x, glnsv2.producer,filterv2,class_rego
         '''
-        index, producer, filterv2, class_rego = kw
+        index, producer, filte, rego = Kw
         # print(f'GID {os.getpid():>10} index {index}')
         depth: int = 1
         while depth <= self.mdep:
             #st = time.time()
             n = producer['r']()
             t = producer['b']()
-            rinsx = self.__combinations_ols(n, t, (filterv2,class_rego))
+            rinsx = self.__combinations_ols(n, t, (filte, rego))
             if rinsx == True:
                 #print(f'OSID {os.getpid()} SpawnPoolWorker {time.time() - st:.4f}`s')
                 return [index, depth, n, t]
             depth += 1
         return [index, depth, [0], [0]]
 
-    def filter_map(self, zipo_item, kw) -> bool:
+    def filter_map(self, zipo_item, Kw) -> bool:
+        '''
+        Kw = filte, rego
+        '''
+        filte, rego = Kw
         Nr, Nb = zipo_item
-        filterv2,class_rego = kw
         N = note.Note(Nr, Nb)
 
         # run rego
         if self.reego:
             # 这里依然是问题所在
-            for k, parst in class_rego.items():
+            for k, parst in rego.items():
                 rex = parst(N)
                 #rex = self.class_rego.Func[parst['name']](N, parst)
                 if rex == False:
@@ -112,7 +114,7 @@ class mLpool:
             #print(f'debug fdins FALSE')
             return False
         # filterv2
-        for kfunc in filterv2.filters.values():
+        for kfunc in filte.values():
             if kfunc(N) == False:
                 #print(f'filters {k:>8} FALSE N {N}')
                 return False
@@ -139,11 +141,13 @@ class mLpool:
                 print(f'{self.prompt} Findins error: {rerror.msg}')
                 return False
 
-    def __combinations_ols(self, n, t, kw) -> bool:
+    def __combinations_ols(self, n, t, Kw) -> bool:
         '''
+        Kw = filte, rego
         '''
+        filte, rego = Kw
         zipo = ccps.ccp(n, t)
         for zio in zipo:
-            if self.filter_map(zio,kw) == True:
+            if self.filter_map(zio, (filte, rego)) == True:
                 return True
         return False
