@@ -1,30 +1,42 @@
 # QuickLCK
 > Generate lucky numbers
-> usage: qls.command [-h] [--save] [--update] [--noinx] [--fix {r,b,a}] [--cpu {a,o}] [--loadins] [--debug] [--ins INS]
-                   [-n N] [-r R] [-b B]
+> usage: qls.command load [-h] [--save] [--noinx] [--fix {r,b,a}] [--cpu {a,o}] [--loadins] [--usew {s,c,g}] [--debug] [--ins INS] [-n N] [-r R] [-b B]
+
+options:
+  -h, --help      show this help message and exit
+  --save          save to files
+  --noinx         No Show ID DEPTH
+  --fix {r,b,a}   repair data
+  --cpu {a,o}     repair data
+  --loadins       load insx.reg
+  --usew {s,c,g}  True choices not Weights
+  --debug         show debug info
+  --ins INS       Filtering numbers using regular expressions exp --ins ^(02|03|05)
+  -n N            Generate 10 pieces of data
+  -r R            Red number default 6, max 19
+  -b B            Default 1 blue ball, max 8
  
 ```shell
-glns --loadins -n10                                                                                                23:27:37
-[+] loading buffer
-[+] fix B [1, 7, 9]
-[!] ---------------------------
-[!] Regular error (3[320]|2[87)
-[!] ---------------------------
+glns load -n10 --loadins                                                                                                                                                                      08:29:39
+[+] loading buffer P[1, 15, 16, 20, 25, 27]
+[+] fix B {2, 6, 13}
 [+] objectives 6 -> 6 / 1 $ 2
-[+] cpus 4 maxdep 3000
-[-]    1 depth 1     07 08 22 23 25 27 + 03
-[-]    2 depth 1     10 18 23 25 26 30 + 07
-[-]    3 depth 1     07 08 10 18 19 33 + 01
-[-]    4 depth 4     07 10 13 14 17 31 + 09
-[-]    5 depth 1     04 07 20 22 24 25 + 05
+[+] cpus 8 maxdep 3000
+[c] use choices
+[=] data 2024-01-03 08:31:20.189002
+[-]    0 depth 1779  01 02 14 22 25 31 + 14 
+[-]    1 depth 160   01 02 09 22 26 32 + 10 
+[-]    2 depth 2848  01 02 09 17 23 31 + 14 
+[-]    3 depth 1217  01 11 14 19 25 30 + 08 
+[-]    4 depth 1517  01 02 14 24 25 30 + 16 
 [-]
-[-]    6 depth 1     02 03 13 16 23 29 + 03
-[-]    7 depth 4     03 06 14 17 21 32 + 12
-[-]    8 depth 1     03 16 17 18 30 31 + 12
-[-]    9 depth 2     05 07 10 13 25 27 + 11
-[-]   10 depth 1     01 09 14 22 25 26 + 16
+[-]    5 depth 1500  01 02 16 22 26 27 + 10 
+[-]    6 depth 354   01 13 14 17 23 32 + 08 
+[-]    7 depth 2241  01 15 19 20 26 27 + 09 
+[-]    8 depth 1448  01 15 22 24 25 26 + 16 
+[-]    9 depth 1362  01 02 16 20 25 29 + 01 
 [+] Total 10 Notes
-[+] runingtime 0.44 s
+[+] runingtime 0.32 s
 ```
 #### python3 qls.command
 > 执行主程序
@@ -42,12 +54,13 @@ glns --loadins -n10                                                             
 #### update 更新数据, 每次使用前都应该更新数据
 #### load 进入主体功能
 #### --debug 显示debug信息
-#### --loadins 装载insx.reg 文件
+#### --loadins 装载insx.rego 文件
 #### --save 保存数据 save.log
 
 #### --noinx 不显示辅助信息 
 #### --cpu {o, a} 默认 a 全核心运行 o 单核心运行
 #### --fix {r, b, a} r 修复红色号码区 b 修复蓝色号码区 a r+b
+#### --usew {s, c, g} 使用三种不同的方式来随机号码，s 与历史记录毫无关系，c 最仅30期历史号码为依据随机号码，g 以统计历史作为依据，bitx.json 文件存储这些规律
 #### --ins 用正则表达式限制号码
 #### -n 产生注数 -n100
 #### -r 产生号码的红色球数量, 最小6, 最大19
@@ -67,12 +80,14 @@ end
 ```
 > `$argv` 传递参数
 
-## insx.reg 文件规则说明
+## insx.rego 文件规则说明
 * `#` 注释行
 * `- xxx as R｜B` 排除红色或蓝色号码, 每个号码用`空格`分割,数量不限. 注意R|B为大写
-* `- 02 12 23 as R` 排除02,12,23这三个号码球
+* `- 2 12 23 as R` 排除02,12,23这三个号码球
+* `- 1 2 4 @bit1` 双色球号码第一位不可以出现 1 2 4
+* `@bit[1-7]` bit1、bit2...bit6指红色号码球1 2 3 4 5 6,bit7指蓝色号码球,它们都支持 `+|-` 排除与限定
 
-### insx.reg 文件内容
+### insx.rego 文件内容
 ```insx.rag
 # 注释行
 # - xxx as R|B 从这些待选列表中删除这些数字
@@ -92,17 +107,6 @@ end
 * `()\s\+\s()` 分割红号蓝号、可以在括号里面加入单独的限制条件，但优先级别低于 - xxx as R|B
 * `0[4]\s.*(?=07|13|22).*` 第一位号码是04,后面的号码中必须出现 07|13|22 或出现其中之一 或全部出现
 
-### glns --loadins
-```shell
-...
-[+] cpus 8 maxdep 3000
-[-]    1 depth 2     04 10 20 22 28 33 + 03
-[-]    2 depth 1     04 13 14 18 22 29 + 03
-[-]    3 depth 1     04 05 10 20 22 32 + 03
-[-]    4 depth 1     04 15 18 19 22 28 + 03
-[-]    5 depth 2     04 13 17 18 24 31 + 03
-...
-```
 
 #### ins regex
 * 在正则表达式后面加上排除 `'^(0[124])((?!22|24|05).)*$'`
@@ -118,23 +122,21 @@ end
 
 * 需要注意的是，以上技巧仅供参考，并不能保证中奖。双色球是一种概率游戏，中奖结果具有不确定性。理性购彩，量力而行。
 
-
- ```冷号是指在最近一段时间内很少出现的号码。选择冷号可以提高中奖的概率，因为这些号码出现的频率较低，因此被选中的几率也较低。
-
-以下是一些选择冷号的方法：
-
-    查看历史数据： 查看最近一段时间内出现的号码，并找出那些很少出现的号码。这些号码就是冷号。
-    使用统计软件： 使用统计软件来分析历史数据，并找出那些出现频率较低的号码。这些号码就是冷号。
-    使用在线工具： 有一些在线工具可以帮助你选择冷号。这些工具会自动分析历史数据，并为你提供冷号列表。
-
-需要注意的是，选择冷号并不保证你一定会中奖。彩票的中奖概率很低，即使你选择了冷号，也可能不会中奖。但是，选择冷号可以提高你的中奖概率，因为这些号码出现的频率较低，因此被选中的几率也较低。
-
-以下是一些选择冷号的技巧：
-
-    选择多个冷号： 不要只选择一个冷号，而应该选择多个冷号。这样可以提高你的中奖概率。
-    不要只选择最近出现的冷号： 不要只选择最近一段时间内出现的冷号，而应该选择那些已经很久没有出现的冷号。这些冷号的出现概率往往更高。
-    不要选择太多冷号： 不要选择太多冷号，否则你的中奖概率可能会降低。一般来说，选择 3-5 个冷号比较合适。
-
-选择冷号是一种提高中奖概率的方法，但并不保证你一定会中奖。彩票的中奖概率很低，因此即使你选择了冷号，也可能不会中奖。但是，选择冷号可以提高你的中奖概率，因此值得一试。
+#### glns 的中奖概率
+```shell
+python3 calculus.py                                                                                08:31:20
+[+] loading buffer P[1, 15, 16, 20, 25, 27]
+[+] fix B {2, 6, 13}
+[+] moni cpus 8 maxdep 3000
+[c] use choices
+[=] data 2024-01-03 08:43:42.920207
+[!] 1 Probability of Winning   0.00% 0
+[!] 2 Probability of Winning   0.00% 0
+[!] 3 Probability of Winning   0.14% 1
+[!] 4 Probability of Winning   2.33% 17
+[!] 5 Probability of Winning  10.70% 78
+[!] 6 Probability of Winning  14.95% 109
+[!] sum  28.12% Len 729 cyn -6267 $
+[+] runingtime 11.72 s
 ```
-
+##### 在不计算一等奖和二等奖这类浮动奖金的情况下，每一千注彩票可以获得6267元纯收益。

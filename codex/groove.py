@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-20 09:02:19
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-02 20:28:39
+# @Last Modified time: 2024-01-03 08:19:28
 import heapq, random, json, pathlib
 from typing import Any, List
 
@@ -73,13 +73,11 @@ class random_ex:
         keyd = f'bit_{sink+1}'
         match keyd:
             case 'bit_7'|'bit_1'|'bit_2'|'bit_3'|'bit_4'|'bit_5'|'bit_6':
-                if (rtn := self.whereiskey(key=keyd)):
-                    return rtn
+                return self.whereiskey(key=keyd)
             case _:
                 keyr = f'bit_{random.randint(1, 7)}'
                 print(f'this use keyr {keyr}')
-                if (rtn := self.whereiskey(key=keyr)):
-                    return rtn
+                return self.whereiskey(key=keyr)
 
     def creation(self):
         """
