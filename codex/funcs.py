@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-22 21:04:38
+# @Last Modified time: 2024-01-03 14:26:20
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -58,6 +58,7 @@ def get_file_path(name: str) -> str:
     File real path
     '''
     fp = os_path.file_path(name)
+    print(f'debug Path {fp}')
     return fp
 
 

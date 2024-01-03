@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # @Author: JogFeelingVi
 # @Date: 2022-10-17 09:28:52
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2023-12-02 20:54:00
-import os, sys
+# @Last Modified by:   Your name
+# @Last Modified time: 2024-01-03 14:58:26
 from pathlib import Path, PurePath
 from typing import Union
 
@@ -14,11 +13,12 @@ class os_path:
     '''
 
     @staticmethod
-    def path() -> str:
+    def path() -> Path:
         '''
         huo qu li jing
         '''
-        path, _ = os.path.split(os.path.realpath(sys.argv[0]))
+        path = Path().cwd()
+        print(f'path {path}')
         return path
 
     @staticmethod

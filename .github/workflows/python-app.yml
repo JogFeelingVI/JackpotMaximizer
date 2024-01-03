@@ -1,3 +1,7 @@
+# @Author: Your name
+# @Date:   2024-01-03 09:18:20
+# @Last Modified by:   Your name
+# @Last Modified time: 2024-01-03 14:59:54
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
@@ -36,4 +40,4 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest
+        pytest -s
