@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 17:48:34
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-22 21:06:47
+# @Last Modified time: 2024-01-03 16:05:13
 import argparse
 
 
@@ -11,8 +11,8 @@ class loading:
 
     def __init__(self) -> None:
         self.command = argparse.ArgumentParser(
-            'qls.command',
-            description='Generate lucky numbers',
+            'jpm.command',
+            description='The name highlights that the program can help users win the jackpot',
             add_help=True,
             allow_abbrev=False)
         self.subparsers = self.command.add_subparsers()

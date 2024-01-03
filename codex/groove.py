@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-20 09:02:19
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-03 08:19:28
+# @Last Modified time: 2024-01-03 16:38:04
 import heapq, random, json, pathlib
 from typing import Any, List
 
@@ -116,7 +116,7 @@ def main():
     ex = bitx_read()
     if ex != None:
         r = random_ex(ex, 18, RC)
-        print(f'debug {r.creation()}')
+        print(f'debug {r.get_number_v2()}')
 
 
 if __name__ == "__main__":

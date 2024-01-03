@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-27 09:52:17
+# @Last Modified time: 2024-01-03 17:54:33
 from datetime import datetime as dtime
 import multiprocessing as mlps, re, itertools as itr, time, os
 from typing import List, Iterable
@@ -36,14 +36,18 @@ class mLpool:
         '''
         w False is not usew
         '''
-        self.glnsv2 = glns_v2.glnsMpls(data, w=w)
+        self.kwargs = [data,R,B,w]
+        
+        self.iRx = iRx
+        
+    def pooLoad(self):
+        data, R, B, w = self.kwargs
+        self.glnsv2 = glns_v2.glnsMpls(data, R, B, w)
         self.filterv2 = glns_v2.filterN_v2()
         self.filterv2.Last = self.glnsv2.getlast
         self.filterv2.Lever = self.glnsv2.getabc
         self.class_rego = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
-        self.R = R
-        self.B = B
-        self.iRx = iRx
+        print(f'{self.prompt} initializer done!')
 
     @property
     def reego(self) -> bool:
@@ -59,16 +63,18 @@ class mLpool:
         mcp True use pool / False Use List
         f'date {dtime.now()}'
         '''
-        print(f'{self.prompt} data {dtime.now()}')
         N = range(n)
         if mcp:
             # processes=self.cpu
             csize = int(n * 0.083)
             if csize <= 30:
+                self.pooLoad()
                 return [self.SpawnPoolWorker(x) for x in N]
-            with mlps.Pool() as p:
+            with mlps.Pool(initializer=self.pooLoad) as p:
+                print(f'{self.prompt} data {dtime.now()}')
                 return p.map(self.SpawnPoolWorker, N, chunksize=csize)
         else:
+            self.pooLoad()
             return [self.SpawnPoolWorker(x) for x in N]
 
     def SpawnPoolWorker(self, index: int) -> List:
@@ -83,7 +89,6 @@ class mLpool:
         while depth <= self.mdep:
             #st = time.time()
             n, t = self.glnsv2.creativity()
-
             rinsx = self.__combinations_ols(n, t)
             if rinsx == True:
                 #print(f'OSID {os.getpid()} SpawnPoolWorker {time.time() - st:.4f}`s')

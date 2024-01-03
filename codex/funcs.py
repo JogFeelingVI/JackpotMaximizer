@@ -2,11 +2,11 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-03 15:02:55
+# @Last Modified time: 2024-01-03 17:48:02
 
 from typing import Any, Iterable, List
 import os, re, json, enum
-from codex.ospath import os_path
+from codex.ospath import findAbsp
 from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
@@ -57,7 +57,7 @@ def get_file_path(name: str) -> str:
     '''
     File real path
     '''
-    fp = os_path.file_path(name)
+    fp = findAbsp.file_path(name)
     return fp
 
 
@@ -400,7 +400,7 @@ class action:
         '''
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
-            cp_one = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP)
+            cp_one = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP, self.fmusew)
             cp_one.reego = self.fmloadins
             reds = cp_one.run_works(self.fmn, mcp=False)
             reds = self.__planning__(reds)

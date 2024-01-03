@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-03 09:22:28
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-03 14:59:32
+# @Last Modified time: 2024-01-03 17:57:25
 
 
 import time, json, pathlib,pytest
@@ -15,7 +15,7 @@ def test_get_number():
     args = {
         'save':False,
         'noinx':False,
-        'debug': True,
+        'debug': False,
         'loadins': True,
         'usew': 'c',
         'fix': 'a',

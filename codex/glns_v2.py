@@ -2,11 +2,12 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-02 15:32:05
+# @Last Modified time: 2024-01-03 17:36:07
 import itertools, random, math
 from collections import Counter, deque
 from codex import groove, note
 from typing import Any, List
+from functools import partial
 
 
 def mod_old(n: List, m: int):
@@ -341,6 +342,7 @@ class glnsMpls:
 
     _rlen = 6
     _blen = 1
+    producer = {}
 
     @property
     def rLen(self) -> int:
@@ -371,8 +373,10 @@ class glnsMpls:
         cold = [n for n, f in counter.most_common() if f < 5.01]
         return set(cold)
 
-    def __init__(self, cdic: dict, w: str = 'c') -> None:
+    def __init__(self, cdic: dict, RL:int, BL:int, w: str = 'c') -> None:
         if 'R' in cdic and 'B' in cdic:
+            self.rLen = RL
+            self.bLen = BL
             self.R = cdic.get('R', [])
             self.B = cdic.get('B', [])
             if self.R != None and self.B != None:
@@ -381,25 +385,34 @@ class glnsMpls:
                 ]
                 match w:
                     case 's':
-                        self.random_r = random_rb(Range_M(M=33), self.rLen)
-                        self.random_b = random_rb(Range_M(M=16), self.bLen)
+                        r = partial(random_rb(Range_M(M=33), self.rLen).get_number_v2)
+                        b = partial(random_rb(Range_M(M=16), self.bLen).get_number_v2)
+                        self.producer.update({'r':r})
+                        self.producer.update({'b':b})
                         print('[s] use sample')
                     case 'c':
-                        self.random_r = random_rb_f(self.R, self.rLen)
-                        self.random_b = random_rb_f(self.B, self.bLen)
+                        r = partial(random_rb_f(self.R, self.rLen).get_number_v2)
+                        b = partial(random_rb_f(self.B, self.bLen).get_number_v2)
+                        self.producer.update({'r':r})
+                        self.producer.update({'b':b})
                         print('[c] use choices')
                     case 'g':
                         js_data = groove.bitx_read()
+                        
                         if js_data != None:
-                            self.random_r = groove.random_ex(
+                            r = partial(groove.random_ex(
                                 json_data=js_data,
                                 max_length=self.rLen,
-                                RBC=groove.RC)
-                            self.random_b = groove.random_ex(
+                                RBC=groove.RC).creation)
+                            b = partial(groove.random_ex(
                                 json_data=js_data,
                                 max_length=self.bLen,
-                                RBC=groove.BC)
+                                RBC=groove.BC).creation)
+                            self.producer.update({'r':r})
+                            self.producer.update({'b':b})
                             print('[g] use Groove')
+                        else:
+                            print(f'js data is None')
 
             # print(f'glns init done')
 
@@ -407,11 +420,11 @@ class glnsMpls:
         '''产生号码'''
         #get_r = random_rb(self.FixR, self.rLen)
         # N = Note()
-        while 1:
-            r = self.random_r.get_number_v2()
-            if self.cosv(N=r) > 0.91:
-                return (r, self.random_b.get_number_v2())
-        return ([0] * 6, [0])
+        use_r = self.producer.get('r', None)
+        use_b = self.producer.get('b', None)
+        if use_b == use_r == None:
+            raise ValueError('[P] producer error')
+        return (use_r(), use_b())
 
     def cosv(self, N: List) -> float:
         dot = sum(a * b for a, b in zip(N, self.getlast))
