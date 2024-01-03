@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-17 09:28:52
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-03 14:58:26
+# @Last Modified time: 2024-01-03 15:01:58
 from pathlib import Path, PurePath
 from typing import Union
 
@@ -18,7 +18,6 @@ class os_path:
         huo qu li jing
         '''
         path = Path().cwd()
-        print(f'path {path}')
         return path
 
     @staticmethod
