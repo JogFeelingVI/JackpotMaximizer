@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-08 17:07:01
+# @Last Modified time: 2024-01-08 17:09:41
 
 import itertools, re, time
 
@@ -99,7 +99,7 @@ def main():
         #print(f'{i:>3}: {list_of_lists[x][1]}')
         setop_a.append(list_of_lists[x])
         
-    same_numbers_list = find_same_numbers(setop_a, 4, 6)
+    same_numbers_list = find_same_numbers(setop_a, 4, 5)
     setop_b =[]
     for i, x in enumerate(set(same_numbers_list)):
         #print(f'{i:>3}: {setop_a[x][1]}')
