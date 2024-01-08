@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-08 17:09:41
+# @Last Modified time: 2024-01-08 17:24:32
 
 import itertools, re, time
 
@@ -96,20 +96,20 @@ def main():
     
     setop_a = []
     for i, x in enumerate(set(same_numbers_list)):
-        #print(f'{i:>3}: {list_of_lists[x][1]}')
+        print(f'{i:>3}: {list_of_lists[x][1]}')
         setop_a.append(list_of_lists[x])
         
-    same_numbers_list = find_same_numbers(setop_a, 4, 5)
-    setop_b =[]
-    for i, x in enumerate(set(same_numbers_list)):
-        #print(f'{i:>3}: {setop_a[x][1]}')
-        setop_b.append(setop_a[x])
+    # same_numbers_list = find_same_numbers(setop_a, 4, 5)
+    # setop_b =[]
+    # for i, x in enumerate(set(same_numbers_list)):
+    #     #print(f'{i:>3}: {setop_a[x][1]}')
+    #     setop_b.append(setop_a[x])
         
-    same_numbers_list = find_same_numbers(setop_b, 4, 5)
-    setop_c =[]
-    for i, x in enumerate(set(same_numbers_list)):
-        print(f'{i:>3}: {setop_b[x][1]}')
-        setop_c.append(setop_b[x])
+    # same_numbers_list = find_same_numbers(setop_b, 4, 5)
+    # setop_c =[]
+    # for i, x in enumerate(set(same_numbers_list)):
+    #     print(f'{i:>3}: {setop_b[x][1]}')
+    #     setop_c.append(setop_b[x])
 
 
 if __name__ == "__main__":
