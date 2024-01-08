@@ -2,12 +2,12 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-07 16:51:37
+# @Last Modified time: 2024-01-08 17:07:01
 
-import itertools, re
+import itertools, re, time
 
 
-def find_same_numbers(list_of_lists, num_of_same_numbers):
+def find_same_numbers(list_of_lists, num_of_same_numbers, maxv:int):
     """
   Finds all the sublists in a list that have the same numbers.
 
@@ -49,14 +49,17 @@ def find_same_numbers(list_of_lists, num_of_same_numbers):
     # Iterate over the dictionary.
     for tuple_sublist, sublists in same_numbers_dict.items():
         # If the number of sublists is greater than or equal to the number of same numbers, then add the sublists to the list.
-        if len(sublists) >= 5:
+        if len(sublists) >= maxv:
             same_numbers_list.extend(sublists)
+        # if 975 in sublists:
+        #     print(f'debug {tuple_sublist} {sublists}')
+        #     same_numbers_list.extend(sublists)
 
     # Return the list of sublists that have the same numbers.
     return same_numbers_list
 
 
-def fromat_line(line: str):
+def fromat_line_s(line: str):
     recs = [(re.compile(r'^(date|args).*'), lambda x: None),
              (re.compile(r'^\[-\]\s[ 0-9]+'), lambda x:[int(gz) for gz in x])]
     result = None
@@ -65,21 +68,48 @@ def fromat_line(line: str):
         if match:
             result = handle(match.group(0).split()[1::])
             break
-    return (result, line)
+    return (result, line.replace('\n', ''))
 
+def fromat_line_f(line: str):
+    recs = [(re.compile(r'^(date|args).*'), lambda x: None),
+             (re.compile(r'N:([0-9]+(?: [0-9]+)*)'), lambda x:[int(gz) for gz in x])]
+    result = None
+    for r, handle in recs:
+        match = r.search(line)
+        if match:
+            result = handle(match.group(1).split())
+            break
+    return (result, line.replace('\n', ''))
 
 def main():
-    print("Hello, World!")
+    print(f'====== {time.time()}')
     # Read the list of lists from the file.
-    with open('save.log', 'r') as f:
-        list_of_lists = [fromat_line(line=line) for line in f]
+    with open('fps.log', 'r') as f:
+        list_of_lists = [fromat_line_f(line=line) for line in f]
 
     # Find all the sublists that have 5 same numbers.
-    same_numbers_list = find_same_numbers(list_of_lists, 5)
+    same_numbers_list = find_same_numbers(list_of_lists, 5, 2)
 
     # Print the sublists that have 5 same numbers.
-    for i, index in enumerate(same_numbers_list):
-        print(f'{i:>3}: {list_of_lists[index][1]}')
+    # for i, index in enumerate(same_numbers_list):
+    #     print(f'{i:>3}: {list_of_lists[index][1]}')
+    
+    setop_a = []
+    for i, x in enumerate(set(same_numbers_list)):
+        #print(f'{i:>3}: {list_of_lists[x][1]}')
+        setop_a.append(list_of_lists[x])
+        
+    same_numbers_list = find_same_numbers(setop_a, 4, 6)
+    setop_b =[]
+    for i, x in enumerate(set(same_numbers_list)):
+        #print(f'{i:>3}: {setop_a[x][1]}')
+        setop_b.append(setop_a[x])
+        
+    same_numbers_list = find_same_numbers(setop_b, 4, 5)
+    setop_c =[]
+    for i, x in enumerate(set(same_numbers_list)):
+        print(f'{i:>3}: {setop_b[x][1]}')
+        setop_c.append(setop_b[x])
 
 
 if __name__ == "__main__":
