@@ -2,58 +2,111 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-10 20:02:11
 # @Last Modified by:   Your name
-# @Last Modified time: 2023-12-27 09:54:55
-import re
+# @Last Modified time: 2024-01-09 16:57:14
+import itertools, re, operator, dataclasses
 from typing import Any, List, Generator
 from codex import glns_v2, note
 
 
-class tjone:
-    fmts = re.compile(r'([\d]{5})')
+@dataclasses.dataclass
+class sublist:
+    resute: list
+    test: str
+
+
+class statistics:
+    """
+    Finds all the sublists in a list that have the same numbers.
+
+    Args:
+        list_of_lists: A list of lists, where each sublist contains a set of numbers.
+        num_of_same_numbers: The number of numbers that must be the same in each sublist.
+
+    Returns:
+        A list of all the sublists that have the same numbers.
+    """
+    same_numbers_dict = {}
+    num_of_same_numbers = 5
+    sublists = []
+
+    @property
+    def nosn(self):
+        return self.num_of_same_numbers
+
+    @nosn.setter
+    def nosn(self, Var: int):
+        if 2 <= Var <= 5:
+            self.num_of_same_numbers = Var
+
+    def parse_save(self, line) -> sublist:
+        recs = [(re.compile(r'^(date|args).*'), lambda x: None),
+                (re.compile(r'^\[-\]\s[ 0-9]+'),
+                 lambda x: [int(gz) for gz in x])]
+        result = []
+        for r, handle in recs:
+            match = r.match(line)
+            if match:
+                result = handle(match.group(0).split()[1::])
+                break
+        return sublist(result, line.replace('\n', ''))
+
+    def parse_fps(self, line) -> sublist:
+        recs = [(re.compile(r'^(date|args).*'), lambda x: None),
+                (re.compile(r'N:([0-9]+(?: [0-9]+)*)'),
+                 lambda x: [int(gz) for gz in x])]
+        result = []
+        for r, handle in recs:
+            match = r.search(line)
+            if match:
+                result = handle(match.group(1).split())
+                break
+        return sublist(result, line.replace('\n', ''))
 
     def __init__(self):
-        '''
-        nLopp 保存原始序列
-        dLoop 保存统计序列
-        dLpn 保存对应的key序列
-        '''
-        self.nLopp = []
-        self.dLoop = {}
-        self.dLpn = {}
-        self.keys = [1, 2, 3]
+        self.same_numbers_dict = {}
+        self.sublists = []
 
-    def set_tongji_index(self, index):
-        self.keys.clear()
-        if isinstance(index, list):
-            self.keys.extend(index)
-        if isinstance(index, int):
-            t = [index]
-            self.keys.extend(t)
-
-    def add(self, N: note.Note):
+    def add(self, N: sublist):
         ''''''
-        self.nLopp.append(N)
-        key = ''.join((f'{N.index(x):02}' for x in self.keys))
-        vis = self.dLoop.get(key, 0) + 1
-        vin = self.dLpn.get(key, '') + f'{self.nLopp.index(N):05}'
-        self.dLoop.update({key: vis})
-        self.dLpn.update({key: vin})
+        if N.resute == None and N not in self.sublists:
+            # 确保数据不会重复
+            return
+        self.sublists.append(N)
+        n_index = self.sublists.index(N)
+        combinations_sublist = itertools.combinations(N.resute, self.nosn)
+        for com_sublist in combinations_sublist:
+            sort_com_sublist = sorted(com_sublist)
+            tuple_sublist = tuple(sort_com_sublist)
+            # Add the tuple sublist to the dictionary, along with the original sublist.
+            if tuple_sublist not in self.same_numbers_dict:
+                self.same_numbers_dict[tuple_sublist] = [n_index]
+            else:
+                if n_index not in self.same_numbers_dict[tuple_sublist]:
+                    self.same_numbers_dict[tuple_sublist].append(n_index)
 
-    def where_key(self, key) -> Generator[int, None, None] | None:
+    def where_key(self) -> None:
         '''where is key'''
-        indexs = self.dLpn.get(key, '')
-        match = self.fmts.findall(indexs)
-        if match!=None:
-            rx = (int(x) for x in match)
-            return rx
-        return None
+        pass
+    
+    @staticmethod
+    def fmt_key(key):
+            return ''.join((f'{x:>02}' for x in key))
 
-    def echo(self):
-        combing = []
-        f = lambda x: x[1]
-        for k, v in sorted(self.dLoop.items(), key=f):
-            if v == 1:
-                combing.append(k)
-            print(f'TongJi key {k} vount {v}')
-        print(f'- {" ".join(combing[0:15])} @combin')
-        return combing
+    def echo(self, lines = None):
+        f = lambda x: len(x[1])
+        for key, subs in sorted(self.same_numbers_dict.items(), key=f, reverse=True):
+            flg = False
+            match lines:
+                case list()|tuple():
+                    if any(item in subs for item in lines):
+                        flg = True
+                case int():
+                    if lines in subs:
+                        flg = True
+                case _:
+                    flg = False
+            if flg:
+                print(f'statistics {self.fmt_key(key)}, lens {subs.__len__()}, * {subs}')
+            else:
+                print(f'statistics {self.fmt_key(key)}, lens {subs.__len__()}, {subs}')
+        
