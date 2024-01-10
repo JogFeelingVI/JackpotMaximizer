@@ -2,10 +2,9 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-10 20:02:11
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-09 16:57:14
+# @Last Modified time: 2024-01-10 16:09:00
 import itertools, re, operator, dataclasses
 from typing import Any, List, Generator
-from codex import glns_v2, note
 
 
 @dataclasses.dataclass
@@ -83,10 +82,58 @@ class statistics:
             else:
                 if n_index not in self.same_numbers_dict[tuple_sublist]:
                     self.same_numbers_dict[tuple_sublist].append(n_index)
-
-    def where_key(self) -> None:
+    
+    
+    def where_is(self, key=None, value=None, operator="=="):
         '''where is key'''
-        pass
+        # Check if the operator is valid
+        valid_operators = ["==", "!=", "+", "-"]
+        if operator not in valid_operators:
+            raise ValueError("Invalid operator: {}".format(operator))
+        # key
+        match key:
+            case None:
+                key=lambda x:x[1]
+            case 'key'| 'k'| 0 |'0':
+                key = lambda x:x[0]
+            case 'value' | 'v' | 1 |'1':
+                key = lambda x:x[1]
+            case _:
+                key = key
+        # value        
+        match value:
+            case None:
+                value = {}
+            case int():
+                value = set([value])
+            case str():
+                value = set([int(value)])
+        # Define the filter function based on the operator
+        match operator:
+            case "==":
+                filter_func = lambda x:self.fix_val(key(x=x)) == value
+            case "!=":
+                filter_func = lambda x:self.fix_val(key(x=x)) != value
+            case "+":
+                filter_func = lambda x:self.fix_val(key(x=x)) & set(value)
+            case "-":
+                filter_func = lambda x:self.fix_val(key(x=x)) - set(value)
+            case _:
+                filter_func = lambda x: key(x=x) == key(x=x)
+        # Filter the dictionary using the filter function
+        #filtered_keys = filter(filter_func, self.same_numbers_dict.items())
+        # Convert the filtered keys to a list and return it
+        return filter_func
+
+    @staticmethod
+    def fix_val(val):
+        match val:
+            case int():
+                return set([val])
+            case list()|tuple():
+                return set(val)
+            case _:
+                return set([val])
     
     @staticmethod
     def fmt_key(key):
