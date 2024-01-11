@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-10 20:02:11
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-01-10 16:09:00
+# @Last Modified time: 2024-01-11 14:25:21
 import itertools, re, operator, dataclasses
 from typing import Any, List, Generator
 
@@ -139,9 +139,16 @@ class statistics:
     def fmt_key(key):
             return ''.join((f'{x:>02}' for x in key))
 
-    def echo(self, lines = None):
+    def echo(self,dic=None, lines = None):
+        match dic:
+            case None:
+                dic = self.same_numbers_dict
+            case dict():
+                pass
+            case _:
+                raise ValueError('dic type only DICT')
         f = lambda x: len(x[1])
-        for key, subs in sorted(self.same_numbers_dict.items(), key=f, reverse=True):
+        for key, subs in sorted(dic.items(), key=f, reverse=True):
             flg = False
             match lines:
                 case list()|tuple():
