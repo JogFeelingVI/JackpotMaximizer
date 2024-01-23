@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-01-16 08:53:27
+# @Last Modified time: 2024-01-23 15:09:28
 
 import itertools, re, time
 from codex import Tonji
@@ -20,13 +20,14 @@ def main():
     filter_dict = {k: v for k,v in tjone.same_numbers_dict.items() if len(v)==1}
     grouped = itertools.groupby(filter_dict.items(), lambda x: x[1])
     grouped_ids = [id[0] for id, keys in grouped if len(list(keys))>=6]
-    counts = -0
+    counts = -0 
     for id in grouped_ids:
         print(f'id {id:>4} lins {tjone.sublists[id].test}')
         counts += 1
         if counts == 5:
             print('')
             counts = 0
+    print(f'counts {len(grouped_ids)}')
 
     # filter_dict = {
     #     k: v
