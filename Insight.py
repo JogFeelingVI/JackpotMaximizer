@@ -2,22 +2,38 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-01-23 15:09:28
+# @Last Modified time: 2024-02-16 13:09:28
 
 import itertools, re, time
 from codex import Tonji
 
+def test():
+    tjone = Tonji.statistics()
+    # Read the list of lists from the file.
+    with open('fps.log', 'r') as f:
+        list_of_lists = [tjone.parse_fps(line=line) for line in f]
+        for lol in list_of_lists:
+            tjone.add(lol)
+            
+    # for lens in range()
+    filter_dict = {k: v for k,v in tjone.same_numbers_dict.items() if len(v) in [2]}
+    print(f'====== {time.time()} ======')
+    vid = []
+    for k, v in filter_dict.items():
+        print(f'key {k} value {v}')
+        [vid.append(x) for x in v if x not in vid]
+    print(f'====== lens {filter_dict.keys().__len__()}/{vid.__len__()} ======')
 
 def main():
     print(f'====== {time.time()} ======')
     tjone = Tonji.statistics()
     # Read the list of lists from the file.
-    with open('save.log', 'r') as f:
-        list_of_lists = [tjone.parse_save(line=line) for line in f]
+    with open('fps.log', 'r') as f:
+        list_of_lists = [tjone.parse_fps(line=line) for line in f]
         for lol in list_of_lists:
             tjone.add(lol)
             
-    filter_dict = {k: v for k,v in tjone.same_numbers_dict.items() if len(v)==1}
+    filter_dict = {k: v for k,v in tjone.same_numbers_dict.items() if len(v)==6}
     grouped = itertools.groupby(filter_dict.items(), lambda x: x[1])
     grouped_ids = [id[0] for id, keys in grouped if len(list(keys))>=6]
     counts = -0 
@@ -45,4 +61,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    test()
