@@ -1,0 +1,332 @@
+{
+    "date": "2024-02-20 09:54:15.790923",
+    "Lever": [
+        12,
+        4,
+        30,
+        33,
+        22,
+        24,
+        14,
+        11,
+        2,
+        9,
+        6,
+        26,
+        18,
+        31,
+        13,
+        15,
+        28
+    ],
+    "Last": [
+        4,
+        17,
+        19,
+        20,
+        25,
+        32
+    ],
+    "filter": [
+        {
+            "name": "dzx",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "checked": false,
+            "Description": "d is 23-33, z is 12-22,x is 1-11."
+        },
+        {
+            "name": "acvalue",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "recommend": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "checked": true,
+            "Description": "ac value 0-10."
+        },
+        {
+            "name": "linma",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                1,
+                2,
+                3
+            ],
+            "checked": true,
+            "Description": "Refers to the number adjacent to the last lottery number."
+        },
+        {
+            "name": "duplicates",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                1,
+                2,
+                3,
+                0
+            ],
+            "checked": true,
+            "Description": "The same numbers as the previous draw numbers."
+        },
+        {
+            "name": "sixlan",
+            "Optional": [
+                21,
+                183
+            ],
+            "recommend": [
+                71,
+                130
+            ],
+            "checked": true,
+            "Description": "The value obtained by adding all the numbers together."
+        },
+        {
+            "name": "lianhao",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "checked": false,
+            "Description": "There are two or more adjacent numbers in the lottery number.",
+            "__commant__": "[0] = 0 [2] = 1 [2, 2] = 2 [3] = 3 "
+        },
+        {
+            "name": "mod2",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "checked": true,
+            "Description": "The remainder of six numbers divided by 2, mod2."
+        },
+        {
+            "name": "mod3",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "checked": true,
+            "Description": "The remainder of six numbers divided by 3, mod3."
+        },
+        {
+            "name": "mod4",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "checked": true,
+            "Description": "The remainder of six numbers divided by 4, mod4."
+        },
+        {
+            "name": "mod5",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2,
+                3
+            ],
+            "checked": true,
+            "Description": "The remainder of six numbers divided by 5, mod5."
+        },
+        {
+            "name": "mod6",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2
+            ],
+            "checked": true,
+            "Description": "The remainder of six numbers divided by 6, mod6."
+        },
+        {
+            "name": "mod7",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2,
+                3
+            ],
+            "checked": true,
+            "Description": "The remainder of six numbers divided by 7, mod7."
+        },
+        {
+            "name": "dx16",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                2,
+                3,
+                4,
+                5
+            ],
+            "checked": true,
+            "Description": "The remainder of six numbers divided by 7, mod7."
+        },
+        {
+            "name": "zhihe",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "checked": true,
+            "Description": "The ratio of prime numbers to composite numbers in the lottery numbers."
+        },
+        {
+            "name": "coldns",
+            "Optional": 5.0,
+            "recommend": 2.9,
+            "checked": false,
+            "Description": "This method will cause the hit rate to be reduced and is deprecated.",
+            "__commant__": "abandon use!"
+        },
+        {
+            "name": "onesixdiff",
+            "Optional": 15.09,
+            "recommend": 15.09,
+            "checked": false,
+            "Description": "The minimum difference between the first and sixth digits."
+        }
+    ]
+}

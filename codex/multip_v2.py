@@ -1,11 +1,11 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-01-24 21:56:45
+# @Last Modified time: 2024-02-21 19:35:00
 from datetime import datetime as dtime
 import multiprocessing as mlps, re, itertools as itr
 from typing import List, Iterable
-from codex import glns_v2, rego_v3, note
+from codex import glns_v2, rego_v3, note, filters_v3
 from functools import partial
 
 
@@ -57,11 +57,10 @@ class mLpool:
         '''
         data, R, B, w = self.kwargs
         glnsv2 = glns_v2.glnsMpls(data, R, B, w)
-        filterv2 = glns_v2.filterN_v2()
-        filterv2.Last = glnsv2.getlast
-        filterv2.Lever = glnsv2.getabc
+        fter = filters_v3
+        fter.initialization()
         class_rego = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
-        Kw = itr.product(range(n),[glnsv2.producer], [filterv2.filters], [class_rego])
+        Kw = itr.product(range(n),[glnsv2.producer], [fter.Checkfunc()], [class_rego])
         
         if mcp:
             # processes=self.cpu
