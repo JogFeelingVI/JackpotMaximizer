@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
-# @Last Modified by:   Your name
-# @Last Modified time: 2024-01-03 22:58:49
+# @Last Modified by:   JogFeelingVI
+# @Last Modified time: 2024-02-28 23:30:47
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -11,6 +11,7 @@ from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
 from codex.multip_v2 import mLpool, ccps
+from codex import multip_v3
 
 maxdep: int = 3000
 prompt: str = '[+]'
@@ -400,10 +401,15 @@ class action:
         '''
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
-            cp_one = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP, self.fmusew)
-            cp_one.reego = self.fmloadins
-            reds = cp_one.run_works(self.fmn, mcp=False)
-            reds = self.__planning__(reds)
+            # cp_one = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP, self.fmusew)
+            # cp_one.reego = self.fmloadins
+            # reds = cp_one.run_works(self.fmn, mcp=False)
+            p = multip_v3
+            p.settingLength(self.fmn)
+            p.useRego(self.fmloadins)
+            p.initPostCall(self.data, self.fmr, self.fmb, fmins_is.reP,self.fmusew)
+            Retds = p.tasks_single()
+            reds = self.__planning__(Retds)
             for inx in reds:
                 self.__echo__(inx)
 
@@ -414,14 +420,19 @@ class action:
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
             print(f'{prompt} cpus {self.cpu} maxdep {maxdep}')
-            cp_all = mLpool(self.data,
-                            self.fmr,
-                            self.fmb,
-                            fmins_is.reP,
-                            w=self.fmusew)
-            cp_all.reego = self.fmloadins
-            iRx = cp_all.run_works(self.fmn)
-            Retds = self.__planning__(iRx)
+            # cp_all = mLpool(self.data,
+            #                 self.fmr,
+            #                 self.fmb,
+            #                 fmins_is.reP,
+            #                 w=self.fmusew)
+            # cp_all.reego = self.fmloadins
+            # iRx = cp_all.run_works(self.fmn)
+            p = multip_v3
+            p.settingLength(self.fmn)
+            p.useRego(self.fmloadins)
+            p.initPostCall(self.data, self.fmr, self.fmb, fmins_is.reP,self.fmusew)
+            Retds = p.tasks_futures()
+            Retds = self.__planning__(Retds)
             for item in Retds:
                 self.__echo__(item)
 
@@ -449,10 +460,15 @@ class action:
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
             print(f'{prompt} moni cpus {self.cpu} maxdep {maxdep}')
-            cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP,
-                            self.fmusew)
-            cp_all.reego = self.fmloadins
-            Retds = cp_all.run_works(self.fmn)
+            # cp_all = mLpool(self.data, self.fmr, self.fmb, fmins_is.reP,
+            #                 self.fmusew)
+            # cp_all.reego = self.fmloadins
+            # Retds = cp_all.run_works(self.fmn)
+            p = multip_v3
+            p.settingLength(self.fmn)
+            p.useRego(self.fmloadins)
+            p.initPostCall(self.data, self.fmr, self.fmb, fmins_is.reP,self.fmusew)
+            Retds = p.tasks_futures()
             Rex: list = [y for x in Retds for y in self.__diff__(x)]
             iRex = len(Rex)
             if iRex == 0:
