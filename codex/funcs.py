@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-02-28 23:30:47
+# @Last Modified time: 2024-02-29 08:33:52
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -10,7 +10,6 @@ from codex.ospath import findAbsp
 from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
-from codex.multip_v2 import mLpool, ccps
 from codex import multip_v3
 
 maxdep: int = 3000
@@ -384,7 +383,7 @@ class action:
         dif_l = []
         jhr = self.fmjhr
         jhb = self.fmjhb
-        zipo = ccps.ccp(Nr, Nb)
+        zipo = multip_v3.ccp(Nr, Nb)
         # 发现错误 终止执行程序
         for zR, zB in zipo:
             dif_r = (set(zR) & set(jhr)).__len__()
