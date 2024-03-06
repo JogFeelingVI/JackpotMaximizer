@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-02-16 13:09:28
+# @Last Modified time: 2024-03-06 19:16:15
 
 import itertools, re, time
 from codex import Tonji
@@ -10,8 +10,8 @@ from codex import Tonji
 def test():
     tjone = Tonji.statistics()
     # Read the list of lists from the file.
-    with open('fps.log', 'r') as f:
-        list_of_lists = [tjone.parse_fps(line=line) for line in f]
+    with open('save.log', 'r') as f:
+        list_of_lists = [tjone.parse_save(line=line) for line in f]
         for lol in list_of_lists:
             tjone.add(lol)
             
