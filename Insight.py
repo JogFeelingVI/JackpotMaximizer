@@ -2,13 +2,14 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-06 19:16:15
+# @Last Modified time: 2024-03-07 10:17:45
 
 import itertools, re, time
 from codex import Tonji
 
 def test():
     tjone = Tonji.statistics()
+    tjone.Statistical_length = 3
     # Read the list of lists from the file.
     with open('save.log', 'r') as f:
         list_of_lists = [tjone.parse_save(line=line) for line in f]
@@ -16,11 +17,13 @@ def test():
             tjone.add(lol)
             
     # for lens in range()
-    filter_dict = {k: v for k,v in tjone.same_numbers_dict.items() if len(v) in [2]}
+    filter_dict = {k: v for k,v in tjone.same_numbers_dict.items()}
     print(f'====== {time.time()} ======')
     vid = []
     for k, v in filter_dict.items():
-        print(f'key {k} value {v}')
+        print(f'key {k} len {len(v)} value {v}')
+        if len(v) == 1:
+            print(f'List {tjone.sublists[v[0]].test}')
         [vid.append(x) for x in v if x not in vid]
     print(f'====== lens {filter_dict.keys().__len__()}/{vid.__len__()} ======')
 
@@ -45,19 +48,6 @@ def main():
             counts = 0
     print(f'counts {len(grouped_ids)}')
 
-    # filter_dict = {
-    #     k: v
-    #     for k, v in filter(whereis, tjone.same_numbers_dict.items())
-    # }
-    # grouped_dict = itertools.groupby(filter_dict.items(), lambda x: x[1])
-    # group_count = 0
-    # for key, group in grouped_dict:
-    #     # key 是分组的 key，group 是分组元素的迭代器
-    #     _t = list(group)
-    #     if len(_t) == 6:
-    #         print(f'Key: {key}, Values: {_t}')
-    #         group_count +=1
-    # print(f'group len {group_count}')
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2023-12-10 20:02:11
-# @Last Modified by:   Your name
-# @Last Modified time: 2024-01-11 14:25:21
+# @Last Modified by:   JogFeelingVI
+# @Last Modified time: 2024-03-07 10:01:24
 import itertools, re, operator, dataclasses
 from typing import Any, List, Generator
 
@@ -25,17 +25,18 @@ class statistics:
         A list of all the sublists that have the same numbers.
     """
     same_numbers_dict = {}
-    num_of_same_numbers = 5
+    
     sublists = []
+    __Statistical_length = 5
 
     @property
-    def nosn(self):
-        return self.num_of_same_numbers
+    def Statistical_length(self):
+        return self.__Statistical_length
 
-    @nosn.setter
-    def nosn(self, Var: int):
+    @Statistical_length.setter
+    def Statistical_length(self, Var: int):
         if 2 <= Var <= 5:
-            self.num_of_same_numbers = Var
+            self.__Statistical_length = Var
 
     def parse_save(self, line) -> sublist:
         recs = [(re.compile(r'^(date|args).*'), lambda x: None),
@@ -72,16 +73,13 @@ class statistics:
             return
         self.sublists.append(N)
         n_index = self.sublists.index(N)
-        combinations_sublist = itertools.combinations(N.resute, self.nosn)
-        for com_sublist in combinations_sublist:
-            sort_com_sublist = sorted(com_sublist)
-            tuple_sublist = tuple(sort_com_sublist)
-            # Add the tuple sublist to the dictionary, along with the original sublist.
-            if tuple_sublist not in self.same_numbers_dict:
-                self.same_numbers_dict[tuple_sublist] = [n_index]
-            else:
-                if n_index not in self.same_numbers_dict[tuple_sublist]:
-                    self.same_numbers_dict[tuple_sublist].append(n_index)
+        combinations_sublist = tuple(N.resute[0:self.Statistical_length])
+        # Add the tuple sublist to the dictionary, along with the original sublist.
+        if combinations_sublist not in self.same_numbers_dict:
+            self.same_numbers_dict[combinations_sublist] = [n_index]
+        else:
+            if n_index not in self.same_numbers_dict[combinations_sublist]:
+                self.same_numbers_dict[combinations_sublist].append(n_index)
     
     
     def where_is(self, key=None, value=None, operator="=="):
