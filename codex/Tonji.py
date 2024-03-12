@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-10 20:02:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-07 10:01:24
+# @Last Modified time: 2024-03-12 09:02:16
 import itertools, re, operator, dataclasses
 from typing import Any, List, Generator
 
@@ -38,9 +38,9 @@ class statistics:
         if 2 <= Var <= 5:
             self.__Statistical_length = Var
 
-    def parse_save(self, line) -> sublist:
+    def parseSublist(self, line) -> sublist:
         recs = [(re.compile(r'^(date|args).*'), lambda x: None),
-                (re.compile(r'^\[-\]\s[ 0-9]+'),
+                (re.compile(r'^\[[0-6-]\]\s[ 0-9]+'),
                  lambda x: [int(gz) for gz in x])]
         result = []
         for r, handle in recs:
@@ -50,17 +50,6 @@ class statistics:
                 break
         return sublist(result, line.replace('\n', ''))
 
-    def parse_fps(self, line) -> sublist:
-        recs = [(re.compile(r'^(date|args).*'), lambda x: None),
-                (re.compile(r'N:([0-9]+(?: [0-9]+)*)'),
-                 lambda x: [int(gz) for gz in x])]
-        result = []
-        for r, handle in recs:
-            match = r.search(line)
-            if match:
-                result = handle(match.group(1).split())
-                break
-        return sublist(result, line.replace('\n', ''))
 
     def __init__(self):
         self.same_numbers_dict = {}
@@ -68,7 +57,7 @@ class statistics:
 
     def add(self, N: sublist):
         ''''''
-        if N.resute == None and N not in self.sublists:
+        if N.resute == [] or N.test == '' or N in self.sublists:
             # 确保数据不会重复
             return
         self.sublists.append(N)

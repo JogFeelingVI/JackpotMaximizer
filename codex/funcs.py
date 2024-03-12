@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-02-29 08:33:52
+# @Last Modified time: 2024-03-12 08:24:10
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -476,11 +476,15 @@ class action:
             f = lambda x, R: [(r, b) for m, r, b in R if m == x].__len__()
             listx = [[x, f(x, Rex)] for x in range(1, 7)]
             with open('fps.log', 'w') as sto:
+                # self.buffto.append(f'date {dtime.now()}')
+                # self.buffto.append(f'args {self.args}')
+                sto.writelines(f'date {dtime.now()}\n')
+                sto.writelines(f'args {self.args}\n')
                 for slog in Rex:
                     lv, n, t = slog
                     n = ' '.join((f'{x:02}' for x in n))
                     t = ' '.join((f'{x:02}' for x in t))
-                    sto.writelines(f'L:{lv} N:{n} T:{t}\n')
+                    sto.writelines(f'[{lv}] {n} + {t}\n')
             cyn = iRex * 2
             for l, v in listx:
                 print(
