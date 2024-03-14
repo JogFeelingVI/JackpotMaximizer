@@ -2,16 +2,16 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-12 09:03:30
+# @Last Modified time: 2024-03-14 14:59:26
 
 import itertools, re, time
 from codex import Tonji
 
 def test():
     tjone = Tonji.statistics()
-    tjone.Statistical_length = 4
+    tjone.Statistical_length = 3
     # Read the list of lists from the file.
-    with open('fps.log', 'r') as f:
+    with open('save.log', 'r') as f:
         list_of_lists = [tjone.parseSublist(line=line) for line in f]
         for lol in list_of_lists:
             tjone.add(lol)
@@ -26,7 +26,7 @@ def test():
             [vid.append(x) for x in v if x not in vid]
     print(f'====== lens {filter_dict.keys().__len__()}/{vid.__len__()} ======')
     for v in vid:
-        print(f'[ {v:>3} ]{tjone.sublists[v].test}')
+        print(f'{tjone.sublists[v].test}')
 
 # def main():
 #     print(f'====== {time.time()} ======')
