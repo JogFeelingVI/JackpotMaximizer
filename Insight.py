@@ -2,31 +2,43 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-19 15:00:20
+# @Last Modified time: 2024-03-19 21:58:31
 
 import itertools, re, time
-from codex import Tonji
+from codex import Tonji, sq3database
 
 def test():
-    tjone = Tonji.statistics()
-    tjone.Statistical_length = 6
-    # Read the list of lists from the file.
-    with open('save.log', 'r') as f:
-        list_of_lists = [tjone.parseSublist(line=line) for line in f]
-        for lol in list_of_lists:
-            tjone.add(lol)
-            
-    # for lens in range()
-    filter_dict = {k: v for k,v in tjone.same_numbers_dict.items()}
-    print(f'====== {time.time()} ======')
-    vid = []
-    for k, v in filter_dict.items():
-        print(f'key {k} len {len(v)} value {v}')
-        if len(v) == 1:
-            [vid.append(x) for x in v if x not in vid]
-    print(f'====== lens {filter_dict.keys().__len__()}/{vid.__len__()} ======')
-    for v in vid:
-        print(f'{tjone.sublists[v].test}')
+    
+    with sq3database.Sqlite3Database('my_database.db') as sq3:
+    
+        if sq3.is_connected() == False:
+            print(f'Sqlite3Database connection failed.')
+            return
+        sq3data = sq3.read_data()
+        if sq3data == None or len(sq3data) == 0:
+            print(f'Sqlite3Database database is empty.')
+            return
+        tjone = Tonji.statistics()
+        tjone.Statistical_length = 4
+        # Read the list of lists from the file.
+        for sq3_item in sq3data:
+            N = Tonji.parseSublist(sq3_item)
+            tjone.add(N)
+        
+        print(f'====== {time.time()} ======')
+        vid = []
+        for k, v in  tjone.same_numbers_dict.items():
+            print(f'key {k} len {len(v)} value {v[-3::]}...')
+            if len(v) == 1:
+                [vid.append(x) for x in v if x not in vid]
+        print(f'====== lens {tjone.same_numbers_dict.keys().__len__()}/{vid.__len__()} ======')
+        filter_data = sq3.read_data_by_ids(vid)
+        if filter_data != None:
+            for fItem in filter_data:
+                id, r, b = fItem
+                print(f'id: {id:>3} / {r} + {b}')
+        else:
+            print('No data matching the filter criteria.')
 
 
 

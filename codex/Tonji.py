@@ -2,15 +2,23 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-10 20:02:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-19 10:14:08
+# @Last Modified time: 2024-03-19 21:20:32
 import itertools, re, operator, dataclasses
 from typing import Any, List, Generator
 
 
 @dataclasses.dataclass
 class sublist:
-    resute: list
-    test: str
+    id: int
+    rNumber: list
+    bNumber: list
+    
+    
+def parseSublist(item = (1, '01 02 11 15 23 32', '13')):
+    id, r, b = item
+    r = [int(x) for x in r.split(' ')]
+    b = [int(x) for x in b.split(' ')]
+    return sublist(id, r, b)
 
 
 class statistics:
@@ -38,117 +46,102 @@ class statistics:
         if 2 <= Var <= 6:
             self.__Statistical_length = Var
 
-    def parseSublist(self, line) -> sublist:
-        recs = [(re.compile(r'^(date|args).*'), lambda x: None),
-                (re.compile(r'^\[[0-6-]\]\s[ 0-9]+'),
-                 lambda x: [int(gz) for gz in x])]
-        result = []
-        for r, handle in recs:
-            match = r.match(line)
-            if match:
-                result = handle(match.group(0).split()[1::])
-                break
-        return sublist(result, line.replace('\n', ''))
-
 
     def __init__(self):
         self.same_numbers_dict = {}
-        self.sublists = []
 
     def add(self, N: sublist):
         ''''''
-        if N.resute == [] or N.test == '' or N.resute == None or N in self.sublists:
+        if N.rNumber == [] or N.bNumber == '' or N.rNumber == [] or N.id in self.sublists:
             # 确保数据不会重复
             return
-        self.sublists.append(N)
-        n_index = self.sublists.index(N)
         # print(f'debug {N} / {N.resute[0:self.Statistical_length]}')
-        combinations_sublist = tuple(N.resute[0:self.Statistical_length])
+        combinations_sublist = tuple(N.rNumber[0:self.Statistical_length])
         # Add the tuple sublist to the dictionary, along with the original sublist.
         if combinations_sublist not in self.same_numbers_dict:
-            self.same_numbers_dict[combinations_sublist] = [n_index]
+            self.same_numbers_dict[combinations_sublist] = [N.id]
         else:
-            if n_index not in self.same_numbers_dict[combinations_sublist]:
-                self.same_numbers_dict[combinations_sublist].append(n_index)
+            if N.id not in self.same_numbers_dict[combinations_sublist]:
+                self.same_numbers_dict[combinations_sublist].append(N.id)
     
     
-    def where_is(self, key=None, value=None, operator="=="):
-        '''where is key'''
-        # Check if the operator is valid
-        valid_operators = ["==", "!=", "+", "-"]
-        if operator not in valid_operators:
-            raise ValueError("Invalid operator: {}".format(operator))
-        # key
-        match key:
-            case None:
-                key=lambda x:x[1]
-            case 'key'| 'k'| 0 |'0':
-                key = lambda x:x[0]
-            case 'value' | 'v' | 1 |'1':
-                key = lambda x:x[1]
-            case _:
-                key = key
-        # value        
-        match value:
-            case None:
-                value = {}
-            case int():
-                value = set([value])
-            case str():
-                value = set([int(value)])
-        # Define the filter function based on the operator
-        match operator:
-            case "==":
-                filter_func = lambda x:self.fix_val(key(x=x)) == value
-            case "!=":
-                filter_func = lambda x:self.fix_val(key(x=x)) != value
-            case "+":
-                filter_func = lambda x:self.fix_val(key(x=x)) & set(value)
-            case "-":
-                filter_func = lambda x:self.fix_val(key(x=x)) - set(value)
-            case _:
-                filter_func = lambda x: key(x=x) == key(x=x)
+    # def where_is(self, key=None, value=None, operator="=="):
+    #     '''where is key'''
+    #     # Check if the operator is valid
+    #     valid_operators = ["==", "!=", "+", "-"]
+    #     if operator not in valid_operators:
+    #         raise ValueError("Invalid operator: {}".format(operator))
+    #     # key
+    #     match key:
+    #         case None:
+    #             key=lambda x:x[1]
+    #         case 'key'| 'k'| 0 |'0':
+    #             key = lambda x:x[0]
+    #         case 'value' | 'v' | 1 |'1':
+    #             key = lambda x:x[1]
+    #         case _:
+    #             key = key
+    #     # value        
+    #     match value:
+    #         case None:
+    #             value = {}
+    #         case int():
+    #             value = set([value])
+    #         case str():
+    #             value = set([int(value)])
+    #     # Define the filter function based on the operator
+    #     match operator:
+    #         case "==":
+    #             filter_func = lambda x:self.fix_val(key(x=x)) == value
+    #         case "!=":
+    #             filter_func = lambda x:self.fix_val(key(x=x)) != value
+    #         case "+":
+    #             filter_func = lambda x:self.fix_val(key(x=x)) & set(value)
+    #         case "-":
+    #             filter_func = lambda x:self.fix_val(key(x=x)) - set(value)
+    #         case _:
+    #             filter_func = lambda x: key(x=x) == key(x=x)
         # Filter the dictionary using the filter function
         #filtered_keys = filter(filter_func, self.same_numbers_dict.items())
         # Convert the filtered keys to a list and return it
-        return filter_func
+        # return filter_func
 
-    @staticmethod
-    def fix_val(val):
-        match val:
-            case int():
-                return set([val])
-            case list()|tuple():
-                return set(val)
-            case _:
-                return set([val])
+    # @staticmethod
+    # def fix_val(val):
+    #     match val:
+    #         case int():
+    #             return set([val])
+    #         case list()|tuple():
+    #             return set(val)
+    #         case _:
+    #             return set([val])
     
-    @staticmethod
-    def fmt_key(key):
-            return ''.join((f'{x:>02}' for x in key))
+    # @staticmethod
+    # def fmt_key(key):
+    #         return ''.join((f'{x:>02}' for x in key))
 
-    def echo(self,dic=None, lines = None):
-        match dic:
-            case None:
-                dic = self.same_numbers_dict
-            case dict():
-                pass
-            case _:
-                raise ValueError('dic type only DICT')
-        f = lambda x: len(x[1])
-        for key, subs in sorted(dic.items(), key=f, reverse=True):
-            flg = False
-            match lines:
-                case list()|tuple():
-                    if any(item in subs for item in lines):
-                        flg = True
-                case int():
-                    if lines in subs:
-                        flg = True
-                case _:
-                    flg = False
-            if flg:
-                print(f'statistics {self.fmt_key(key)}, lens {subs.__len__()}, * {subs}')
-            else:
-                print(f'statistics {self.fmt_key(key)}, lens {subs.__len__()}, {subs}')
+    # def echo(self,dic=None, lines = None):
+    #     match dic:
+    #         case None:
+    #             dic = self.same_numbers_dict
+    #         case dict():
+    #             pass
+    #         case _:
+    #             raise ValueError('dic type only DICT')
+    #     f = lambda x: len(x[1])
+    #     for key, subs in sorted(dic.items(), key=f, reverse=True):
+    #         flg = False
+    #         match lines:
+    #             case list()|tuple():
+    #                 if any(item in subs for item in lines):
+    #                     flg = True
+    #             case int():
+    #                 if lines in subs:
+    #                     flg = True
+    #             case _:
+    #                 flg = False
+    #         if flg:
+    #             print(f'statistics {self.fmt_key(key)}, lens {subs.__len__()}, * {subs}')
+    #         else:
+    #             print(f'statistics {self.fmt_key(key)}, lens {subs.__len__()}, {subs}')
         

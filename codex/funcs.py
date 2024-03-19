@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-19 15:07:11
+# @Last Modified time: 2024-03-19 20:24:26
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -10,7 +10,7 @@ from codex.ospath import findAbsp
 from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
-from codex import multip_v3
+from codex import multip_v3, sq3database
 
 maxdep: int = 3000
 prompt: str = '[+]'
@@ -190,8 +190,12 @@ class action:
         self.cpu = os.cpu_count()
         self.fmr = Limit_input(self.fmr, Limit_i.r)
         self.fmb = Limit_input(self.fmb, Limit_i.b)
-        # self.buffto.append(f'date {dtime.now()}')
-        # self.buffto.append(f'args {self.args}')
+        self.sq3 = sq3database.Sqlite3Database('my_database.db')
+        self.sq3.connect()
+        if self.sq3.is_connected() == False:
+            self.sq3.create_table()
+        if self.sq3.is_Data_already_exists():
+            self.sq3.clear_database()
         if diff == True:
             self.__Load_diff__()
 
@@ -366,8 +370,12 @@ class action:
             print(f'{prompt_L}')
             return
         inx, dep, Nr, Nb = Rexs
+        Nr_str = ' '.join([f"{x:02}" for x in Nr])
+        Nb_str = ' '.join([f"{x:02}" for x in Nb])
+        if self.fmsave:
+            self.sq3.add_data(Nr_str, Nb_str)
         # 发现错误 终止执行程序
-        lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
+        lis = f'{Nr_str} + {Nb_str}'
         if self.fmnoinx:
             print(f'{prompt_L} {lis}')
         else:
@@ -474,16 +482,16 @@ class action:
             sum = 0.0
             f = lambda x, R: [(r, b) for m, r, b in R if m == x].__len__()
             listx = [[x, f(x, Rex)] for x in range(1, 7)]
-            with open('fps.log', 'w') as sto:
-                # self.buffto.append(f'date {dtime.now()}')
-                # self.buffto.append(f'args {self.args}')
-                sto.writelines(f'date {dtime.now()}\n')
-                sto.writelines(f'args {self.args}\n')
-                for slog in Rex:
-                    lv, n, t = slog
-                    n = ' '.join((f'{x:02}' for x in n))
-                    t = ' '.join((f'{x:02}' for x in t))
-                    sto.writelines(f'[{lv}] {n} + {t}\n')
+            # with open('fps.log', 'w') as sto:
+            #     # self.buffto.append(f'date {dtime.now()}')
+            #     # self.buffto.append(f'args {self.args}')
+            #     sto.writelines(f'date {dtime.now()}\n')
+            #     sto.writelines(f'args {self.args}\n')
+            #     for slog in Rex:
+            #         lv, n, t = slog
+            #         n = ' '.join((f'{x:02}' for x in n))
+            #         t = ' '.join((f'{x:02}' for x in t))
+            #         sto.writelines(f'[{lv}] {n} + {t}\n')
             cyn = iRex * 2
             for l, v in listx:
                 print(
@@ -538,10 +546,5 @@ class action:
                 self.__cpuse__(self.fmcpu)
 
             print(f'{prompt} Total {self.__echo_index} Notes')
+            self.sq3.disconnect()
 
-            if self.fmsave:
-                # if (fps := get_file_path(Resty.OxSave.tostr())) != None:
-                #     with open(fps, 'w') as sto:
-                #         for slog in self.buffto:
-                #             sto.writelines(f'{slog}\n')
-                pass

@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-19 09:58:12
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-19 10:12:53
+# @Last Modified time: 2024-03-19 22:00:35
 import sqlite3
 
 
@@ -11,6 +11,17 @@ class Sqlite3Database:
     def __init__(self, db_name):
         self.db_name = db_name
         self.conn = None
+        
+    def __enter__(self):
+        if self.conn == None:
+            self.connect()
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # 释放资源
+        if self.conn:
+            self.conn.close()
+        
 
     def connect(self):
         self.conn = sqlite3.connect(self.db_name)
@@ -48,11 +59,12 @@ class Sqlite3Database:
                 SELECT * FROM data
             ''')
             return cursor.fetchall()
-        
+
     def read_data_by_ids(self, ids):
         if self.conn is not None:
             cursor = self.conn.cursor()
-            cursor.execute('''
+            cursor.execute(
+                '''
                 SELECT * FROM data
                 WHERE id IN ({})
             '''.format(','.join(['?'] * len(ids))), ids)
@@ -65,3 +77,34 @@ class Sqlite3Database:
                 DELETE FROM data
             ''')
             self.conn.commit()
+
+    def is_connected(self):
+        """判断数据库连接是否处于活动状态。"""
+        try:
+            # 执行一个简单的 SQL 查询来测试连接
+            if self.conn is not None:
+                cursor = self.conn.cursor()
+                cursor.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'")
+                data = cursor.fetchall()
+                if data == [] or ('data',) not in data:
+                    return False
+                return True
+            else:
+                return False
+        except sqlite3.Error:
+            return False
+
+    def is_Data_already_exists(self):
+        try:
+            # 执行一个简单的 SQL 查询来测试连接
+            if self.conn is not None:
+                cursor = self.conn.cursor()
+                cursor.execute("SELECT id FROM data")
+                if len(cursor.fetchall()) == 0:
+                    return False
+                return True
+            else:
+                return False
+        except sqlite3.Error:
+            return False
