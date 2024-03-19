@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-12 08:24:10
+# @Last Modified time: 2024-03-19 15:07:11
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -190,8 +190,8 @@ class action:
         self.cpu = os.cpu_count()
         self.fmr = Limit_input(self.fmr, Limit_i.r)
         self.fmb = Limit_input(self.fmb, Limit_i.b)
-        self.buffto.append(f'date {dtime.now()}')
-        self.buffto.append(f'args {self.args}')
+        # self.buffto.append(f'date {dtime.now()}')
+        # self.buffto.append(f'args {self.args}')
         if diff == True:
             self.__Load_diff__()
 
@@ -369,10 +369,9 @@ class action:
         # 发现错误 终止执行程序
         lis = f'{" ".join([f"{x:02}" for x in Nr])} + {" ".join([f"{x:02}" for x in Nb])} '
         if self.fmnoinx:
-            self.buffto.append(f'{prompt_L} {lis}')
+            print(f'{prompt_L} {lis}')
         else:
-            self.buffto.append(f'{prompt_L} {inx:>4} depth {dep:<5} {lis}')
-        print(self.buffto[-1])
+            print(f'{prompt_L} {inx:>4} depth {dep:<5} {lis}')
         self.__echo_index += 1
 
     def __diff__(self, Rexs: List) -> List[int]:
@@ -541,7 +540,8 @@ class action:
             print(f'{prompt} Total {self.__echo_index} Notes')
 
             if self.fmsave:
-                if (fps := get_file_path(Resty.OxSave.tostr())) != None:
-                    with open(fps, 'w') as sto:
-                        for slog in self.buffto:
-                            sto.writelines(f'{slog}\n')
+                # if (fps := get_file_path(Resty.OxSave.tostr())) != None:
+                #     with open(fps, 'w') as sto:
+                #         for slog in self.buffto:
+                #             sto.writelines(f'{slog}\n')
+                pass
