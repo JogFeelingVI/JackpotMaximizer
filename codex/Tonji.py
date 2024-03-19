@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2023-12-10 20:02:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-14 09:47:00
+# @Last Modified time: 2024-03-19 10:14:08
 import itertools, re, operator, dataclasses
 from typing import Any, List, Generator
 
@@ -35,7 +35,7 @@ class statistics:
 
     @Statistical_length.setter
     def Statistical_length(self, Var: int):
-        if 2 <= Var <= 5:
+        if 2 <= Var <= 6:
             self.__Statistical_length = Var
 
     def parseSublist(self, line) -> sublist:
@@ -62,7 +62,7 @@ class statistics:
             return
         self.sublists.append(N)
         n_index = self.sublists.index(N)
-        print(f'debug {N} / {N.resute[0:self.Statistical_length]}')
+        # print(f'debug {N} / {N.resute[0:self.Statistical_length]}')
         combinations_sublist = tuple(N.resute[0:self.Statistical_length])
         # Add the tuple sublist to the dictionary, along with the original sublist.
         if combinations_sublist not in self.same_numbers_dict:

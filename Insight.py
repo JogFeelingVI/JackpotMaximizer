@@ -2,14 +2,14 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-14 14:59:26
+# @Last Modified time: 2024-03-19 09:11:15
 
 import itertools, re, time
 from codex import Tonji
 
 def test():
     tjone = Tonji.statistics()
-    tjone.Statistical_length = 3
+    tjone.Statistical_length = 6
     # Read the list of lists from the file.
     with open('save.log', 'r') as f:
         list_of_lists = [tjone.parseSublist(line=line) for line in f]
