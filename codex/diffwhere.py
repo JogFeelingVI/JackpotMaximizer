@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-20 10:24:48
+# @Last Modified time: 2024-03-20 23:07:03
 
 import dataclasses, itertools as itr, concurrent.futures, re
 from typing import Iterable, List
@@ -107,7 +107,7 @@ def create_task(iTQ):
                 cyn = cyn + 10 * ids.__len__()
             case 6:
                 cyn = cyn + 5 * ids.__len__()
-    return _s, cyn
+    return _s.id, cyn
 
 
 def initTaskQueue():
@@ -125,6 +125,26 @@ def tasks_futures():
         iStorage = sorted(results, key=lambda x: x[1])
         return iStorage
 
+def tasks_futures_proess():
+    iStorage = []
+    sq3 = sq3database.Sqlite3Database('my_database.db')
+    sq3.connect()
+    sq3.create_cyns_table()
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        futures = [executor.submit(create_task, i) for i in initTaskQueue()]
+        completed = 0
+        for future in concurrent.futures.as_completed(futures):
+            # 任务完成后，增加完成计数并打印进度
+            completed += 1
+            temp = future.result()
+            sq3.add_cyns_data(temp[0], temp[1])
+            # iStorage.append(temp)
+            print(f'\033[K{completed} of the total progress has been completed. Cyn {temp[1]:,}.', end='\r')
+        print(f'\033[kCompleted 100%')
+    iStorage = sq3.get_smallest_cyns(10)
+    sq3.drop_cyns_table()
+    sq3.disconnect()
+    return iStorage
 
 def main():
     print("Hello, World!")

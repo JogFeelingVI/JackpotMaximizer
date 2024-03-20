@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-20 10:28:40
+# @Last Modified time: 2024-03-20 23:21:51
 
 import itertools, re, time
 from codex import sq3database, tonji, diffwhere
@@ -45,12 +45,12 @@ def diffMain():
     diff = diffwhere
     length = diff.loadDataBase()
     print(f'Test {diff.Manager.__len__()} / {length}')
-    dataForCyn = diff.tasks_futures()[0:10]
+    dataForCyn = diff.tasks_futures_proess()
     for df in dataForCyn:
-        _s, cyn = df
-        Nr_str = ' '.join([f"{x:02}" for x in _s.rNumber])
-        Nb_str = ' '.join([f"{x:02}" for x in _s.bNumber])
-        print(f'id {_s.id:>3} {Nr_str} + {Nb_str} cyn {cyn}')
+        fromid, cyn, n, b = df
+        # Nr_str = ' '.join([f"{x:02}" for x in _s.rNumber])
+        # Nb_str = ' '.join([f"{x:02}" for x in _s.bNumber])
+        print(f'id {fromid:>3} / cyn {cyn} * {n} + {b}')
 
 
 

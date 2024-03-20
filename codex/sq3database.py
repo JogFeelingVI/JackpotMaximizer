@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-19 09:58:12
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-20 08:28:52
+# @Last Modified time: 2024-03-20 23:20:50
 import sqlite3
 
 
@@ -51,6 +51,15 @@ class Sqlite3Database:
                 VALUES (?, ?)
             ''', (r_numbers, b_numbers))
             self.conn.commit()
+            
+    def check_r_number_exists(self, r_number):
+        """检查 r_number 是否存在于数据库中。"""
+        if self.conn is not None:
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT 1 FROM data WHERE r_numbers = ?", (r_number,))
+            return cursor.fetchone() is not None
+        else:
+            return False
 
     def read_data(self):
         if self.conn is not None:
@@ -117,3 +126,62 @@ class Sqlite3Database:
                 return False
         except sqlite3.Error:
             return False
+        
+    def create_cyns_table(self):
+        """创建 cyns 数据表。"""
+        if self.conn is not None:
+            cursor = self.conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS cyns (
+                    id INTEGER PRIMARY KEY,
+                    from_id INTEGER REFERENCES data(id),
+                    cyn INTEGER
+                )
+            ''')
+            self.conn.commit()
+            
+    def add_cyns_data(self, from_id, cyn):
+        """向 cyns 数据表中添加数据。"""
+        if self.conn is not None:
+            cursor = self.conn.cursor()
+            cursor.execute(
+                '''
+                INSERT INTO cyns (from_id, cyn)
+                VALUES (?, ?)
+                ''',
+                (from_id, cyn),
+            )
+            self.conn.commit()
+            
+    def clear_cyns(self):
+        if self.conn is not None:
+            cursor = self.conn.cursor()
+            cursor.execute('''
+                DELETE FROM cyns
+            ''')
+            self.conn.commit()
+            
+    def drop_cyns_table(self):
+        """删除 cyns 数据表。"""
+        if self.conn is not None:
+            cursor = self.conn.cursor()
+            cursor.execute("DROP TABLE IF EXISTS cyns")
+            self.conn.commit()
+            
+    def get_smallest_cyns(self, n):
+        """返回 cyns 数据表中 cyn 最小的前 N 条数据。"""
+        if self.conn is not None:
+            cursor = self.conn.cursor()
+            cursor.execute(
+                '''
+                SELECT cyns.from_id, cyns.cyn, data.r_numbers, data.b_numbers
+                FROM cyns
+                INNER JOIN data ON cyns.from_id = data.id
+                ORDER BY cyns.cyn ASC
+                LIMIT ?
+                ''',
+                (n,),
+            )
+            return cursor.fetchall()
+        else:
+            return []

@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-20 09:46:55
+# @Last Modified time: 2024-03-20 22:24:05
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -112,8 +112,8 @@ def jiaoyan(r: List) -> bool:
     ''' is [0,0,0,0] '''
     rex = False
     if type(r) in [list, tuple]:
-        a, b, c, d = r
-        if c != d != [0]:
+        a, c, d = r
+        if c != d:
             rex = True
     return rex
 
@@ -190,12 +190,6 @@ class action:
         self.cpu = os.cpu_count()
         self.fmr = Limit_input(self.fmr, Limit_i.r)
         self.fmb = Limit_input(self.fmb, Limit_i.b)
-        self.sq3 = sq3database.Sqlite3Database('my_database.db')
-        self.sq3.connect()
-        if self.sq3.is_connected() == False:
-            self.sq3.create_table()
-        if self.sq3.is_Data_already_exists():
-            self.sq3.clear_database()
         if diff == True:
             self.__Load_diff__()
 
@@ -366,27 +360,26 @@ class action:
         '''
         echo numbers
         '''
-        if jiaoyan(Rexs) == False:
+        if Rexs == 0:
             print(f'{prompt_L}')
             return
-        inx, dep, Nr, Nb = Rexs
-        Nr_str = ' '.join([f"{x:02}" for x in Nr])
-        Nb_str = ' '.join([f"{x:02}" for x in Nb])
-        if self.fmsave:
-            self.sq3.add_data(Nr_str, Nb_str)
+        inx, Nr, Nb = Rexs
+        
         # 发现错误 终止执行程序
-        lis = f'{Nr_str} + {Nb_str}'
+        lis = f'{Nr} + {Nb}'
         if self.fmnoinx:
             print(f'{prompt_L} {lis}')
         else:
-            print(f'{prompt_L} {inx:>4} depth {dep:<5} {lis}')
+            print(f'{prompt_L} {{{inx}}} {lis}')
         self.__echo_index += 1
 
     def __diff__(self, Rexs: List) -> List[int]:
         '''
         echo numbers
         '''
-        inx, dep, Nr, Nb = Rexs
+        id, Nr, Nb = Rexs
+        Nr = [int(x) for x in Nr.split(' ')]
+        Nb = [int(x) for x in Nb.split(' ')]
         dif_l = []
         jhr = self.fmjhr
         jhb = self.fmjhb
@@ -426,18 +419,11 @@ class action:
         fmins_is = insregs(self.fmins)
         if fmins_is.code == 1:
             print(f'{prompt} cpus {self.cpu} maxdep {maxdep}')
-            # cp_all = mLpool(self.data,
-            #                 self.fmr,
-            #                 self.fmb,
-            #                 fmins_is.reP,
-            #                 w=self.fmusew)
-            # cp_all.reego = self.fmloadins
-            # iRx = cp_all.run_works(self.fmn)
             p = multip_v3
             p.settingLength(self.fmn)
             p.useRego(self.fmloadins)
             p.initPostCall(self.data, self.fmr, self.fmb, fmins_is.reP,self.fmusew)
-            Retds = p.tasks_futures()
+            Retds = p.tasks_futures_press()
             Retds = self.__planning__(Retds)
             for item in Retds:
                 self.__echo__(item)
@@ -474,7 +460,7 @@ class action:
             p.settingLength(self.fmn)
             p.useRego(self.fmloadins)
             p.initPostCall(self.data, self.fmr, self.fmb, fmins_is.reP,self.fmusew)
-            Retds = p.tasks_futures()
+            Retds = p.tasks_futures_press()
             Rex: list = [y for x in Retds for y in self.__diff__(x)]
             iRex = len(Rex)
             if iRex == 0:
@@ -482,16 +468,6 @@ class action:
             sum = 0.0
             f = lambda x, R: [(r, b) for m, r, b in R if m == x].__len__()
             listx = [[x, f(x, Rex)] for x in range(1, 7)]
-            # with open('fps.log', 'w') as sto:
-            #     # self.buffto.append(f'date {dtime.now()}')
-            #     # self.buffto.append(f'args {self.args}')
-            #     sto.writelines(f'date {dtime.now()}\n')
-            #     sto.writelines(f'args {self.args}\n')
-            #     for slog in Rex:
-            #         lv, n, t = slog
-            #         n = ' '.join((f'{x:02}' for x in n))
-            #         t = ' '.join((f'{x:02}' for x in t))
-            #         sto.writelines(f'[{lv}] {n} + {t}\n')
             cyn = iRex * 2
             for l, v in listx:
                 print(
@@ -550,5 +526,4 @@ class action:
                 self.__cpuse__(self.fmcpu)
 
             print(f'{prompt} Total {self.__echo_index} Notes')
-            self.sq3.disconnect()
 
