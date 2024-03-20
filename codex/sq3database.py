@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-19 09:58:12
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-19 22:00:35
+# @Last Modified time: 2024-03-20 08:28:52
 import sqlite3
 
 
@@ -24,7 +24,7 @@ class Sqlite3Database:
         
 
     def connect(self):
-        self.conn = sqlite3.connect(self.db_name)
+        self.conn = sqlite3.connect(database=self.db_name)
 
     def disconnect(self):
         if self.conn:
@@ -69,6 +69,15 @@ class Sqlite3Database:
                 WHERE id IN ({})
             '''.format(','.join(['?'] * len(ids))), ids)
             return cursor.fetchall()
+        
+    def get_all_ids(self):
+        """返回数据表中所有 ID 的列表。"""
+        if self.conn is not None:
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT id FROM data")
+            return [row[0] for row in cursor.fetchall()]
+        else:
+            return []
 
     def clear_database(self):
         if self.conn is not None:

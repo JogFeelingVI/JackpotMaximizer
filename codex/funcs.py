@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-19 20:24:26
+# @Last Modified time: 2024-03-20 09:46:55
 
 from typing import Any, Iterable, List
 import os, re, json, enum
@@ -498,6 +498,10 @@ class action:
                     f'{prompt_W} {l} Probability of Winning {v/iRex:>7.2%} {v}'
                 )
                 match l:
+                    case 1:
+                        cyn = cyn - 5000000 * v
+                    case 2:
+                        cyn = cyn - 100000 * v
                     case 3:
                         cyn = cyn - 3000 * v
                     case 4:

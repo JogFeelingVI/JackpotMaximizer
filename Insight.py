@@ -2,10 +2,10 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-19 21:58:31
+# @Last Modified time: 2024-03-20 10:28:40
 
 import itertools, re, time
-from codex import Tonji, sq3database
+from codex import sq3database, tonji, diffwhere
 
 def test():
     
@@ -18,11 +18,11 @@ def test():
         if sq3data == None or len(sq3data) == 0:
             print(f'Sqlite3Database database is empty.')
             return
-        tjone = Tonji.statistics()
+        tjone = tonji.statistics()
         tjone.Statistical_length = 4
         # Read the list of lists from the file.
         for sq3_item in sq3data:
-            N = Tonji.parseSublist(sq3_item)
+            N = tonji.parseSublist(sq3_item)
             tjone.add(N)
         
         print(f'====== {time.time()} ======')
@@ -39,9 +39,21 @@ def test():
                 print(f'id: {id:>3} / {r} + {b}')
         else:
             print('No data matching the filter criteria.')
+            
+
+def diffMain():
+    diff = diffwhere
+    length = diff.loadDataBase()
+    print(f'Test {diff.Manager.__len__()} / {length}')
+    dataForCyn = diff.tasks_futures()[0:10]
+    for df in dataForCyn:
+        _s, cyn = df
+        Nr_str = ' '.join([f"{x:02}" for x in _s.rNumber])
+        Nb_str = ' '.join([f"{x:02}" for x in _s.bNumber])
+        print(f'id {_s.id:>3} {Nr_str} + {Nb_str} cyn {cyn}')
 
 
 
 
 if __name__ == "__main__":
-    test()
+    diffMain()
