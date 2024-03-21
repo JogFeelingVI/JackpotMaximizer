@@ -2,9 +2,9 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-20 23:07:03
+# @Last Modified time: 2024-03-21 09:22:50
 
-import dataclasses, itertools as itr, concurrent.futures, re
+import dataclasses, itertools as itr, concurrent.futures, re, collections
 from typing import Iterable, List
 from codex import sq3database
 
@@ -63,28 +63,48 @@ def nextSample():
 
 
 def __diff__(s: sublist, M: List, diff: List):
+        """
+        使用 map() 函数计算差异信息，并进行优化。
+        """
+
+        # 缓存集合
+        s_r_numbers_set = set(s.rNumber)
+        s_b_numbers_set = set(s.bNumber)
+
+        def calculate_diff(m):
+            if s != m:
+                dif_r = len(s_r_numbers_set & set(m.rNumber))
+                dif_b = len(s_b_numbers_set & set(m.bNumber))
+                key = f"^{dif_r}{dif_b}[0-6]"
+                difex = next(x for x in diff if re.match(key, x))
+                leve = int(difex[-1])
+                return leve
+            return 0
+
+        # 使用 map() 函数计算每个元素的差异级别
+        diff_levels = map(calculate_diff, M)
+
+        # 创建一个 Counter 对象来统计差异级别
+        diff_info = collections.Counter(diff_levels)
+
+        return diff_info
+
+def __diff_v2__(s: sublist, M: List, diff: List):
     '''
-    echo numbers
+    _s 为M中的其中一项
+    M 为_s 的集合
+    diff 为数据分类数据
     '''
-    diff_info = {0: []}
-    # jhr = self.fmjhr
-    # jhb = self.fmjhb
-    # zipo = multip_v3.ccp(Nr, Nb)
-    # 发现错误 终止执行程序
+    diff_info = collections.Counter()
     for _m in M:
         if s != _m:
             dif_r = (set(s.rNumber) & set(_m.rNumber)).__len__()
             dif_b: int = (set(s.bNumber) & set(_m.bNumber)).__len__()
             key = f'^{dif_r}{dif_b}[0-6]'
-            difex: str = [x for x in diff if re.match(key, x)][0]
+            difex:str = [x for x in diff if re.match(key, x)][0]
             leve = int(difex[-1])
             if leve > 0:
-                if leve not in diff_info.keys():
-                    diff_info.update({leve:[_m.id]})
-                else:
-                    _list = diff_info.get(leve,[])
-                    _list.append(_m.id)
-                    diff_info.update({leve: _list})
+                diff_info[leve] += 1
         #print(f'Diff info  -> {Nr} {Nb}')
     return diff_info
 
@@ -95,18 +115,20 @@ def create_task(iTQ):
     cyn = 0
     for l, ids in diff.items():
         match l:
+            case 0:
+                cyn += 0
             case 1:
-                cyn = cyn + 5000000 * ids.__len__()
+                cyn = cyn + 5000000 * ids
             case 2:
-                cyn = cyn + 100000 * ids.__len__()
+                cyn = cyn + 100000 * ids
             case 3:
-                cyn = cyn + 3000 * ids.__len__()
+                cyn = cyn + 3000 * ids
             case 4:
-                cyn = cyn + 200 * ids.__len__()
+                cyn = cyn + 200 * ids
             case 5:
-                cyn = cyn + 10 * ids.__len__()
+                cyn = cyn + 10 * ids
             case 6:
-                cyn = cyn + 5 * ids.__len__()
+                cyn = cyn + 5 * ids
     return _s.id, cyn
 
 
@@ -133,13 +155,14 @@ def tasks_futures_proess():
     with concurrent.futures.ProcessPoolExecutor() as executor:
         futures = [executor.submit(create_task, i) for i in initTaskQueue()]
         completed = 0
+        f = lambda :completed / futures.__len__() * 100
         for future in concurrent.futures.as_completed(futures):
             # 任务完成后，增加完成计数并打印进度
             completed += 1
             temp = future.result()
             sq3.add_cyns_data(temp[0], temp[1])
             # iStorage.append(temp)
-            print(f'\033[K{completed} of the total progress has been completed. Cyn {temp[1]:,}.', end='\r')
+            print(f'\033[K[*]Completed {completed} {f():.4f}% notes. Cyn {temp[1]:,}.', end='\r')
         print(f'\033[kCompleted 100%')
     iStorage = sq3.get_smallest_cyns(10)
     sq3.drop_cyns_table()

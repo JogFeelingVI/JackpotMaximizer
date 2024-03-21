@@ -1,0 +1,10 @@
+-- database: /home/feeling/Github/JackpotMaximizer/my_database.db
+-- 要运行整个文件，请按窗口右上角的▷按钮。
+SELECT
+    *
+FROM
+    cyns
+ORDER BY
+    `cyn` ASC;
+
+DELETE FROM cyns;
