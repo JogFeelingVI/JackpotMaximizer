@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-20 23:21:51
+# @Last Modified time: 2024-03-21 15:34:51
 
 import itertools, re, time
 from codex import sq3database, tonji, diffwhere
@@ -51,9 +51,6 @@ def diffMain():
         # Nr_str = ' '.join([f"{x:02}" for x in _s.rNumber])
         # Nb_str = ' '.join([f"{x:02}" for x in _s.bNumber])
         print(f'id {fromid:>3} / cyn {cyn} * {n} + {b}')
-
-
-
 
 if __name__ == "__main__":
     diffMain()

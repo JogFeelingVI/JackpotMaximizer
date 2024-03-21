@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-21 12:48:41
+# @Last Modified time: 2024-03-21 15:20:45
 
 import dataclasses, itertools as itr, concurrent.futures, re, collections
 from typing import Iterable, List
@@ -69,16 +69,11 @@ def __diff__(s: sublist, M: List, diff: List):
 
         # 缓存集合
         s_r_numbers_set = set(s.rNumber)
-        s_b_numbers_set = set(s.bNumber)
 
         def calculate_diff(m):
             if s != m:
                 dif_r = len(s_r_numbers_set & set(m.rNumber))
-                dif_b = len(s_b_numbers_set & set(m.bNumber))
-                key = f"^{dif_r}{dif_b}[0-6]"
-                difex = next(x for x in diff if re.match(key, x))
-                leve = int(difex[-1])
-                return leve
+                return dif_r
             return 0
 
         # 使用 map() 函数计算每个元素的差异级别
@@ -90,25 +85,6 @@ def __diff__(s: sublist, M: List, diff: List):
         # diff_info Counter({0: 9147, 6: 628, 5: 100, 4: 7}) 
         return diff_info
 
-def __diff_v2__(s: sublist, M: List, diff: List):
-    '''
-    _s 为M中的其中一项
-    M 为_s 的集合
-    diff 为数据分类数据
-    '''
-    diff_info = collections.Counter()
-    for _m in M:
-        if s != _m:
-            dif_r = (set(s.rNumber) & set(_m.rNumber)).__len__()
-            dif_b: int = (set(s.bNumber) & set(_m.bNumber)).__len__()
-            key = f'^{dif_r}{dif_b}[0-6]'
-            difex:str = [x for x in diff if re.match(key, x)][0]
-            leve = int(difex[-1])
-            if leve > 0:
-                diff_info[leve] += 1
-        #print(f'Diff info  -> {Nr} {Nb}')
-    return diff_info
-
 
 def create_task(iTQ):
     _s, _Manager, _diff = iTQ
@@ -118,21 +94,13 @@ def create_task(iTQ):
     # overlook Counter({0: 9225, 6: 571, 5: 81, 4: 5})
     for l, ids in diff.items():
         match l:
-            case 0:
-                pass
-            case 1:
-                cyn += ids
-            case 2:
-                cyn += ids
-            case 3:
-                cyn += ids
-            case 4:
-                cyn += ids
             case 5:
                 # cyn = cyn + 10 * ids
-                pass
+                cyn += ids
             case 6:
                 # cyn = cyn + 5 * ids
+                cyn += ids
+            case _:
                 pass
     return _s.id, cyn
 

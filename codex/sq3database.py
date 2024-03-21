@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-19 09:58:12
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-21 12:37:47
+# @Last Modified time: 2024-03-21 15:31:20
 import sqlite3
 
 
@@ -168,7 +168,7 @@ class Sqlite3Database:
             cursor.execute("DROP TABLE IF EXISTS cyns")
             self.conn.commit()
             
-    def get_smallest_cyns(self, n):
+    def get_smallest_cyns(self, n=100):
         """返回 cyns 数据表中 cyn 最小的前 N 条数据。"""
         if self.conn is not None:
             cursor = self.conn.cursor()
@@ -177,7 +177,7 @@ class Sqlite3Database:
                 SELECT cyns.from_id, cyns.cyn, data.r_numbers, data.b_numbers
                 FROM cyns
                 INNER JOIN data ON cyns.from_id = data.id
-                WHERE cyns.cyn < 4
+                WHERE cyns.cyn < 1
                 ORDER BY cyns.cyn ASC
                 LIMIT ?
                 ''',
