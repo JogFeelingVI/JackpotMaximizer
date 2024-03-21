@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-19 09:58:12
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-20 23:20:50
+# @Last Modified time: 2024-03-21 12:37:47
 import sqlite3
 
 
@@ -177,6 +177,7 @@ class Sqlite3Database:
                 SELECT cyns.from_id, cyns.cyn, data.r_numbers, data.b_numbers
                 FROM cyns
                 INNER JOIN data ON cyns.from_id = data.id
+                WHERE cyns.cyn < 4
                 ORDER BY cyns.cyn ASC
                 LIMIT ?
                 ''',

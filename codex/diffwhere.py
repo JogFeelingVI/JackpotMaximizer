@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-21 09:22:50
+# @Last Modified time: 2024-03-21 12:48:41
 
 import dataclasses, itertools as itr, concurrent.futures, re, collections
 from typing import Iterable, List
@@ -86,7 +86,8 @@ def __diff__(s: sublist, M: List, diff: List):
 
         # 创建一个 Counter 对象来统计差异级别
         diff_info = collections.Counter(diff_levels)
-
+        # print(f'diff_info {diff_info}')
+        # diff_info Counter({0: 9147, 6: 628, 5: 100, 4: 7}) 
         return diff_info
 
 def __diff_v2__(s: sublist, M: List, diff: List):
@@ -113,22 +114,26 @@ def create_task(iTQ):
     _s, _Manager, _diff = iTQ
     diff = __diff__(_s, _Manager, _diff)
     cyn = 0
+    # print(f'overlook {diff}')
+    # overlook Counter({0: 9225, 6: 571, 5: 81, 4: 5})
     for l, ids in diff.items():
         match l:
             case 0:
-                cyn += 0
+                pass
             case 1:
-                cyn = cyn + 5000000 * ids
+                cyn += ids
             case 2:
-                cyn = cyn + 100000 * ids
+                cyn += ids
             case 3:
-                cyn = cyn + 3000 * ids
+                cyn += ids
             case 4:
-                cyn = cyn + 200 * ids
+                cyn += ids
             case 5:
-                cyn = cyn + 10 * ids
+                # cyn = cyn + 10 * ids
+                pass
             case 6:
-                cyn = cyn + 5 * ids
+                # cyn = cyn + 5 * ids
+                pass
     return _s.id, cyn
 
 
@@ -155,23 +160,21 @@ def tasks_futures_proess():
     with concurrent.futures.ProcessPoolExecutor() as executor:
         futures = [executor.submit(create_task, i) for i in initTaskQueue()]
         completed = 0
-        f = lambda :completed / futures.__len__() * 100
+        cp = '='
+        ip = ' '
+        futures_len =futures.__len__()
         for future in concurrent.futures.as_completed(futures):
             # 任务完成后，增加完成计数并打印进度
             completed += 1
             temp = future.result()
-            sq3.add_cyns_data(temp[0], temp[1])
+            if 1000 > temp[1] > 0:
+                sq3.add_cyns_data(temp[0], temp[1])
+            bil = completed / futures_len
             # iStorage.append(temp)
-            print(f'\033[K[*]Completed {completed} {f():.4f}% notes. Cyn {temp[1]:,}.', end='\r')
-        print(f'\033[kCompleted 100%')
-    iStorage = sq3.get_smallest_cyns(10)
-    sq3.drop_cyns_table()
+            print(f'\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%', end='\r')
+        print(f'\033[K[ {completed} ] 100%')
+    iStorage = sq3.get_smallest_cyns(20)
+    #sq3.drop_cyns_table()
     sq3.disconnect()
     return iStorage
 
-def main():
-    print("Hello, World!")
-
-
-if __name__ == "__main__":
-    main()
