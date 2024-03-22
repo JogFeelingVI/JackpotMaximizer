@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-19 09:58:12
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-21 15:31:20
+# @Last Modified time: 2024-03-22 10:27:27
 import sqlite3
 
 
@@ -177,7 +177,7 @@ class Sqlite3Database:
                 SELECT cyns.from_id, cyns.cyn, data.r_numbers, data.b_numbers
                 FROM cyns
                 INNER JOIN data ON cyns.from_id = data.id
-                WHERE cyns.cyn < 1
+                WHERE cyns.cyn = 1
                 ORDER BY cyns.cyn ASC
                 LIMIT ?
                 ''',

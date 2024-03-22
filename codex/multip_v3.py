@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-21 09:52:56
+# @Last Modified time: 2024-03-22 10:35:11
 from datetime import datetime as dtime
 import re, itertools as itr, concurrent.futures
 from typing import List, Iterable
@@ -94,10 +94,10 @@ def filter_map(zio, dr):
             if f(n) == False:
                 rfilter = False
                 break
-    for k, func in data['filter'].items():
-        if func(n) == False:
-            rfilter = False
-            break
+    # for k, func in data['filter'].items():
+    #     if func(n) == False:
+    #         rfilter = False
+    #         break
     return rfilter
 
 
