@@ -91,7 +91,8 @@
             "recommend": [
                 1,
                 2,
-                3
+                3,
+                0
             ],
             "checked": true,
             "Description": "Refers to the number adjacent to the last lottery number."
@@ -163,11 +164,11 @@
                 6
             ],
             "recommend": [
-                0,
                 1,
                 2,
                 3,
-                4
+                4,
+                5
             ],
             "checked": true,
             "Description": "The remainder of six numbers divided by 2, mod2."
@@ -272,6 +273,44 @@
             ],
             "checked": true,
             "Description": "The remainder of six numbers divided by 7, mod7."
+        },
+        {
+            "name": "mod8",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2
+            ],
+            "checked": true,
+            "Description": "The remainder of six numbers divided by 8, mod8."
+        },
+        {
+            "name": "mod9",
+            "Optional": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "recommend": [
+                0,
+                1,
+                2
+            ],
+            "checked": true,
+            "Description": "The remainder of six numbers divided by 9, mod9."
         },
         {
             "name": "dx16",

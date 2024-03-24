@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-02-21 12:37:31
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-02-21 20:01:23
+# @Last Modified time: 2024-03-22 21:15:30
 from collections import Counter
 from typing import List
 from functools import partial
@@ -13,13 +13,6 @@ CONF = {}
 
 def parseNote(n:List[int], t:List[int]) -> note.Note:
     return note.Note(n,t)
-
-def mod(n: List, m: int):
-    ''' mod ? m = 2 3 4 5 6  group (1, [1,2,3])'''
-    f = [x % m for x in n]
-    s = sorted(f)
-    gby = itertools.groupby(s)
-    return [list(v).__len__() for g, v in gby]
 
 def saveDictToJson(name: str, value: dict):
     '''保存dict到json文件'''
@@ -60,6 +53,7 @@ def classAttrs():
     return [fter, check]
 
 def Checkfunc():
+    '''默认选择器'''
     global CONF
     temp =  SyntheticFunction()
     fter = {}
@@ -70,6 +64,7 @@ def Checkfunc():
 
 
 def SyntheticFunction():
+    '''全部过滤器'''
     global CONF
     funx = {}
     for method in inspect.getmembers(works):
@@ -162,48 +157,64 @@ class works:
     @staticmethod
     def mod2(n: note.Note, recommend: List[int]) -> bool:
         '''mod 3 not in [[6], [5,1],[3,3]]'''
-        counts = max(mod(n.number, 2))
-        if counts not in recommend:
+        counts = [x for x in n.setnumber_R if x % 2 ==1]
+        if counts.__len__() not in recommend:
             return False
         return True
     
     @staticmethod
     def mod3(n: note.Note, recommend: List[int]) -> bool:
         '''mod 3 not in [[6], [5,1],[3,3]]'''
-        counts = max(mod(n.number, 3))
-        if counts not in recommend:
+        counts = [x for x in n.setnumber_R if x % 3 == 0]
+        if counts.__len__() not in recommend:
             return False
         return True
     
     @staticmethod
     def mod4(n: note.Note, recommend: List[int]) -> bool:
         '''mod 3 not in [[6], [5,1],[3,3]]'''
-        counts = max(mod(n.number, 4))
-        if counts not in recommend:
+        counts = [x for x in n.setnumber_R if x % 4 == 0]
+        if counts.__len__() not in recommend:
             return False
         return True
     
     @staticmethod
     def mod5(n: note.Note, recommend: List[int]) -> bool:
         '''mod 3 not in [[6], [5,1],[3,3]]'''
-        counts = max(mod(n.number, 5))
-        if counts not in recommend:
+        counts = [x for x in n.setnumber_R if x % 5 == 0]
+        if counts.__len__()not in recommend:
             return False
         return True
     
     @staticmethod
     def mod6(n: note.Note, recommend: List[int]) -> bool:
         '''mod 3 not in [[6], [5,1],[3,3]]'''
-        counts = max(mod(n.number, 6))
-        if counts not in recommend:
+        counts = [x for x in n.setnumber_R if x % 6 == 0]
+        if counts.__len__() not in recommend:
             return False
         return True
     
     @staticmethod
     def mod7(n: note.Note, recommend: List[int]) -> bool:
         '''mod 3 not in [[6], [5,1],[3,3]]'''
-        counts = max(mod(n.number, 7))
-        if counts not in recommend:
+        counts = [x for x in n.setnumber_R if x % 7 == 0]
+        if counts.__len__() not in recommend:
+            return False
+        return True
+    
+    @staticmethod
+    def mod8(n: note.Note, recommend: List[int]) -> bool:
+        '''mod 3 not in [[6], [5,1],[3,3]]'''
+        counts = [x for x in n.setnumber_R if x % 8 == 0]
+        if counts.__len__() not in recommend:
+            return False
+        return True
+    
+    @staticmethod
+    def mod9(n: note.Note, recommend: List[int]) -> bool:
+        '''mod 3 not in [[6], [5,1],[3,3]]'''
+        counts = [x for x in n.setnumber_R if x % 9 == 0]
+        if counts.__len__() not in recommend:
             return False
         return True
     
@@ -213,9 +224,8 @@ class works:
         da:xiao 1:5 n > 16.02 is da
         '''
         f = lambda x: x > 16.02
-        s = sorted(n.number, key=f)
-        modg = itertools.groupby(s, key=f)
-        counts = max([len(list(g[1])) for g in modg])
+        s = [x for x in n.setnumber_R if f(x)]
+        counts = s.__len__()
         if counts not in recommend:
             return False
         return True
@@ -225,13 +235,14 @@ class works:
         '''
         da:xiao 1:5 n > 16.02 is da
         '''
-        f = lambda x: x in (1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31)
-        s = sorted(n.number, key=f)
-        modg = itertools.groupby(s, key=f)
-        counts = max([len(list(g[1])) for g in modg])
-        if counts not in recommend:
+        z = (1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31)
+        s = [x for x in n.setnumber_R if x in z]
+        # + _b =False list(_L) = [9, 10, 25, 30, 32]
+        # + _b =True list(_L) = [13]
+        if len(s) not in recommend:
             return False
         return True
+    
     
     @staticmethod
     def coldns(n: note.Note, recommend: int, Lever:List[int]) -> bool:
