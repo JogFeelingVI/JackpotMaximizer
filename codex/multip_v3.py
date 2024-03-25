@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-22 10:35:11
+# @Last Modified time: 2024-03-25 22:22:59
 from datetime import datetime as dtime
 import re, itertools as itr, concurrent.futures
 from typing import List, Iterable
@@ -147,6 +147,7 @@ def tasks_single():
                 sq3.add_data(ns, ts)
         print(f'\033[K[P] completed {completed/length*100:.4f}% tasks completed.', end='\r')
     iStorage = sq3.read_data()
+    sq3.disconnect()
     print(f'\033[K[P] completed. 100%')
     return iStorage if iStorage != None else []
 

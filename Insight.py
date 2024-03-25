@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-21 15:34:51
+# @Last Modified time: 2024-03-24 14:43:01
 
 import itertools, re, time
 from codex import sq3database, tonji, diffwhere
@@ -29,7 +29,7 @@ def test():
         vid = []
         for k, v in  tjone.same_numbers_dict.items():
             print(f'key {k} len {len(v)} value {v[-3::]}...')
-            if len(v) == 1:
+            if len(v) == 4:
                 [vid.append(x) for x in v if x not in vid]
         print(f'====== lens {tjone.same_numbers_dict.keys().__len__()}/{vid.__len__()} ======')
         filter_data = sq3.read_data_by_ids(vid)
@@ -53,4 +53,4 @@ def diffMain():
         print(f'id {fromid:>3} / cyn {cyn} * {n} + {b}')
 
 if __name__ == "__main__":
-    diffMain()
+    test()

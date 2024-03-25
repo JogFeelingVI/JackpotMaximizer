@@ -2,10 +2,10 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-20 22:24:05
+# @Last Modified time: 2024-03-25 22:07:34
 
 from typing import Any, Iterable, List
-import os, re, json, enum
+import os, re, json, enum, asyncio
 from codex.ospath import findAbsp
 from datetime import datetime as dtime
 from codex.download import get_html
@@ -407,6 +407,7 @@ class action:
             p.settingLength(self.fmn)
             p.useRego(self.fmloadins)
             p.initPostCall(self.data, self.fmr, self.fmb, fmins_is.reP,self.fmusew)
+            
             Retds = p.tasks_single()
             reds = self.__planning__(Retds)
             for inx in reds:
@@ -504,7 +505,7 @@ class action:
         if self.fmcpu != None:
             self.__cpuse__(self.fmcpu)
 
-    def act_for_dict(self) -> None:
+    def act_for_dict(self):
         ''' anys dict '''
         if self.fmsubcommand == 'help':
             print(f'help {self.args}')
@@ -522,8 +523,7 @@ class action:
             if self.fmdebug == True:
                 showargs(self.args)
             # cpu switch
-            if self.fmcpu != None:
-                self.__cpuse__(self.fmcpu)
+            self.__cpuse__(self.fmcpu)
 
             print(f'{prompt} Total {self.__echo_index} Notes')
 
