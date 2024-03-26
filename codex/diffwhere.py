@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-24 10:24:04
+# @Last Modified time: 2024-03-26 09:19:18
 
 import dataclasses, itertools as itr, concurrent.futures, re, collections
 from typing import Iterable, List
@@ -93,6 +93,7 @@ def create_task(iTQ):
     # print(f'overlook {diff}')
     # overlook Counter({0: 9225, 6: 571, 5: 81, 4: 5})
     for l, ids in diff.items():
+        # print(f'{l=} -> {ids = }')
         match l:
             case 5:
                 # cyn = cyn + 10 * ids
@@ -141,7 +142,7 @@ def tasks_futures_proess():
             # iStorage.append(temp)
             print(f'\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%', end='\r')
         print(f'\033[K[ {completed} ] 100%')
-    iStorage = sq3.get_smallest_cyns(20)
+    iStorage = sq3.get_smallest_cyns(15)
     #sq3.drop_cyns_table()
     sq3.disconnect()
     return iStorage

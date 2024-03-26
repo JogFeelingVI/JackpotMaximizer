@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-19 09:58:12
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-25 15:13:49
+# @Last Modified time: 2024-03-26 09:17:55
 import sqlite3
 
 
@@ -174,10 +174,10 @@ class Sqlite3Database:
             cursor = self.conn.cursor()
             cursor.execute(
                 '''
-                SELECT cyns.from_id, cyns.cyn, data.r_numbers, data.b_numbers
+                SELECT DISTINCT cyns.from_id, cyns.cyn, data.r_numbers, data.b_numbers
                 FROM cyns
                 INNER JOIN data ON cyns.from_id = data.id
-                WHERE cyns.cyn = 1
+                GROUP BY cyns.from_id
                 ORDER BY cyns.cyn ASC
                 LIMIT ?
                 ''',
