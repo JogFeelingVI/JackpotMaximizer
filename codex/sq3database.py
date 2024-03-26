@@ -2,9 +2,10 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-19 09:58:12
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-26 09:17:55
+# @Last Modified time: 2024-03-26 13:55:26
 import sqlite3
 
+db_path = 'my_database.db'
 
 class Sqlite3Database:
 

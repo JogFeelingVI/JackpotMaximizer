@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-26 09:19:18
+# @Last Modified time: 2024-03-26 14:01:59
 
 import dataclasses, itertools as itr, concurrent.futures, re, collections
 from typing import Iterable, List
@@ -62,7 +62,7 @@ def nextSample():
         return True
 
 
-def __diff__(s: sublist, M: List, diff: List):
+def __diff__(s: sublist, M: List):
         """
         使用 map() 函数计算差异信息，并进行优化。
         """
@@ -87,8 +87,8 @@ def __diff__(s: sublist, M: List, diff: List):
 
 
 def create_task(iTQ):
-    _s, _Manager, _diff = iTQ
-    diff = __diff__(_s, _Manager, _diff)
+    _s, _Manager = iTQ
+    diff = __diff__(_s, _Manager)
     cyn = 0
     # print(f'overlook {diff}')
     # overlook Counter({0: 9225, 6: 571, 5: 81, 4: 5})
@@ -110,8 +110,7 @@ def initTaskQueue():
     global_vars = globals()
     Manager = global_vars['Manager']
     samples = [x for x in Manager]
-    diff_data = re.findall('[0-6]{3}', global_vars['DBASE'])
-    return itr.product(samples, [Manager], [diff_data])
+    return itr.product(samples, [Manager])
 
 
 def tasks_futures():
