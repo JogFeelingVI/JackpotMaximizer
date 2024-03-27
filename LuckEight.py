@@ -97,7 +97,7 @@ def __diff__(s:tuple, M: list, seq):
     diff_info = collections.Counter(diff_levels)
     # print(f'diff_info {diff_info}')
     # diff_info Counter({0: 9147, 6: 628, 5: 100, 4: 7}) 
-    seq.put(s[0], diff_info)
+    seq.put((s[0], diff_info))
     return 1
 
 
