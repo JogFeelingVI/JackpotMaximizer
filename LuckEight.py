@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:30:53
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-27 16:56:23
+# @Last Modified time: 2024-03-27 19:03:50
 
 import collections
 import random, concurrent.futures, itertools
@@ -10,7 +10,7 @@ from codex import sq3database
 from multiprocessing import Manager
 from time import sleep
 
-base = [x for x in range(1, 81)]
+base = [x for x in range(1, 13)]
 count = 0
 allsize = 10000
 
@@ -64,7 +64,7 @@ def Make_happy_number_8(size:int=10, length:int=10000):
         share = mdict.Queue()
         with concurrent.futures.ProcessPoolExecutor() as executor:
             futures = [executor.submit(randome_number, share, size).add_done_callback(put_done) for _ in range(length)]
-            futures.insert(3, executor.submit(writetodata, share).add_done_callback(done))            
+            futures.insert(1, executor.submit(writetodata, share).add_done_callback(done))            
             
     
 
@@ -109,15 +109,13 @@ def writetocyns(seq, diff):
     const = 0
     while seq.empty() == False:
         # sq3.add_data(temp, 'N/a')
-        n = seq.get()
-        if isinstance(n, list):
-            id,  _temp = n
-            cyns = 0
-            for l, idx in _temp.items():
-                if l in diff:
-                    cyns += idx
-            if cyns >= 1:
-                sq3.add_cyns_data(id, cyns)
+        id,  _temp = seq.get()
+        cyns = 0
+        for l, idx in _temp.items():
+            if l in diff:
+                cyns += idx
+        if cyns >= 1:
+            sq3.add_cyns_data(id, cyns)
         const += 1   
     sq3.disconnect()
     return const
@@ -140,28 +138,28 @@ def Compare_the_differences(diff:list=[3,4,5,6]):
         share = mdict.Queue()
         with concurrent.futures.ProcessPoolExecutor() as executor:
             futures = [executor.submit(__diff__, s, M, share).add_done_callback(put_done) for s, M in initTaskQueue(iStorage)]
-            futures.insert(3, executor.submit(writetocyns, share, diff).add_done_callback(done))
+            futures.insert(1, executor.submit(writetocyns, share, diff).add_done_callback(done))
 
 def main():
     print(f'Hello, World!')
     seting = {
         'step_a': {
-            'size': 10,
+            'size': 2,
             'length': 10000
         },
         'step_b': {
-            'diff': [8, 9, 10],
+            'diff': [1, 2],
         }
     }
     for k, v in seting.items():
         
         match k:
-            case 'step_ax':
+            case 'step_a':
                 global allsize
                 size = v['size'] 
                 allsize = v['length']
                 print(f'{k} args {size=} {allsize=}')
-                temp = Make_happy_number_8(size, allsize)
+                Make_happy_number_8(size, allsize)
             case 'step_b':
                 diff = v['diff']
                 print(f'{k} {diff=}')
