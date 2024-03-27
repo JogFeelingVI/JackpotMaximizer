@@ -2,16 +2,20 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:30:53
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-26 16:33:50
+# @Last Modified time: 2024-03-27 16:56:23
 
 import collections
 import random, concurrent.futures, itertools
 from codex import sq3database
+from multiprocessing import Manager
+from time import sleep
 
 base = [x for x in range(1, 81)]
+count = 0
+allsize = 10000
 
 
-def randome_number(size: int = 10):
+def randome_number(seq, size: int = 10):
     global base
     _temp = []
     _base = base
@@ -19,38 +23,50 @@ def randome_number(size: int = 10):
         _t = random.choice(_base)
         if _t not in _temp:
             _temp.append(_t)
-    return sorted(_temp)
+    seq.put(sorted(_temp))
+    return 1
 
+def writetodata(seq):
+    sq3 = sq3database.Sqlite3Database('my_database.db')
+    sq3.connect()
+    sq3.create_table()
+    sq3.clear_database()
+    const = 0
+    #sleep(0)
+    while seq.empty() == False:
+        # sq3.add_data(temp, 'N/a')
+        n = seq.get()
+        ns = ' '.join((f'{x:02}' for x in n))
+        sq3.add_data(ns, 'N/a')
+        const += 1   
+    sq3.disconnect()
+    return const
+
+def put_done(future):
+    global count
+    global allsize
+    cp = '='
+    ip = ' '
+    
+    count += future.result()
+    bil = count / allsize
+    print(f'\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%',
+                end='\r')
+    return 1
+
+def done(future):
+    print(f'\033[K[ {future.result()} ] 100% Done.')
+    return 0
 
 def Make_happy_number_8(size:int=10, length:int=10000):
     print(f'Make happy number 8')
-    sq3 = sq3database.Sqlite3Database('my_database.db')
-    sq3.connect()
-    sq3.create_cyns_table()
-    sq3.clear_database()
-    cp = '='
-    ip = ' '
-    iStorage = []
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        futures = [executor.submit(randome_number, size) for _ in range(length)]
-        completed = 0
-        futures_len = futures.__len__()
-        for future in concurrent.futures.as_completed(futures):
-            # 任务完成后，增加完成计数并打印进度
-            completed += 1 
-            temp = future.result()
-            # if 1000 > temp[1] > 0:
-            temp = ' '.join((f'{x:02}' for x in temp))
-            sq3.add_data(temp, 'N/a')
-            bil = completed / futures_len
-            # 
-            print(
-                f'\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%',
-                end='\r')
-        print(f'\033[K[ {completed} ] 100%')
-    iStorage = sq3.read_data()
-    sq3.disconnect()
-    return iStorage
+    with Manager() as mdict:
+        share = mdict.Queue()
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            futures = [executor.submit(randome_number, share, size).add_done_callback(put_done) for _ in range(length)]
+            futures.insert(3, executor.submit(writetodata, share).add_done_callback(done))            
+            
+    
 
 def initTaskQueue(temp:list):
     samples = [x for x in temp]
@@ -61,7 +77,7 @@ def paresList(s:tuple):
     r = [int(x) for x in r.split(' ')]
     return (id, r, Na)
 
-def __diff__(s:tuple, M: list):
+def __diff__(s:tuple, M: list, seq):
     # 缓存集合
     # temp[0] = (1, '07 11 12 15 26 50 62 65 66 75', 'N/a')
     _s = paresList(s)
@@ -81,46 +97,50 @@ def __diff__(s:tuple, M: list):
     diff_info = collections.Counter(diff_levels)
     # print(f'diff_info {diff_info}')
     # diff_info Counter({0: 9147, 6: 628, 5: 100, 4: 7}) 
-    return s[0], diff_info
+    seq.put(s[0], diff_info)
+    return 1
 
-def Compare_the_differences(diff:list=[3,4,5,6]):
-    # iStorage[0] = (1, '10 11 15 21 32 36 38 55 59 79', 'N/a')
-    print(f'Compare the differences')
+
+def writetocyns(seq, diff):
     sq3 = sq3database.Sqlite3Database('my_database.db')
     sq3.connect()
     sq3.create_cyns_table()
     sq3.clear_cyns()
-    cp = '='
-    ip = ' '
-    iStorage = sq3.read_data()
-    if iStorage == None:
-        return
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        futures = [executor.submit(__diff__, s, M) for s, M in initTaskQueue(iStorage)]
-        completed = 0
-        futures_len = futures.__len__()
-        for future in concurrent.futures.as_completed(futures):
-            # 任务完成后，增加完成计数并打印进度
-            completed += 1 
-            id,  _temp = future.result()
-            # print(f'{id=} {_temp = }')
-            # iStorage.append(temp)
+    const = 0
+    while seq.empty() == False:
+        # sq3.add_data(temp, 'N/a')
+        n = seq.get()
+        if isinstance(n, list):
+            id,  _temp = n
             cyns = 0
             for l, idx in _temp.items():
                 if l in diff:
                     cyns += idx
             if cyns >= 1:
                 sq3.add_cyns_data(id, cyns)
-            #sq3.add_data(temp, 'N/a')
-            bil = completed / futures_len
-            # 
-            print(
-                f'\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%',
-                end='\r')
-        print(f'\033[K[ {completed} ] 100%')
+        const += 1   
     sq3.disconnect()
-    return iStorage
-        
+    return const
+
+def Compare_the_differences(diff:list=[3,4,5,6]):
+    # iStorage[0] = (1, '10 11 15 21 32 36 38 55 59 79', 'N/a')
+    global allsize
+    global count
+    count = 0
+    print(f'Compare the differences')
+    sq3 = sq3database.Sqlite3Database('my_database.db')
+    sq3.connect()
+    iStorage = sq3.read_data()
+    sq3.disconnect()
+    if iStorage == None:
+        return
+    else:
+        allsize = iStorage.__len__()
+    with Manager() as mdict:
+        share = mdict.Queue()
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            futures = [executor.submit(__diff__, s, M, share).add_done_callback(put_done) for s, M in initTaskQueue(iStorage)]
+            futures.insert(3, executor.submit(writetocyns, share, diff).add_done_callback(done))
 
 def main():
     print(f'Hello, World!')
@@ -136,12 +156,12 @@ def main():
     for k, v in seting.items():
         
         match k:
-            case 'step_a':
-                continue
+            case 'step_ax':
+                global allsize
                 size = v['size'] 
-                length = v['length']
-                print(f'{k} args {size=} {length=}')
-                temp = Make_happy_number_8(size, length)
+                allsize = v['length']
+                print(f'{k} args {size=} {allsize=}')
+                temp = Make_happy_number_8(size, allsize)
             case 'step_b':
                 diff = v['diff']
                 print(f'{k} {diff=}')
