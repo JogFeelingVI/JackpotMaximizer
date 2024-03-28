@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:30:53
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-28 14:11:29
+# @Last Modified time: 2024-03-28 14:58:49
 
 import functools, collections, time
 import random, concurrent.futures, itertools
@@ -30,8 +30,8 @@ def randome_number(seq, size: int = 10):
 def writetodata(seq):
     sq3 = sq3database.Sqlite3Database('my_database.db')
     sq3.connect()
-    sq3.create_table()
-    sq3.clear_database()
+    sq3.create_table_data()
+    sq3.clear_table_data()
     const = 0
     #sleep(0)
     while seq.empty() == False:
@@ -73,7 +73,7 @@ def Make_happy_number_8(size: int = 10, length: int = 10000):
                 for _ in range(length)
             ]
             futures.insert(
-                1,
+                0,
                 executor.submit(writetodata, share).add_done_callback(done))
 
 
@@ -115,8 +115,8 @@ def __diff__(s: tuple, M: list, seq):
 def writetocyns(seq, diff):
     sq3 = sq3database.Sqlite3Database('my_database.db')
     sq3.connect()
-    sq3.create_cyns_table()
-    sq3.clear_cyns()
+    sq3.create_table_cyns()
+    sq3.clear_table_cyns()
     const = 0
     while seq.empty() == False:
         # sq3.add_data(temp, 'N/a')
@@ -126,7 +126,7 @@ def writetocyns(seq, diff):
             if l in diff:
                 cyns += idx
         if cyns >= 1:
-            sq3.add_cyns_data(id, cyns)
+            sq3.add_cyns(id, cyns)
         const += 1
     sq3.disconnect()
     return const
@@ -172,7 +172,7 @@ def get_function_name(func):
         result = func(*args, **kwargs)
         end_time = time.perf_counter()
         elapsed_time = end_time - start_time
-        print(f'Function "{function_name} ran for {elapsed_time:.4f} seconds')
+        print(f'Function "{function_name}" ran for {elapsed_time:.4f} seconds')
         return result
 
     return wrapper
@@ -229,4 +229,4 @@ def diff_mk(df=[7, 8, 9]):
 
 if __name__ == "__main__":
     #diff_mk(df=[5, 6])
-    readed(nr=20)
+    mk_kl8()

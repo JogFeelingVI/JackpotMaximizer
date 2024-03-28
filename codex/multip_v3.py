@@ -1,11 +1,13 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-25 22:22:59
+# @Last Modified time: 2024-03-28 18:31:05
 from datetime import datetime as dtime
+import json
 import re, itertools as itr, concurrent.futures
 from typing import List, Iterable
 from codex import glns_v2, rego_v3, note, filters_v3, sq3database
+
 
 bastdata = {'depth': 3000, 'prompt': '[=]', 'rego': False, 'length': 25}
 procdata = {}
@@ -129,12 +131,12 @@ def tasks_single():
     length = global_vars['bastdata']['length']
     iStorage = []
     completed = 0
-    sq3 = sq3database.Sqlite3Database('my_database.db')
+    sq3 = sq3database.Sqlite3Database()
     sq3.connect()
     if sq3.is_connected() == False:
-        sq3.create_table()
+        sq3.create_table_data()
     if sq3.is_Data_already_exists():
-        sq3.clear_database()
+        sq3.clear_table_data()
     for i in initTaskQueue():
         rx = create_task(i)
         _, _, n, t = rx
@@ -143,7 +145,7 @@ def tasks_single():
             
             ns = ' '.join((f'{x:02}' for x in n))
             ts = ' '.join((f'{x:02}' for x in t))
-            if sq3.check_r_number_exists(ns) == False:
+            if sq3.check_data_r_number_exists(ns) == False:
                 sq3.add_data(ns, ts)
         print(f'\033[K[P] completed {completed/length*100:.4f}% tasks completed.', end='\r')
     iStorage = sq3.read_data()
@@ -152,28 +154,38 @@ def tasks_single():
     return iStorage if iStorage != None else []
 
 
-def tasks_futures():
-    with concurrent.futures.ProcessPoolExecutor() as cfp:
+def tasks_futures_old():
+    with concurrent.futures.ProcessPoolExecutor() as executor:
         iStorage = []
-        results = cfp.map(create_task, initTaskQueue())
+        results = executor.map(create_task, initTaskQueue())
         for res in results:
             _, _, n, t = res
             if n != t:
                 iStorage.append(res)
     return iStorage
 
+def tasks_futures():
+    iStorage = []
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        futures = [executor.submit(create_task, i) for i in initTaskQueue()]
+        completed = 0
+        futures_len= futures.__len__()
+        for future in concurrent.futures.as_completed(futures):
+            completed += 1
+            iStorage.append( future.result())
+            print(f'\033[K[P] completed {completed/futures_len*100:.4f}% tasks completed.', end='\r')
+        print(f'\033[K[P] completed. 100%')
+    return iStorage if iStorage != None else []
 
 def tasks_futures_press():
     iStorage = []
     with concurrent.futures.ProcessPoolExecutor() as executor:
         futures = [executor.submit(create_task, i) for i in initTaskQueue()]
         completed = 0
-        sq3 = sq3database.Sqlite3Database('my_database.db')
+        sq3 = sq3database.Sqlite3Database()
         sq3.connect()
-        if sq3.is_connected() == False:
-            sq3.create_table()
-        if sq3.is_Data_already_exists():
-            sq3.clear_database()
+        sq3.create_table_data()
+        sq3.clear_table_data()
         futures_len= futures.__len__()
         for future in concurrent.futures.as_completed(futures):
             completed += 1
@@ -181,7 +193,7 @@ def tasks_futures_press():
             if n != t:
                 ns = ' '.join((f'{x:02}' for x in n))
                 ts = ' '.join((f'{x:02}' for x in t))
-                if sq3.check_r_number_exists(ns) == False:
+                if sq3.check_data_r_number_exists(ns) == False:
                     sq3.add_data(ns, ts)
             print(f'\033[K[P] completed {completed/futures_len*100:.4f}% tasks completed.', end='\r')
         iStorage = sq3.read_data()

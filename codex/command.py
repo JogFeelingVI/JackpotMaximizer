@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 17:48:34
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-02-21 22:44:07
+# @Last Modified time: 2024-03-28 18:58:00
 import argparse
 
 
@@ -23,10 +23,10 @@ class loading:
 
         # load
         load_args = self.subparsers.add_parser('load', help='generate number')
-        load_args.add_argument('--save',
-                               default=False,
-                               action='store_true',
-                               help='save to files')
+        load_args.add_argument('--dnsr',
+                               default=True,
+                               action='store_false',
+                               help='Do not show results')
 
         load_args.add_argument('--noinx',
                                default=False,

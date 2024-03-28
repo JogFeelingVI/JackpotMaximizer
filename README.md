@@ -55,7 +55,7 @@ glns load -n10 --loadins                                                        
 #### load 进入主体功能
 #### --debug 显示debug信息
 #### --loadins 装载insx.rego 文件
-#### --save 保存数据 save.log
+#### --dnsr 是否显示最终结果 默认显示
 
 #### --noinx 不显示辅助信息 
 #### --cpu {o, a} 默认 a 全核心运行 o 单核心运行

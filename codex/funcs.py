@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-25 22:07:34
+# @Last Modified time: 2024-03-28 18:48:38
 
 from typing import Any, Iterable, List
 import os, re, json, enum, asyncio
@@ -260,10 +260,10 @@ class action:
         return value
 
     @property
-    def fmsave(self) -> bool:
+    def fmdnsr(self) -> bool:
         value = False
-        if 'save' in self.args.keys():
-            value = bool(self.args.get('save', value))
+        if 'dnsr' in self.args.keys():
+            value = bool(self.args.get('dnsr', value))
         return value
 
     @property
@@ -425,9 +425,10 @@ class action:
             p.useRego(self.fmloadins)
             p.initPostCall(self.data, self.fmr, self.fmb, fmins_is.reP,self.fmusew)
             Retds = p.tasks_futures_press()
-            Retds = self.__planning__(Retds)
-            for item in Retds:
-                self.__echo__(item)
+            if self.fmdnsr:
+                Retds = self.__planning__(Retds)
+                for item in Retds:
+                    self.__echo__(item)
 
     def __planning__(self, rex: Iterable, step: int = 5) -> List:
         ''' 

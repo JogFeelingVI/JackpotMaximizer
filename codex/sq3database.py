@@ -2,14 +2,14 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-19 09:58:12
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-26 13:55:26
+# @Last Modified time: 2024-03-28 16:26:26
 import sqlite3
 
 db_path = 'my_database.db'
 
 class Sqlite3Database:
 
-    def __init__(self, db_name):
+    def __init__(self, db_name = db_path):
         self.db_name = db_name
         self.conn = None
         
@@ -31,7 +31,7 @@ class Sqlite3Database:
         if self.conn:
             self.conn.close()
 
-    def create_table(self):
+    def create_table_data(self):
         if self.conn is not None:
             cursor = self.conn.cursor()
             cursor.execute('''
@@ -53,7 +53,7 @@ class Sqlite3Database:
             ''', (r_numbers, b_numbers))
             self.conn.commit()
             
-    def check_r_number_exists(self, r_number):
+    def check_data_r_number_exists(self, r_number):
         """检查 r_number 是否存在于数据库中。"""
         if self.conn is not None:
             cursor = self.conn.cursor()
@@ -80,7 +80,7 @@ class Sqlite3Database:
             '''.format(','.join(['?'] * len(ids))), ids)
             return cursor.fetchall()
         
-    def get_all_ids(self):
+    def get_all_data_ids(self):
         """返回数据表中所有 ID 的列表。"""
         if self.conn is not None:
             cursor = self.conn.cursor()
@@ -89,7 +89,7 @@ class Sqlite3Database:
         else:
             return []
 
-    def clear_database(self):
+    def clear_table_data(self):
         if self.conn is not None:
             cursor = self.conn.cursor()
             cursor.execute('''
@@ -98,16 +98,10 @@ class Sqlite3Database:
             self.conn.commit()
 
     def is_connected(self):
-        """判断数据库连接是否处于活动状态。"""
+        """判断数据库连接是否处于活动状态。 这个方法 不在使用"""
         try:
             # 执行一个简单的 SQL 查询来测试连接
             if self.conn is not None:
-                cursor = self.conn.cursor()
-                cursor.execute(
-                    "SELECT name FROM sqlite_master WHERE type='table'")
-                data = cursor.fetchall()
-                if data == [] or ('data',) not in data:
-                    return False
                 return True
             else:
                 return False
@@ -128,7 +122,7 @@ class Sqlite3Database:
         except sqlite3.Error:
             return False
         
-    def create_cyns_table(self):
+    def create_table_cyns(self):
         """创建 cyns 数据表。"""
         if self.conn is not None:
             cursor = self.conn.cursor()
@@ -141,7 +135,7 @@ class Sqlite3Database:
             ''')
             self.conn.commit()
             
-    def add_cyns_data(self, from_id, cyn):
+    def add_cyns(self, from_id, cyn):
         """向 cyns 数据表中添加数据。"""
         if self.conn is not None:
             cursor = self.conn.cursor()
@@ -154,7 +148,7 @@ class Sqlite3Database:
             )
             self.conn.commit()
             
-    def clear_cyns(self):
+    def clear_table_cyns(self):
         if self.conn is not None:
             cursor = self.conn.cursor()
             cursor.execute('''
@@ -162,7 +156,7 @@ class Sqlite3Database:
             ''')
             self.conn.commit()
             
-    def drop_cyns_table(self):
+    def drop_table_cyns(self):
         """删除 cyns 数据表。"""
         if self.conn is not None:
             cursor = self.conn.cursor()
