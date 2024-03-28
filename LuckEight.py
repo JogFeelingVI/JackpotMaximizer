@@ -2,14 +2,13 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:30:53
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-27 22:37:38
+# @Last Modified time: 2024-03-28 14:11:29
 
-import collections
-import functools
+import functools, collections, time
 import random, concurrent.futures, itertools
 from codex import sq3database
 from multiprocessing import Manager
-from time import sleep
+
 
 base = [x for x in range(1, 13)]
 count = 0
@@ -165,11 +164,16 @@ def get_function_name(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
         function_name = str(func.__name__).upper()
         # 在这里您可以使用函数名称做任何事情
         print(f'Execution of the " {function_name} " programme.')
         print(f'    args {args} {kwargs}')
-        return func(*args, **kwargs)
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
+        print(f'Function "{function_name} ran for {elapsed_time:.4f} seconds')
+        return result
 
     return wrapper
 
@@ -217,7 +221,7 @@ def mk_dlt():
     print(f'args {size=} {allsize=}')
     Make_happy_number_8(size, allsize)
 
-@get_function_name
+@get_function_name 
 def diff_mk(df=[7, 8, 9]):
     diff = df
     Compare_the_differences(diff)
