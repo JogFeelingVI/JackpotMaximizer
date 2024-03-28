@@ -2,15 +2,15 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-28 18:48:38
+# @Last Modified time: 2024-03-28 21:18:17
 
 from typing import Any, Iterable, List
-import os, re, json, enum, asyncio
+import os, re, json, enum
 from codex.ospath import findAbsp
 from datetime import datetime as dtime
 from codex.download import get_html
 from codex.loadjson import Load_JSON, Resty
-from codex import multip_v3, sq3database
+from codex import multip_v3
 
 maxdep: int = 3000
 prompt: str = '[+]'
@@ -172,7 +172,6 @@ def Pjie(N: int) -> int:
 
 class action:
     ''' 执行脚本分析动作 '''
-    buffto = []
     diff_date = []
     __echo_index: int = 0
 
@@ -181,7 +180,7 @@ class action:
         action __init__
         '''
         self.args: dict[str, Any] = args if args != None else {
-            'save': False,
+            'dnsr': False,
             'r': 6,
             'b': 1,
             'jhr': [0, 1, 2, 3, 4, 5],
