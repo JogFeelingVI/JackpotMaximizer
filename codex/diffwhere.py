@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 01:04:47
+# @Last Modified time: 2024-03-30 07:43:36
 
 import functools
 import json
@@ -121,8 +121,11 @@ def nextSample():
             global_vars['samples'] = global_vars['Manager'][index + 1]
         return True
     
-def initTaskQueue():
-    duibizu = loadDataBase()
+def initTaskQueue(result:list=[]):
+    if result == []:
+        duibizu = loadDataBase()
+    else:
+        duibizu = result
     wan = loadGroup() #10000
     return itr.product(duibizu, [wan])
 
@@ -170,7 +173,7 @@ def create_task(iQ):
     return s.id, cyn
 
 
-def tasks_futures_proess():
+def tasks_futures_proess(result:list=[]):
     iStorage = []
     sq3 = sq3database.Sqlite3Database()
     sq3.connect()
@@ -179,7 +182,7 @@ def tasks_futures_proess():
     with __mange() as mdict:    
         shear = mdict.list()
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            futures = [executor.submit(create_task, i) for i in initTaskQueue()]
+            futures = [executor.submit(create_task, i) for i in initTaskQueue(result)]
             completed = 0
             cp = '='
             ip = ' '

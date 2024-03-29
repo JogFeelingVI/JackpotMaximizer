@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 00:59:43
+# @Last Modified time: 2024-03-30 07:39:09
 import pathlib, json, re, datetime
 from codex import gethtml_v2, multip_v3
 
@@ -15,12 +15,12 @@ def Lastime() -> str:
     formatted_time = now.strftime("@Last Modified time: %Y-%m-%d %H:%M:%S")
     return formatted_time
 class action:
-    def __init__(self, args:dict) -> None:
+    def __init__(self, args:dict, callblack) -> None:
         match args:
             case {'subcommand': str() as act} if act == 'update':
                 update()
             case {'subcommand': str() as act} if act in ['simulation', 'load']:
-                load(args=args)
+                load(args, callblack)
             case _:
                 pass
     
@@ -41,13 +41,27 @@ class update:
         return' '.join([f'{n:02}' for n in x])
 
 class load:
-    def __init__(self, args:dict) -> None:
+    def __init__(self, args:dict, callblack) -> None:
         '''
         {'dnsr': True, 'noinx': False, 'fix': 'a', 'cpu': 'a', 'loadins': False, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 5, 'r': 6, 'b': 1, 'subcommand': 'load'}
         '''
+        self.cpucallblack = callblack
         if 'subcommand' in args.keys() and args['subcommand'] in ['simulation', 'load']:
             self.__Execute_args(args)
-            
+    
+    @staticmethod
+    def callback_decorator(callback):
+        def decorator(func):
+            def wrapper(*args, **kwargs):
+                # 调用原始函数
+                result = func(*args, **kwargs)
+
+                # 调用回调函数
+                callback(result)
+
+                return result
+            return wrapper
+        return decorator
             
     def __loaddata(self) -> dict:
         '''
@@ -94,7 +108,7 @@ class load:
             for k, v in args.items():
                 print(f'{k:>6}: {f"{v}"}')
                 
-                
+    
     def __cpu_one(self, args:dict, data:dict, core:bool=False) -> list:
         '''
         only cpu A run work
@@ -117,6 +131,15 @@ class load:
         #     reds = self.__planning__(Retds)
         #     for inx in reds:
         #         self.__echo__(inx)
+    
+        
+    
+    def __cpu_callblack(self, args:dict, data:dict):
+        result = self.__cpu_one(args, data, True)
+        try:
+            self.cpucallblack(result)
+        finally:
+            return result
     
     def __cpu_simulation(self, args:dict, data:dict):
         match args:
@@ -223,7 +246,7 @@ class load:
                         self.__cpu_simulation(args, _data)
                     case 'c':
                         # 特殊执行方式 用来支持jpm_insight
-                        self.data = self.__cpu_one(args, _data, True)
+                        self.__cpu_callblack(args, _data)
                     case _:
                         print(f'No way to parse unknown parameter "{cpu}"')
                 if Return_data == []:
