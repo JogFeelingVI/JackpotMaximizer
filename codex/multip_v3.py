@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-29 08:05:13
+# @Last Modified time: 2024-03-29 22:17:51
 from datetime import datetime as dtime
 import json
 import re, itertools as itr, concurrent.futures
@@ -36,7 +36,7 @@ def settingLength(n: int = 25):
     return n
 
 
-def initPostCall(cdic: dict, r: int, b: int, iRx: re.Pattern, scw: str):
+def initPostCall(cdic: dict, r: int, b: int, iRx: str, scw: str):
     global_vars = globals()
     temp = {}
     fite = filters_v3
@@ -45,9 +45,16 @@ def initPostCall(cdic: dict, r: int, b: int, iRx: re.Pattern, scw: str):
     temp['rego'] = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
     temp['filter'] = fite.Checkfunc()
     temp['depth'] = global_vars['bastdata']['depth']
-    temp['iRx'] = iRx
+    temp['iRx'] = try_iRx(iRx=iRx)
     global_vars['procdata'] = temp
 
+def try_iRx(iRx:str):
+    try:
+        _r = re.compile(iRx)
+    except:
+        _r = re.compile('(.*)')
+    finally:
+        return _r
 
 def initTaskQueue():
     global_vars = globals()
