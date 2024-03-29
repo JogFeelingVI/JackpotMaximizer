@@ -1,9 +1,8 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-29 22:17:51
-from datetime import datetime as dtime
-import json
+# @Last Modified time: 2024-03-30 00:51:06
+from multiprocessing import Manager
 import re, itertools as itr, concurrent.futures
 from typing import List, Iterable
 from codex import glns_v2, rego_v3, note, filters_v3, sq3database
@@ -186,6 +185,8 @@ def tasks_futures():
 
 def tasks_futures_press():
     iStorage = []
+    # with Manager() as me:
+        
     with concurrent.futures.ProcessPoolExecutor() as executor:
         futures = [executor.submit(create_task, i) for i in initTaskQueue()]
         completed = 0

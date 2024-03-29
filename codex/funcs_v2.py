@@ -2,10 +2,18 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-29 23:40:26
-import pathlib, json, re
+# @Last Modified time: 2024-03-30 00:59:43
+import pathlib, json, re, datetime
 from codex import gethtml_v2, multip_v3
 
+def Lastime() -> str:
+    '''
+    @Last Modified time: 2023-11-21 10:32:45
+    '''
+    now = datetime.datetime.now()
+    # 格式化时间字符串
+    formatted_time = now.strftime("@Last Modified time: %Y-%m-%d %H:%M:%S")
+    return formatted_time
 class action:
     def __init__(self, args:dict) -> None:
         match args:
@@ -213,6 +221,9 @@ class load:
                         # Enable multi-core
                     case 'm':
                         self.__cpu_simulation(args, _data)
+                    case 'c':
+                        # 特殊执行方式 用来支持jpm_insight
+                        self.data = self.__cpu_one(args, _data, True)
                     case _:
                         print(f'No way to parse unknown parameter "{cpu}"')
                 if Return_data == []:

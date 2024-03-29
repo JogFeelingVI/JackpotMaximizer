@@ -2,16 +2,16 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-28 21:09:21
+# @Last Modified time: 2024-03-30 00:36:40
 
 import functools
 import itertools, re, time
 from codex import sq3database, tonji, diffwhere
 
 # def test():
-    
+
 #     with sq3database.Sqlite3Database('my_database.db') as sq3:
-    
+
 #         if sq3.is_connected() == False:
 #             print(f'Sqlite3Database connection failed.')
 #             return
@@ -25,7 +25,7 @@ from codex import sq3database, tonji, diffwhere
 #         for sq3_item in sq3data:
 #             N = tonji.parseSublist(sq3_item)
 #             tjone.add(N)
-        
+
 #         print(f'====== {time.time()} ======')
 #         vid = []
 #         for k, v in  tjone.same_numbers_dict.items():
@@ -40,17 +40,24 @@ from codex import sq3database, tonji, diffwhere
 #                 print(f'id: {id:>3} / {r} + {b}')
 #         else:
 #             print('No data matching the filter criteria.')
-            
 
-def diffMain():
-    diff = diffwhere  
+
+def diffMain(show:bool = True):
+    diff = diffwhere
     dataForCyn = diff.tasks_futures_proess()
-    fromids = []
-    for df in dataForCyn:
-        fromid, cyn, n, t = df
+    fromids = dataForCyn[0]
+    
+    if show:
+        for df in dataForCyn:
+            fromid, cyn, n, t = df
         # Nr_str = ' '.join([f"{x:02}" for x in _s.rNumber])
         # Nb_str = ' '.join([f"{x:02}" for x in _s.bNumber])
-        print(f'id {fromid:>4} / cyn {cyn} * {n} + {t}')
+            print(f'id {fromid:>4} / cyn {cyn} * {n} + {t}')
+    else:
+        print(f'"diffmian" suppresses display of test data, sleep 3s.')
+        time.sleep(3)
+    return fromids
+
 
 if __name__ == "__main__":
     diffMain()

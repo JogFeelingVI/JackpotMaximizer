@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-28 18:18:40
+# @Last Modified time: 2024-03-30 01:04:47
 
 import functools
 import json
@@ -99,11 +99,10 @@ def randome_t(size: int = 1):
     return sorted(_temp)
 
 def loadGroup():
-    iRx = insrt(0, re.compile('(.*)'))
     p = multip_v3
     p.settingLength(10000)
     p.useRego(False)
-    p.initPostCall(loadJsonToDict(), 6, 1, iRx.reP,'s')
+    p.initPostCall(loadJsonToDict(), 6, 1,'(.*)','s')
     Retds = p.tasks_futures()
     return Retds
 
@@ -124,7 +123,7 @@ def nextSample():
     
 def initTaskQueue():
     duibizu = loadDataBase()
-    wan = loadGroup()
+    wan = loadGroup() #10000
     return itr.product(duibizu, [wan])
 
 def __diff__(s: sublist, seq: List):
@@ -177,7 +176,7 @@ def tasks_futures_proess():
     sq3.connect()
     sq3.create_table_cyns()
     sq3.clear_table_cyns()
-    with __mange() as mdict:        
+    with __mange() as mdict:    
         shear = mdict.list()
         with concurrent.futures.ProcessPoolExecutor() as executor:
             futures = [executor.submit(create_task, i) for i in initTaskQueue()]
