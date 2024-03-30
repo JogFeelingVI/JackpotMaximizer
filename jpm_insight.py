@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 18:43:37
+# @Last Modified time: 2024-03-30 23:27:53
 
 from codex import funcs_v2
 import Insight, time
@@ -22,7 +22,7 @@ b = lambda s: f'{BLUE}{s}{ENDC}'
 
 def main():
     print("Hello, World!")
-    args = args_c = {'dnsr': False, 'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': False, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
+    args = args_c = {'dnsr': False, 'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
     cyns_index = 0
     while 1:
         start_time = time.perf_counter()
