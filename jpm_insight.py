@@ -2,12 +2,13 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 09:53:04
+# @Last Modified time: 2024-03-30 18:27:35
 
 from codex import funcs_v2
 import Insight, time
 
 cyns_info = 'cyns.log'
+result = []
 
 RED = "\033[91m"
 YELLOW = "\033[93m"
@@ -25,14 +26,17 @@ def main():
     cyns_index = 0
     while 1:
         start_time = time.perf_counter()
-        result =[] # 获得act 传回来的参数
+        # 获得act 传回来的参数
         def m_result(r):
+            global result
             print(f'exec callblack {r[0]}')
             result = r
         now = funcs_v2.Lastime()
         act = funcs_v2.action(args, callblack=m_result)
-        
-        diff_info = Insight.diffMain(show=False)
+        # print(f'{result[0]}')
+        # (0, [9, 12, 16, 17, 31, 33], [8])
+
+        diff_info = Insight.diffMain(show=False, result=result)
         fromid, cyn, n, t = diff_info
         logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
         match cyn:

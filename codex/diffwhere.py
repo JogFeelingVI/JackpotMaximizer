@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 07:43:36
+# @Last Modified time: 2024-03-30 18:34:28
 
 import functools
 import json
@@ -64,9 +64,11 @@ def ccp(a: Iterable, b: Iterable) -> itr.product:
 
 def parseSublist(item=(1, '01 02 11 15 23 32', '13')):
     id, r, b = item
-    r = [int(x) for x in r.split(' ')]
-    b = [int(x) for x in b.split(' ')]
-    return sublist(id, r, b)
+    try:
+        r = [int(x) for x in r.split(' ')]
+        b = [int(x) for x in b.split(' ')]
+    finally:
+        return sublist(id, r, b)
 
 
 def loadDataBase():
@@ -139,7 +141,9 @@ def __diff__(s: sublist, seq: List):
         s_r_numbers_set = set(s.rNumber)
 
         def calculate_diff(m):
-            _, _, n, _ = m
+            # (0, [5, 13, 22, 25, 26, 32], [6])
+            # print(f'calculate_diff {m=}')
+            _, n, _ = m
             if s.rNumber != n:
                 dif_r = len(s_r_numbers_set & set(n))
                 return dif_r
@@ -157,6 +161,9 @@ def __diff__(s: sublist, seq: List):
 
 def create_task(iQ):
     s, m = iQ
+    s = parseSublist(s)
+    # print(f'create_task {s =}')
+    # s =sublist(id=215, rNumber=[2, 4, 7, 15, 28, 32], bNumber=[3])
     diff = __diff__(s, m)
     # print(f'{type(diff) = }')
     cyn = 0
@@ -170,7 +177,7 @@ def create_task(iQ):
                 cyn += ids
             case _:
                 pass
-    return s.id, cyn
+    return s.id, cyn, s.rNumber, s.bNumber
 
 
 def tasks_futures_proess(result:list=[]):
@@ -190,7 +197,7 @@ def tasks_futures_proess(result:list=[]):
             for future in concurrent.futures.as_completed(futures):
                 # 任务完成后，增加完成计数并打印进度
                 completed += 1
-                id, cyns = future.result()
+                id, cyns, n, b = future.result()
                 if cyns != 0:
                     sq3.add_cyns(id, cyns)
                 bil = completed / futures_len
@@ -200,5 +207,30 @@ def tasks_futures_proess(result:list=[]):
     iStorage = sq3.get_smallest_cyns(15)
     #sq3.drop_cyns_table()
     sq3.disconnect()
+    return iStorage
+
+def tasks_futures_proess_mem(result:list=[]):
+    '''
+    cyns.from_id, cyns.cyn, data.r_numbers, data.b_numbers
+    '''
+    iStorage = []
+    with __mange() as mdict:    
+        shear = mdict.list()
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            futures = [executor.submit(create_task, i) for i in initTaskQueue(result)]
+            completed = 0
+            cp = '='
+            ip = ' '
+            futures_len =futures.__len__()
+            for future in concurrent.futures.as_completed(futures):
+                # 任务完成后，增加完成计数并打印进度
+                completed += 1
+                id, cyns , n, b= future.result()
+                if cyns != 0:
+                    iStorage.append((id, cyns, n, b))
+                bil = completed / futures_len
+                # iStorage.append(temp)
+                print(f'\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%', end='\r')
+            print(f'\033[K[ {completed} ] 100%')
     return iStorage
 

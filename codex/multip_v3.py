@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 00:51:06
+# @Last Modified time: 2024-03-30 10:32:02
 from multiprocessing import Manager
 import re, itertools as itr, concurrent.futures
 from typing import List, Iterable
@@ -178,7 +178,8 @@ def tasks_futures():
         futures_len= futures.__len__()
         for future in concurrent.futures.as_completed(futures):
             completed += 1
-            iStorage.append( future.result())
+            task, _, n, t = future.result()
+            iStorage.append((task, n, t))
             print(f'\033[K[P] completed {completed/futures_len*100:.4f}% tasks completed.', end='\r')
         print(f'\033[K[P] completed. 100%')
     return iStorage if iStorage != None else []

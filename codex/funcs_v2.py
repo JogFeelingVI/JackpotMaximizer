@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 07:39:09
+# @Last Modified time: 2024-03-30 10:18:46
 import pathlib, json, re, datetime
 from codex import gethtml_v2, multip_v3
 
@@ -109,7 +109,7 @@ class load:
                 print(f'{k:>6}: {f"{v}"}')
                 
     
-    def __cpu_one(self, args:dict, data:dict, core:bool=False) -> list:
+    def __cpu_one(self, args:dict, data:dict, core:bool=False, sq3:bool = True) -> list:
         '''
         only cpu A run work
         '''
@@ -122,7 +122,10 @@ class load:
                 p.initPostCall(data, r, b,ins,usew)
                 if core == False:
                     Retds = p.tasks_single()
-                Retds = p.tasks_futures_press()
+                if sq3:
+                    Retds = p.tasks_futures_press()
+                else:
+                    Retds = p.tasks_futures()
             case _:
                 pass
         return Retds
@@ -135,7 +138,7 @@ class load:
         
     
     def __cpu_callblack(self, args:dict, data:dict):
-        result = self.__cpu_one(args, data, True)
+        result = self.__cpu_one(args, data, True, False)
         try:
             self.cpucallblack(result)
         finally:

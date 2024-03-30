@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 09:54:39
+# @Last Modified time: 2024-03-30 10:27:17
 
 import functools
 import itertools, re, time
@@ -44,7 +44,7 @@ from codex import sq3database, tonji, diffwhere
 
 def diffMain(show:bool = True, result:list=[]):
     diff = diffwhere
-    dataForCyn = diff.tasks_futures_proess(result)
+    dataForCyn = diff.tasks_futures_proess_mem(result)
     fromids = dataForCyn[0]
     
     if show:
