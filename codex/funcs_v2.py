@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 10:18:46
+# @Last Modified time: 2024-03-30 23:14:44
 import pathlib, json, re, datetime
 from codex import gethtml_v2, multip_v3
 
@@ -15,7 +15,7 @@ def Lastime() -> str:
     formatted_time = now.strftime("@Last Modified time: %Y-%m-%d %H:%M:%S")
     return formatted_time
 class action:
-    def __init__(self, args:dict, callblack) -> None:
+    def __init__(self, args:dict, callblack=None) -> None:
         match args:
             case {'subcommand': str() as act} if act == 'update':
                 update()
