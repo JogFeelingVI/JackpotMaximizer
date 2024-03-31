@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 18:48:14
+# @Last Modified time: 2024-03-31 10:59:23
 
 import functools
 import itertools, re, time
@@ -58,9 +58,6 @@ def diffMain(show:bool = True, result:list=[]):
         # Nr_str = ' '.join([f"{x:02}" for x in _s.rNumber])
         # Nb_str = ' '.join([f"{x:02}" for x in _s.bNumber])
             print(f'id {fromid:>4} / cyn {cyn} * {n} + {t}')
-    else:
-        print(f'"diffmian" suppresses display of test data, sleep 3s.')
-        time.sleep(3)
     return fromids
 
 

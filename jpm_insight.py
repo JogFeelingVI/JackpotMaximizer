@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 23:27:53
+# @Last Modified time: 2024-03-31 13:18:09
 
 from codex import funcs_v2
 import Insight, time
@@ -29,7 +29,7 @@ def main():
         # 获得act 传回来的参数
         def m_result(r):
             global result
-            print(f'exec callblack {r[0]}')
+            print(f'exec callblack {r[0][1]}')
             result = r
         now = funcs_v2.Lastime()
         act = funcs_v2.action(args, callblack=m_result)
@@ -59,7 +59,7 @@ def main():
                 print(f'{logs}')
         end_time = time.perf_counter()
         print(f'This running time is {end_time-start_time-3:.4f} seconds')
-        if cyns_index >=5:
+        if cyns_index >= 25:
             break
                 
 

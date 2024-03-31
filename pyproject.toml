@@ -15,6 +15,7 @@ setuptools = "^68.2.2"
 gprof2dot = "^2022.7.29"
 pytest = "^7.4.4"
 aiosqlite = "^0.20.0"
+python-telegram-bot = "^21.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
