@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-31 10:59:23
+# @Last Modified time: 2024-04-01 10:57:17
 
 import functools
 import itertools, re, time
@@ -48,9 +48,11 @@ def diffMain(show:bool = True, result:list=[]):
     # data i = (996, 48, [6, 8, 19, 28, 29, 31], [4])
     # data i = (998, 46, [8, 9, 18, 19, 20, 33], [5])
     # data i = (999, 77, [3, 4, 10, 25, 29, 33], [5])
-    dataForCyn = sorted(dataForCyn,key= lambda x:x[1])
-
+    if dataForCyn.__len__() == 0:
+        return 0
+    dataForCyn = sorted(dataForCyn, key= lambda x:x[1])
     fromids = dataForCyn[0]
+        
     
     if show:
         for df in dataForCyn:
