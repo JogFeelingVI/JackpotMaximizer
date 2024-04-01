@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-01 14:27:56
+# @Last Modified time: 2024-04-01 16:50:03
 
 from codex import funcs_v2
 import Insight, time
@@ -11,7 +11,7 @@ ARGS = {
     'dnsr': False, 
     'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
 cyns_info = 'cyns.log'
-match_cyns = [0, 4]
+match_cyns = [x for x in range(0, 17)]
 result = []
 insert_test = []
 # insert_test item = (0, [2, 9 ,12, 19, 21, 31], [4])
