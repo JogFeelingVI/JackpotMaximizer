@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-02 15:57:14
+# @Last Modified time: 2024-04-02 22:50:26
 
 import functools
 import json
@@ -149,7 +149,7 @@ def __diff__(s: sublist, seq: List):
             if s.rNumber != n:
                 dif_r = len(s_r_numbers_set & set(n))
                 return dif_r
-            return 0
+            return 6
 
         # 使用 map() 函数计算每个元素的差异级别
         diff_levels = map(calculate_diff, seq)
@@ -159,6 +159,7 @@ def __diff__(s: sublist, seq: List):
         # print(f'diff_info {diff_info}')
         # diff_info Counter({0: 9147, 6: 628, 5: 100, 4: 7}) 
         return diff_info
+    
 
 
 def create_task(iQx):
