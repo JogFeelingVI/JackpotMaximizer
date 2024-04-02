@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-01 10:46:06
+# @Last Modified time: 2024-04-02 15:57:14
 
 import functools
 import json
@@ -101,6 +101,8 @@ def randome_t(size: int = 1):
     return sorted(_temp)
 
 def loadGroup():
+    '''Executing comparison group data generation'''
+    print('Executing comparison group data generation.')
     p = multip_v3
     p.settingLength(10000)
     p.useRego(False)
@@ -159,8 +161,8 @@ def __diff__(s: sublist, seq: List):
         return diff_info
 
 
-def create_task(iQ):
-    s, m = iQ
+def create_task(iQx):
+    s, m = iQx
     s = parseSublist(s)
     # print(f'create_task {s =}')
     # s =sublist(id=215, rNumber=[2, 4, 7, 15, 28, 32], bNumber=[3])
@@ -179,57 +181,25 @@ def create_task(iQ):
                 pass
     return s.id, cyn, s.rNumber, s.bNumber
 
-
-def tasks_futures_proess(result:list=[]):
-    iStorage = []
-    sq3 = sq3database.Sqlite3Database()
-    sq3.connect()
-    sq3.create_table_cyns()
-    sq3.clear_table_cyns()
-    with __mange() as mdict:    
-        shear = mdict.list()
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            futures = [executor.submit(create_task, i) for i in initTaskQueue(result)]
-            completed = 0
-            cp = '='
-            ip = ' '
-            futures_len =futures.__len__()
-            for future in concurrent.futures.as_completed(futures):
-                # 任务完成后，增加完成计数并打印进度
-                completed += 1
-                id, cyns, n, b = future.result()
-                if cyns != 0:
-                    sq3.add_cyns(id, cyns)
-                bil = completed / futures_len
-                # iStorage.append(temp)
-                print(f'\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%', end='\r')
-            print(f'\033[K[ {completed} ] 100%')
-    iStorage = sq3.get_smallest_cyns(15)
-    #sq3.drop_cyns_table()
-    sq3.disconnect()
-    return iStorage
-
 def tasks_futures_proess_mem(result:list=[]):
     '''
     cyns.from_id, cyns.cyn, data.r_numbers, data.b_numbers
     '''
     iStorage = []
-    with __mange() as mdict:    
-        shear = mdict.list()
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            futures = [executor.submit(create_task, i) for i in initTaskQueue(result)]
-            completed = 0
-            cp = '='
-            ip = ' '
-            futures_len =futures.__len__()
-            for future in concurrent.futures.as_completed(futures):
-                # 任务完成后，增加完成计数并打印进度
-                completed += 1
-                id, cyns , n, b= future.result()
-                iStorage.append((id, cyns, n, b))
-                bil = completed / futures_len
-                # iStorage.append(temp)
-                print(f'\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%', end='\r')
-            print(f'\033[K[ {completed} ] 100%')
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        futures = [executor.submit(create_task, i) for i in initTaskQueue(result=result)]
+        completed = 0
+        cp = '='
+        ip = ' '
+        futures_len =futures.__len__()
+        for future in concurrent.futures.as_completed(futures):
+            # 任务完成后，增加完成计数并打印进度
+            completed += 1
+            id, cyns , n, b= future.result()
+            iStorage.append((id, cyns, n, b))
+            bil = completed / futures_len
+            # iStorage.append(temp)
+            print(f'\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%', end='\r')
+        print(f'\033[K[ {completed} ] 100%')
     return iStorage
 

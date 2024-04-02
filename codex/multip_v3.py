@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-31 21:56:43
+# @Last Modified time: 2024-04-02 16:28:39
 from multiprocessing import Manager
 import re, itertools as itr, concurrent.futures
 from typing import List, Iterable
@@ -148,7 +148,6 @@ def tasks_single():
         _, _, n, t = rx
         completed += 1
         if n != t:
-            
             ns = ' '.join((f'{x:02}' for x in n))
             ts = ' '.join((f'{x:02}' for x in t))
             if sq3.check_data_r_number_exists(ns) == False:
@@ -179,7 +178,8 @@ def tasks_futures():
         for future in concurrent.futures.as_completed(futures):
             completed += 1
             task, _, n, t = future.result()
-            iStorage.append((task, n, t))
+            if n != t:
+                iStorage.append((task, n, t))
             print(f'\033[K[P] completed {completed/futures_len*100:.4f}% tasks completed.', end='\r')
         print(f'\033[K[P] completed. 100%')
     return iStorage if iStorage != None else []

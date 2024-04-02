@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-01 16:48:12
+# @Last Modified time: 2024-04-02 14:53:57
 import asyncio, telegram, pathlib
 from typing import Final
 from telegram import Update, Bot
@@ -37,7 +37,8 @@ async def list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         with cyns_json.open('r') as cjson:
             info = cjson.read()
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=info)
+    if update.effective_chat != None:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=info)
                             
 
 

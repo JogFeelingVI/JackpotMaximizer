@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-30 23:14:44
+# @Last Modified time: 2024-04-02 16:27:24
 import pathlib, json, re, datetime
 from codex import gethtml_v2, multip_v3
 
@@ -240,7 +240,7 @@ class load:
                 self.__show_args(args, debug)
                 Return_data = []
                 match cpu:
-                    case '0':
+                    case 'o':
                         Return_data = self.__cpu_one(args, _data)
                     case 'a':
                         Return_data = self.__cpu_one(args, _data, True)
