@@ -2,14 +2,14 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-02 16:47:52
+# @Last Modified time: 2024-04-03 08:45:30
 
 from codex import funcs_v2
 import Insight, time
 
 ARGS = {
     'dnsr': False, 
-    'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
+    'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': False, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
 cyns_info = 'cyns.log'
 match_cyns = [x for x in range(0, 20)]
 result = []
