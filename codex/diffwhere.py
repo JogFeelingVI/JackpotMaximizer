@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-02 22:50:26
+# @Last Modified time: 2024-04-03 14:52:03
 
 import functools
 import json
@@ -14,7 +14,8 @@ from typing import Iterable, List
 from codex import multip_v3, sq3database
 from multiprocessing import Manager as __mange
 
-
+cp = '='
+ip = ' '
 
 def get_function_name(func):
 
@@ -32,12 +33,6 @@ def get_function_name(func):
         return result
 
     return wrapper
-
-class insrt:
-
-    def __init__(self, code: int, reP: re.Pattern) -> None:
-        self.code = code
-        self.reP = reP
 
 @dataclasses.dataclass
 class sublist:
@@ -108,7 +103,7 @@ def loadGroup():
     p.useRego(False)
     p.initPostCall(loadJsonToDict(), 6, 1,'(.*)','s')
     Retds = p.tasks_futures()
-    return Retds
+    return [set(n) for _, n, _ in Retds]
 
 def nextSample():
     # 设置样本数据 样本数据类型为 sublist
@@ -133,7 +128,7 @@ def initTaskQueue(result:list=[]):
     wan = loadGroup() #10000
     return itr.product(duibizu, [wan])
 
-def __diff__(s: sublist, seq: List):
+def __diff__(s: sublist, seq):
         """
         使用 map() 函数计算差异信息，并进行优化。
         M [[task, count, n, t]]
@@ -142,14 +137,12 @@ def __diff__(s: sublist, seq: List):
         # 缓存集合
         s_r_numbers_set = set(s.rNumber)
 
-        def calculate_diff(m):
+        def calculate_diff(seq_m):
             # (0, [5, 13, 22, 25, 26, 32], [6])
             # print(f'calculate_diff {m=}')
-            _, n, _ = m
-            if s.rNumber != n:
-                dif_r = len(s_r_numbers_set & set(n))
-                return dif_r
-            return 6
+            temp_s = s_r_numbers_set.copy()
+            temp_s.intersection_update(seq_m)
+            return len(temp_s)
 
         # 使用 map() 函数计算每个元素的差异级别
         diff_levels = map(calculate_diff, seq)
@@ -168,7 +161,7 @@ def create_task(iQx):
     # print(f'create_task {s =}')
     # s =sublist(id=215, rNumber=[2, 4, 7, 15, 28, 32], bNumber=[3])
     diff = __diff__(s, m)
-    # print(f'{type(diff) = }')
+    
     cyn = 0
     # print(f'overlook {diff}')
     # overlook Counter({0: 9225, 6: 571, 5: 81, 4: 5})
@@ -190,8 +183,7 @@ def tasks_futures_proess_mem(result:list=[]):
     with concurrent.futures.ProcessPoolExecutor() as executor:
         futures = [executor.submit(create_task, i) for i in initTaskQueue(result=result)]
         completed = 0
-        cp = '='
-        ip = ' '
+        
         futures_len =futures.__len__()
         for future in concurrent.futures.as_completed(futures):
             # 任务完成后，增加完成计数并打印进度
