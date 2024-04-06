@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-06 22:21:19
+# @Last Modified time: 2024-04-06 22:26:32
 
 from codex import funcs_v2
 import Insight, time, datetime, threading, pathlib, emoji, sys
@@ -161,11 +161,11 @@ if __name__ == "__main__":
             extract_and_print_info(cyns_info)
         case 'explore':
             mainx = threading.Thread(target=main, args=(tasks, finished_event), name="workman")
-            watcher = threading.Thread(target=monitor, args=(tasks, finished_event), name='watcher')
+            # watcher = threading.Thread(target=monitor, args=(tasks, finished_event), name='watcher')
             mainx.start()
-            watcher.start()
+            # watcher.start()
             mainx.join()
-            watcher.join()
+            # watcher.join()
         case _:
             print(f'Available modes {argvs}')
     
