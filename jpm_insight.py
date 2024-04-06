@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-04 23:40:24
+# @Last Modified time: 2024-04-06 09:35:44
 
 from codex import funcs_v2
 import Insight, time, datetime, threading, pathlib, emoji, sys
@@ -11,7 +11,7 @@ ARGS = {
     'dnsr': False, 
     'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
 cyns_info = pathlib.Path('cyns.log')
-match_cyns = [x for x in range(0, 28)]
+match_cyns = [x for x in range(0, 25)]
 result = []
 insert_test = []
 finished_event = threading.Event()
@@ -37,12 +37,13 @@ def whoistime():
                     "Thursday": "星期四", "Friday": "星期五", "Saturday": "星期六", 
                     "Sunday": "星期日"}
     weekday_cn = weekday_dict.get(weekday, "未知")
-    # 获取上午或下午
-    am_pm = "上午" if now.hour < 12 else "下午"
+    # # 获取上午或下午
+    # am_pm = "AM" if now.hour < 12 else "PM"
     # 获取小时数
-    hour = now.hour % 12  # 12小时制
+    # hour = now.hour % 12  # 12小时制
     # 格式化时间输出
-    return f"{now.year}年{now.month}月{now.day}日 {weekday_cn}, {am_pm} {hour}点"
+    # (2024年04月05日 星期五 23时01分51秒)
+    return f"{now.year}年{now.month}月{now.day}日 {weekday_cn}, {now.hour}点{now.minute}分{now.second}秒"
 
 def main(args:dict = ARGS, mcyns:list = match_cyns):
     print(f'Welcome to the world of wealth. {whoistime()}')
@@ -88,7 +89,7 @@ def main(args:dict = ARGS, mcyns:list = match_cyns):
                 print(f'{logs}')
         end_time = time.perf_counter()
         print(f'This running time is {end_time-start_time-3:.4f} seconds')
-        if cyns_index >= 3:
+        if cyns_index >= 3000:
             global finished_event
             finished_event.set()
             break

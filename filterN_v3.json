@@ -1,29 +1,31 @@
 {
-    "date": "2024-03-29 23:41:03.822632",
+    "date": "2024-04-06 09:35:20.349792",
     "Lever": [
+        23,
         28,
+        14,
+        2,
         33,
+        6,
         30,
         16,
-        2,
         19,
-        5,
-        26,
-        27,
-        14,
         9,
+        27,
         31,
+        5,
         15,
         29,
+        26,
         13
     ],
     "Last": [
-        2,
-        9,
+        1,
+        4,
+        5,
+        6,
         12,
-        19,
-        21,
-        31
+        14
     ],
     "filter": [
         {
@@ -121,8 +123,8 @@
                 183
             ],
             "recommend": [
-                71,
-                130
+                29,
+                171
             ],
             "checked": true,
             "Description": "The value obtained by adding all the numbers together."
@@ -321,6 +323,7 @@
                 6
             ],
             "recommend": [
+                1,
                 2,
                 3,
                 4,
@@ -361,7 +364,7 @@
         {
             "name": "onesixdiff",
             "Optional": 15.09,
-            "recommend": 15.09,
+            "recommend": 11.09,
             "checked": false,
             "Description": "The minimum difference between the first and sixth digits."
         }

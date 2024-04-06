@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-02-21 12:37:31
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-22 21:15:30
+# @Last Modified time: 2024-04-06 09:31:34
 from collections import Counter
 from typing import List
 from functools import partial
@@ -125,6 +125,7 @@ class works:
     def sixlan(N: note.Note, recommend: List[int]) -> bool:
         '''判断红色区域是否等于 1, 2, 3, 4, 5, 6, 7'''
         xi, da = recommend
+        # print(f'{xi=} {da=} {sum(N.setnumber_R) =}')
         rb = [False, True][xi < sum(N.setnumber_R) < da]
         return rb
     
@@ -250,15 +251,15 @@ class works:
         这个方法会造成命中率降低弃用
         [(4, 1), (20, 3), (7, 3), (23, 3), (21, 3), (2, 4), (29, 4), (28, 4), (5, 4), (12, 4), (17, 4)]
         '''
-        ninc = set(Lever).intersection(n.number).__len__()
-        if ninc == 0 or ninc <= recommend:
-            return False
+        # ninc = set(Lever).intersection(n.number).__len__()
+        # if ninc == 0 or ninc <= recommend:
+        #     return False
         return True
     
     @staticmethod
     def onesixdiff(n: note.Note, recommend: int) -> bool:
         '''1 - 6 diff > 15.06'''
-        if abs(n.index(1) - n.index(6)) < recommend:
+        if abs(n.index(1) - n.index(6)) > recommend:
             return False
         return True
     
