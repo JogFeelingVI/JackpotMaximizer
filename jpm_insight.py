@@ -2,19 +2,20 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-06 22:26:32
+# @Last Modified time: 2024-04-07 11:44:09
 
 from codex import funcs_v2
 import Insight, time, datetime, threading, pathlib, emoji, sys
 
 ARGS = {
     'dnsr': False, 
-    'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
+    'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 9, 'b': 1, 'subcommand': 'load'}
 cyns_info = pathlib.Path('cyns.log')
-match_cyns = [x for x in range(0, 21)]
+match_cyns = [x for x in range(0, 190)]
 result = []
 insert_test = []
-# insert_test item = (0, [2, 9 ,12, 19, 21, 31], [4])
+# insert_test item = (0, [2, 7 ,10, 16, 17, 23, 24, 26, 31], [6, 15]),
+# (2, [5, 8, 9, 18, 19, 20, 25, 27,28,29], [6, 15])
 
 RED = "\033[91m"
 YELLOW = "\033[93m"
@@ -62,6 +63,7 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:lis
                 funcs_v2.action(args, callblack=m_result)
             else:
                 m_result(insert_test)
+                tasks = [1]
             # print(f'{result[0]}')
             # (0, [9, 12, 16, 17, 31, 33], [8])
             diff_info = Insight.diffMain(show=False, result=result)
