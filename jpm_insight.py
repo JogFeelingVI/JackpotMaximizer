@@ -2,20 +2,18 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-07 11:44:09
+# @Last Modified time: 2024-04-07 21:16:48
 
 from codex import funcs_v2
 import Insight, time, datetime, threading, pathlib, emoji, sys
 
 ARGS = {
     'dnsr': False, 
-    'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 9, 'b': 1, 'subcommand': 'load'}
+    'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
 cyns_info = pathlib.Path('cyns.log')
-match_cyns = [x for x in range(0, 190)]
+match_cyns = [x for x in range(0, 21)]
 result = []
 insert_test = []
-# insert_test item = (0, [2, 7 ,10, 16, 17, 23, 24, 26, 31], [6, 15]),
-# (2, [5, 8, 9, 18, 19, 20, 25, 27,28,29], [6, 15])
 
 RED = "\033[91m"
 YELLOW = "\033[93m"
@@ -28,6 +26,12 @@ r = lambda s: f'{RED}{s}{ENDC}'
 y = lambda s: f'{YELLOW}{s}{ENDC}'
 b = lambda s: f'{BLUE}{s}{ENDC}'
 g = lambda s: f'{GREEN}{s}{ENDC}'
+
+def loger(e, name:str):
+    now = datetime.datetime.now()
+    # 格式化时间为指定的格式
+    formatted_time = now.strftime("%Y/%m/%d %H:%M:%S")
+    return f'@{name} The error occurred at {formatted_time}, specifically: {e}\n'
 
 def whoistime():
     now = datetime.datetime.now()
@@ -49,6 +53,7 @@ def whoistime():
 
 def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:list = match_cyns):
     global insert_test
+    global match_cyns
     print(f'Welcome to the world of wealth. {g(whoistime())}')
     try:
         while tasks:
@@ -62,10 +67,16 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:lis
             if insert_test == []:
                 funcs_v2.action(args, callblack=m_result)
             else:
-                m_result(insert_test)
-                tasks = [1]
+                tasks = [x for x in range(insert_test.__len__())]
+                match_cyns = [x for x in range(500)]
+                Insight.diffMain(show=True, result=insert_test)
+                return
             # print(f'{result[0]}')
             # (0, [9, 12, 16, 17, 31, 33], [8])
+            if  result == []:
+                print(f'{r("The sample parameters are empty, please adjust the parameters and try again...")}')
+                return
+            
             diff_info = Insight.diffMain(show=False, result=result)
             if diff_info == 0:
                 continue
@@ -93,7 +104,7 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:lis
         finished_event.set()
         with open('error.log', "a") as file:
             # 将信息写入文件
-            file.write(f'{e}\n')
+            file.write(loger(e, 'Jpm_insight -> main'))
     finally:
         finished_event.set()
                 

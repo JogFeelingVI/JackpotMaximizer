@@ -2,10 +2,10 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-07 16:52:53
+# @Last Modified time: 2024-04-07 21:31:33
 import httpx, pathlib, ast
 import threading, json
-import time
+import time, datetime
 from typing import Final
 
 
@@ -52,7 +52,7 @@ class OrzBot:
                 chat_id = message["chat"]["id"]
                 text = message.get("text")
                 
-                if text and text.startswith("/"):
+                if text and text.startswith("/") and len(text) > 3:
                     # 处理命令
                     command = text[1:].split()[0]
                     match command:
@@ -89,6 +89,16 @@ class OrzBot:
             if updates["result"]:
                 offset = self.handle_updates(updates)
             time.sleep(self.delay)
+            
+def now_dt() -> str:
+    now = datetime.datetime.now()
+    # 格式化时间为指定的格式
+    formatted_time = now.strftime("%Y/%m/%d %H:%M:%S")
+    return formatted_time
+
+def loger(e, name:str):
+    now = now_dt()
+    return f'@{name} The error occurred at {now}, specifically: {e}\n'
 
 def handle_response(text:str) -> str:
     match text.lower():
@@ -97,7 +107,7 @@ def handle_response(text:str) -> str:
         case str() as t if 'how are you' in t:
             return 'I`am good.'
         case str() as t if 'time' in t:
-            return 'bu zhidao xianzai jidian le!'
+            return now_dt()
         case str() as t if 'i love you' in t:
             return 'Why do you always wear a tuxedo? The penguin replied: If I took off my tuxedo, I would be a naked bear!'
         case _:
@@ -142,7 +152,7 @@ def readCynsInfo():
             infos.append('\n')
             count = 0
     return ''.join(infos)
-                            
+
 
 def worker_thread():
     orz = OrzBot()
@@ -150,7 +160,9 @@ def worker_thread():
         orz.start()
     except Exception as e:
         with open('error.log', 'a') as err:
-            err.write(f'worker_thread:{e}\n')
+            estr = loger(e, 'worker_thread')
+            print(f'{r(estr)}')
+            err.write(estr)
         worker_thread()
         
             
