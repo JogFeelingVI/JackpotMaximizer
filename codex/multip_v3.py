@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-08 16:53:50
+# @Last Modified time: 2024-04-08 23:29:33
 from multiprocessing import Manager
 import re, itertools as itr, concurrent.futures
 from typing import List, Iterable
@@ -106,14 +106,14 @@ def filter_map(zio, dr):
     # if filterx.count(False) > 1:
     #     rfilter = False
     match filterx:
-        case [True, True, *MZ]:
-            if MZ.count(False) > 1:
+        case [True, True, *mz]:
+            if mz.count(False) > 1:
                 # print(f'T, T {filterx}')
                 rfilter = False
-        case [False,_, *MZ]:
+        case [False,_, *mz]:
             # print(f'F, _ {filterx}')
             rfilter = False
-        case [True, False, *MZ]:
+        case [True, False, *mz]:
             # print(f'T, F {filterx}')
             rfilter = False
         case _:
