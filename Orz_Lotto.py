@@ -2,11 +2,11 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-08 15:44:39
+# @Last Modified time: 2024-04-08 21:19:48
 import httpx, pathlib, ast
 import threading, json
 import time, datetime
-from typing import Final
+from typing import Final, Callable
 
 
 RED = "\033[91m"
@@ -166,6 +166,7 @@ def worker_thread():
             print(f'{r(estr)}')
             err.write(estr)
         worker_thread()
+
 
 
 if __name__ == "__main__":

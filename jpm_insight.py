@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-08 15:42:04
+# @Last Modified time: 2024-04-08 17:03:31
 
 from codex import funcs_v2
 import Insight, time, datetime, threading, pathlib, emoji, sys, ast
@@ -11,7 +11,7 @@ ARGS = {
     'dnsr': False, 
     'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
 cyns_info = pathlib.Path('cyns.log')
-match_cyns = [x for x in range(2, 10)]
+match_cyns = [x for x in range(1, 10)]
 result = []
 outLog = pathlib.Path('outing_id_r_bx.log')
 
