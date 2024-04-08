@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-07 21:44:08
+# @Last Modified time: 2024-04-08 15:44:39
 import httpx, pathlib, ast
 import threading, json
 import time, datetime
@@ -156,6 +156,7 @@ def readCynsInfo():
 
 
 def worker_thread():
+    print('Welcome to `Orz-Lotto` bot')
     orz = OrzBot()
     try:
         orz.start()
@@ -165,19 +166,6 @@ def worker_thread():
             print(f'{r(estr)}')
             err.write(estr)
         worker_thread()
-        
-            
-def start_thread():
-    thread = threading.Thread(target=worker_thread, name='Orz_Lotto')
-    thread.daemon = True  # 设置为守护线程
-    thread.start()
-    thread.join()
-
-
-def main():
-    print('Welcome to `Orz-Lotto` bot')
-    start_thread()
-    
 
 
 if __name__ == "__main__":

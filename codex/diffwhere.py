@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-07 20:49:27
+# @Last Modified time: 2024-04-08 10:05:26
 
 import functools
 import json
@@ -167,7 +167,7 @@ def create_task(iQx):
     for l, ids in diff.items():
         # print(f'{l=} -> {ids = }')
         match l:
-            case 4|5|6:
+            case 5|6:
                 # cyn = cyn + 10 * ids
                 cyn += ids
             case _:

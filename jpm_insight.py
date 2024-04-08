@@ -2,18 +2,18 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-07 21:16:48
+# @Last Modified time: 2024-04-08 15:42:04
 
 from codex import funcs_v2
-import Insight, time, datetime, threading, pathlib, emoji, sys
+import Insight, time, datetime, threading, pathlib, emoji, sys, ast
 
 ARGS = {
     'dnsr': False, 
     'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
 cyns_info = pathlib.Path('cyns.log')
-match_cyns = [x for x in range(0, 21)]
+match_cyns = [x for x in range(2, 10)]
 result = []
-insert_test = []
+outLog = pathlib.Path('outing_id_r_bx.log')
 
 RED = "\033[91m"
 YELLOW = "\033[93m"
@@ -27,6 +27,15 @@ y = lambda s: f'{YELLOW}{s}{ENDC}'
 b = lambda s: f'{BLUE}{s}{ENDC}'
 g = lambda s: f'{GREEN}{s}{ENDC}'
 
+def loadLoerLine():
+    if outLog.exists():
+        with outLog.open('r') as rlog:
+            lines = rlog.readlines()
+            if lines.__len__() >= 1:
+                return [ast.literal_eval(x) for x in lines]
+    return[]
+
+            
 def loger(e, name:str):
     now = datetime.datetime.now()
     # 格式化时间为指定的格式
@@ -52,7 +61,6 @@ def whoistime():
     return f"{now.year}年{now.month}月{now.day}日 {weekday_cn}, {now.hour}点{now.minute}分{now.second}秒"
 
 def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:list = match_cyns):
-    global insert_test
     global match_cyns
     print(f'Welcome to the world of wealth. {g(whoistime())}')
     try:
@@ -64,7 +72,7 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:lis
                 print(f'exec callblack {r[0][1]}')
                 result = r
             now = funcs_v2.Lastime()
-            if insert_test == []:
+            if (insert_test:=loadLoerLine()) == []:
                 funcs_v2.action(args, callblack=m_result)
             else:
                 tasks = [x for x in range(insert_test.__len__())]
@@ -139,14 +147,15 @@ def extract_and_print_info(file_path):
                 # return
                 if len(parts) == 2:
                     # 提取 id 和信息
-                    id_str, info = parts[1].split("*")
+                    cyns, info = parts[1].split("*")
                     # print(f'{id_str = } {info = }')
                     # return
                     try:
-                        id_num = int(id_str.strip())
-                        data.append((id_num, info.strip()))
-                        # print(f'{id_num = } {info = }')
-                        # return 
+                        cyns = int(cyns.strip())
+                        r, b = info.split('+')
+                        r= ' '.join((f'{x:02}' for x in ast.literal_eval(r)))
+                        b = ' '.join((f'{x:02}' for x in ast.literal_eval(b)))
+                        data.append((cyns, f' ➤ {r} ⎯ {b}'))
                     except ValueError:
                         print(f"Invalid row: {line}")
     # 排序
