@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-07 21:31:33
+# @Last Modified time: 2024-04-07 21:44:08
 import httpx, pathlib, ast
 import threading, json
 import time, datetime
@@ -32,6 +32,7 @@ class OrzBot:
         '''
         {token:'....',chatid:'lotto'}
         '''
+        self.client = httpx.Client(verify=False)
         match args:
             case {'token': str() as token, 'chatid': str() as chatid}:
                 self.token = token
@@ -42,7 +43,7 @@ class OrzBot:
     def get_updates(self, offset=None):
         url = self.baseUrl + "/getUpdates"
         params = {"offset": offset} if offset else {}
-        response = httpx.get(url, params=params)
+        response = self.client.get(url, params=params)
         return response.json()
     
     def handle_updates(self, updates):
@@ -78,7 +79,7 @@ class OrzBot:
     def send_message(self, chat_id, text):
         url = self.baseUrl + "/sendMessage"
         data = {"chat_id": chat_id, "text": text}
-        httpx.post(url, json=data)
+        self.client.post(url, json=data)
         
     def start(self):
         offset = None
