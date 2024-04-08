@@ -93,7 +93,7 @@
                 3,
                 0
             ],
-            "checked": true,
+            "checked": false,
             "Description": "Refers to the number adjacent to the last lottery number."
         },
         {
@@ -113,7 +113,7 @@
                 3,
                 0
             ],
-            "checked": true,
+            "checked": false,
             "Description": "The same numbers as the previous draw numbers."
         },
         {
@@ -208,8 +208,7 @@
                 0,
                 1,
                 2,
-                3,
-                4
+                3
             ],
             "checked": true,
             "Description": "The remainder of six numbers divided by 4, mod4."
@@ -248,7 +247,8 @@
             "recommend": [
                 0,
                 1,
-                2
+                2,
+                3
             ],
             "checked": true,
             "Description": "The remainder of six numbers divided by 6, mod6."
@@ -267,8 +267,7 @@
             "recommend": [
                 0,
                 1,
-                2,
-                3
+                2
             ],
             "checked": true,
             "Description": "The remainder of six numbers divided by 7, mod7."
@@ -329,7 +328,7 @@
                 4,
                 5
             ],
-            "checked": true,
+            "checked": false,
             "Description": "The remainder of six numbers divided by 7, mod7."
         },
         {

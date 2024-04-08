@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-06 12:12:16
+# @Last Modified time: 2024-04-08 16:53:50
 from multiprocessing import Manager
 import re, itertools as itr, concurrent.futures
 from typing import List, Iterable
@@ -102,10 +102,26 @@ def filter_map(zio, dr):
             if f(n) == False:
                 rfilter = False
                 break
-    for k, func in data['filter'].items():
-        if func(n) == False:
+    filterx = [func(n) for _, func in data['filter'].items()]
+    # if filterx.count(False) > 1:
+    #     rfilter = False
+    match filterx:
+        case [True, True, *MZ]:
+            if MZ.count(False) > 1:
+                # print(f'T, T {filterx}')
+                rfilter = False
+        case [False,_, *MZ]:
+            # print(f'F, _ {filterx}')
             rfilter = False
-            break
+        case [True, False, *MZ]:
+            # print(f'T, F {filterx}')
+            rfilter = False
+        case _:
+            pass
+    # for k, func in data['filter'].items():
+        # if func(n) == False:
+        #     rfilter = False
+        #     break
     return rfilter
 
 
