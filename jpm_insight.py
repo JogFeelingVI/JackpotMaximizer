@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-08 17:03:31
+# @Last Modified time: 2024-04-09 08:58:36
 
 from codex import funcs_v2
 import Insight, time, datetime, threading, pathlib, emoji, sys, ast
@@ -13,7 +13,6 @@ ARGS = {
 cyns_info = pathlib.Path('cyns.log')
 match_cyns = [x for x in range(1, 10)]
 result = []
-outLog = pathlib.Path('outing_id_r_bx.log')
 
 RED = "\033[91m"
 YELLOW = "\033[93m"
@@ -27,12 +26,11 @@ y = lambda s: f'{YELLOW}{s}{ENDC}'
 b = lambda s: f'{BLUE}{s}{ENDC}'
 g = lambda s: f'{GREEN}{s}{ENDC}'
 
-def loadLoerLine():
-    if outLog.exists():
-        with outLog.open('r') as rlog:
-            lines = rlog.readlines()
-            if lines.__len__() >= 1:
-                return [ast.literal_eval(x) for x in lines]
+def loadLoerLine(path:pathlib.Path):
+    with path.open('r') as rlog:
+        lines = rlog.readlines()
+        if lines.__len__() >= 1:
+            return [ast.literal_eval(x) for x in lines]
     return[]
 
             
@@ -61,7 +59,6 @@ def whoistime():
     return f"{now.year}年{now.month}月{now.day}日 {weekday_cn}, {now.hour}点{now.minute}分{now.second}秒"
 
 def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:list = match_cyns):
-    global match_cyns
     print(f'Welcome to the world of wealth. {g(whoistime())}')
     try:
         while tasks:
@@ -72,13 +69,14 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:lis
                 print(f'exec callblack {r[0][1]}')
                 result = r
             now = funcs_v2.Lastime()
-            if (insert_test:=loadLoerLine()) == []:
-                funcs_v2.action(args, callblack=m_result)
-            else:
-                tasks = [x for x in range(insert_test.__len__())]
-                match_cyns = [x for x in range(500)]
-                Insight.diffMain(show=True, result=insert_test)
-                return
+            funcs_v2.action(args, callblack=m_result)
+            # if (insert_test:=loadLoerLine()) == []:
+            #     funcs_v2.action(args, callblack=m_result)
+            # else:
+            #     tasks = [x for x in range(insert_test.__len__())]
+            #     mcyns = [x for x in range(500)]
+            #     Insight.diffMain(show=True, result=insert_test)
+            #     return
             # print(f'{result[0]}')
             # (0, [9, 12, 16, 17, 31, 33], [8])
             if  result == []:
@@ -115,6 +113,24 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:lis
             file.write(loger(e, 'Jpm_insight -> main'))
     finally:
         finished_event.set()
+        
+def loadLine(path:pathlib.Path):
+    print(f'Welcome to the world of wealth. {g(whoistime())}')
+    try:
+        start_time = time.perf_counter()
+        insert_test = loadLoerLine(path)
+        if insert_test == []:
+            print(f'{r("The sample parameters are empty, please adjust the parameters and try again...")}')
+            return
+        Insight.diffMain(show=True, result=insert_test)
+        end_time = time.perf_counter()
+        print(f'This running time is {g(f"{end_time-start_time-3:.4f}")} seconds. {insert_test.__len__()}')
+            
+    except Exception as e:
+        print(f'ERR: {e}')
+        with open('error.log', "a") as file:
+            # 将信息写入文件
+            file.write(loger(e, 'Jpm_insight -> loadLine'))
                 
 def monitor(tasks:list, finished_event:threading.Event):
     while True:
@@ -172,22 +188,31 @@ def extract_and_print_info(file_path):
 
             
 if __name__ == "__main__":
-    argvs = ['check','explore']
-    tasks = [x for x in range(300)]
-    finished_event = threading.Event()
-    argv = ''
-    if len(sys.argv) > 1:
-        argv = sys.argv[1] if sys.argv[1] in argvs else 'explore'
-    match argv:
-        case 'check':
+    argvs = ['check','explore', 'load']
+    print(f'{sys.argv = }')
+    match sys.argv:
+        case [_, 'check']:
+            print(f'{g("Use `check` to execute the program")}')
             extract_and_print_info(cyns_info)
-        case 'explore':
+        case [_,'explore']:
+            print(f'{g("Use `explore` to execute the program")}')
+            tasks = [x for x in range(300)]
+            finished_event = threading.Event()
             mainx = threading.Thread(target=main, args=(tasks, finished_event), name="workman")
             # watcher = threading.Thread(target=monitor, args=(tasks, finished_event), name='watcher')
             mainx.start()
             # watcher.start()
             mainx.join()
             # watcher.join()
+        case [_, 'load', path]:
+            print(f'{g(f"Use `Load {path}` to execute the program")}')
+            if (p:=pathlib.Path(path)).exists():
+                loadLine(p)
+            else:
+                print(f'Use `load` to start the program, but the `{path}` file does not exist.')
+        case [_, 'load']:
+            print(f'{r("To start a program using `load`, the specified file must be provided.")}')
+            print(f'{r("For example `poetry run python3 ./jpm_insight.py load ./outing_id_r_b.log`")}')
         case _:
             print(f'Available modes {argvs}')
     
