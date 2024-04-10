@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-10 20:26:12
+# @Last Modified time: 2024-04-10 20:46:46
 
 import functools
 import json
@@ -167,10 +167,10 @@ def create_task(iQx):
     match diff:
         case {0:z,1:a,2:b,3:c,4:d,5:e} if d+e < 37:
             # print(f'5+0 {diff}')
-            pass
+            cyn = d+e
         case {0:z,1:a,2:b,3:c,4:d} if d < 37:
             # print(f'5+0 {diff}')
-            cyn += 1
+            cyn = d
         # case {1:a,2:b,3:c,4:d} if d < 3:
         #     print(f'4+1 {diff}')
         # case {1:a,2:b,3:c,4:d} if d+c < 37:

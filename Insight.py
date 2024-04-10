@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-10 16:07:39
+# @Last Modified time: 2024-04-10 20:47:58
 
 import functools
 import itertools, re, time
@@ -55,7 +55,7 @@ def diffMain(show:bool = True, result:list=[]) -> tuple[int,int, list, list]:
         return (0,0,[],[])
         
     if show:
-        for df in dataForCyn:
+        for df in dataForCyn[-20::]:
             fromid, cyn, n, t = df
             # Nr_str = ' '.join([f"{x:02}" for x in _s.rNumber])
             # Nb_str = ' '.join([f"{x:02}" for x in _s.bNumber])
