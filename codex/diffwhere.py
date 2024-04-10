@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-09 09:11:41
+# @Last Modified time: 2024-04-10 20:26:12
 
 import functools
 import json
@@ -101,6 +101,7 @@ def loadGroup():
     p = multip_v3
     p.settingLength(10000)
     p.useRego(False)
+    p.useFilter(False)
     p.initPostCall(loadJsonToDict(), 6, 1,'(.*)','s')
     Retds = p.tasks_futures()
     return [set(n) for _, n, _ in Retds]
@@ -160,18 +161,36 @@ def create_task(iQx):
     # print(f'create_task {s =}')
     # s =sublist(id=215, rNumber=[2, 4, 7, 15, 28, 32], bNumber=[3])
     diff = __diff__(s, m)
+    # print(f'{diff =}')
     
     cyn = 0
+    match diff:
+        case {0:z,1:a,2:b,3:c,4:d,5:e} if d+e < 37:
+            # print(f'5+0 {diff}')
+            pass
+        case {0:z,1:a,2:b,3:c,4:d} if d < 37:
+            # print(f'5+0 {diff}')
+            cyn += 1
+        # case {1:a,2:b,3:c,4:d} if d < 3:
+        #     print(f'4+1 {diff}')
+        # case {1:a,2:b,3:c,4:d} if d+c < 37:
+        #     print(f'4+0 {diff}')
+        # case {1:a,2:b,3:c} if c < 37:
+        #     print(f'3+1 {diff}')
+        # case {0:z,1:a,2:b} if a+b+z < 620:
+        #     print(f'3+1 {diff}')
+        case _:
+            pass
     # print(f'overlook {diff}')
     # overlook Counter({0: 9225, 6: 571, 5: 81, 4: 5})
-    for l, ids in diff.items():
-        # print(f'{l=} -> {ids = }')
-        match l:
-            case 5|6:
-                # cyn = cyn + 10 * ids
-                cyn += ids
-            case _:
-                pass
+    # for l, ids in diff.items():
+    #     # print(f'{l=} -> {ids = }')
+    #     match l:
+    #         case 5|6:
+    #             # cyn = cyn + 10 * ids
+    #             cyn += ids
+    #         case _:
+    #             pass
     return s.id, cyn, s.rNumber, s.bNumber
 
 def tasks_futures_proess_mem(result:list=[]):
@@ -188,6 +207,7 @@ def tasks_futures_proess_mem(result:list=[]):
             # 任务完成后，增加完成计数并打印进度
             completed += 1
             id, cyns , n, b= future.result()
+            
             iStorage.append((id, cyns, n, b))
             bil = completed / futures_len
             # iStorage.append(temp)

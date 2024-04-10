@@ -1,14 +1,14 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-08 23:29:33
+# @Last Modified time: 2024-04-10 20:21:19
 from multiprocessing import Manager
 import re, itertools as itr, concurrent.futures
 from typing import List, Iterable
 from codex import glns_v2, rego_v3, note, filters_v3, sq3database
 
 
-bastdata = {'depth': 3000, 'prompt': '[=]', 'rego': False, 'length': 25}
+bastdata = {'depth': 3000, 'prompt': '[=]', 'rego': False, 'length': 25,'filter': True}
 procdata = {}
 
 
@@ -25,6 +25,12 @@ def useRego(use: bool):
     ''' False rego NO '''
     global_vars = globals()
     global_vars['bastdata']['rego'] = use
+    return use
+
+def useFilter(use: bool):
+    ''' False rego NO '''
+    global_vars = globals()
+    global_vars['bastdata']['filter'] = use
     return use
 
 
@@ -59,8 +65,9 @@ def initTaskQueue():
     global_vars = globals()
     length = global_vars['bastdata']['length']
     rego = global_vars['bastdata']['rego']
+    filter = global_vars['bastdata']['filter']
     data = global_vars['procdata']
-    return itr.product(range(length), [data], [rego])
+    return itr.product(range(length), [data], [rego], [filter])
 
 
 def fdins(N: note.Note, insre: re.Pattern) -> bool:
@@ -90,7 +97,7 @@ def combinations_ols(n, t, dr):
 
 
 def filter_map(zio, dr):
-    data, rego = dr
+    data, rego, filter = dr
     _n, _t = zio
     n = note.Note(_n, _t)
     rfilter = True
@@ -102,22 +109,23 @@ def filter_map(zio, dr):
             if f(n) == False:
                 rfilter = False
                 break
-    filterx = [func(n) for _, func in data['filter'].items()]
-    # if filterx.count(False) > 1:
-    #     rfilter = False
-    match filterx:
-        case [True, True, *mz]:
-            if mz.count(False) > 1:
-                # print(f'T, T {filterx}')
+    if filter:
+        filterx = [func(n) for _, func in data['filter'].items()]
+        # if filterx.count(False) > 1:
+        #     rfilter = False
+        match filterx:
+            case [True, True, *mz]:
+                if mz.count(False) > 1:
+                    # print(f'T, T {filterx}')
+                    rfilter = False
+            case [False,_, *mz]:
+                # print(f'F, _ {filterx}')
                 rfilter = False
-        case [False,_, *mz]:
-            # print(f'F, _ {filterx}')
-            rfilter = False
-        case [True, False, *mz]:
-            # print(f'T, F {filterx}')
-            rfilter = False
-        case _:
-            pass
+            case [True, False, *mz]:
+                # print(f'T, F {filterx}')
+                rfilter = False
+            case _:
+                pass
     # for k, func in data['filter'].items():
         # if func(n) == False:
         #     rfilter = False
@@ -125,7 +133,7 @@ def filter_map(zio, dr):
     return rfilter
 
 
-def create(pcall_data: dict, rego: bool):  # -> list[Any] | None:
+def create(pcall_data: dict, rego: bool, filter:bool):  # -> list[Any] | None:
     if not pcall_data:
         print(f'Not Find PostCall Data!')
         return [0, [0], [0]]
@@ -133,7 +141,7 @@ def create(pcall_data: dict, rego: bool):  # -> list[Any] | None:
     while 1:
         _n = pcall_data['glns']['r']()
         _t = pcall_data['glns']['b']()
-        rfilter = combinations_ols(_n, _t, (pcall_data, rego))
+        rfilter = combinations_ols(_n, _t, (pcall_data, rego, filter))
         if rfilter == True:
             return [count, _n, _t]
         count += 1
@@ -143,8 +151,8 @@ def create(pcall_data: dict, rego: bool):  # -> list[Any] | None:
 
 
 def create_task(iq):
-    task, pcall_data, rego = iq
-    count, n, t = create(pcall_data, rego)
+    task, pcall_data, rego, filter = iq
+    count, n, t = create(pcall_data, rego, filter)
     return [task, count, n, t]
 
 
@@ -152,6 +160,7 @@ def tasks_single():
     global_vars = globals()
     length = global_vars['bastdata']['length']
     iStorage = []
+    seen_n = set()
     completed = 0
     sq3 = sq3database.Sqlite3Database()
     sq3.connect()
@@ -166,8 +175,9 @@ def tasks_single():
         if n != t:
             ns = ' '.join((f'{x:02}' for x in n))
             ts = ' '.join((f'{x:02}' for x in t))
-            if sq3.check_data_r_number_exists(ns) == False:
+            if ns not in seen_n:
                 sq3.add_data(ns, ts)
+                seen_n.add(ns)
         print(f'\033[K[P] completed {completed/length*100:.4f}% tasks completed.', end='\r')
     iStorage = sq3.read_data()
     sq3.disconnect()
@@ -178,15 +188,19 @@ def tasks_single():
 def tasks_futures_old():
     with concurrent.futures.ProcessPoolExecutor() as executor:
         iStorage = []
+        seen_n = set()
         results = executor.map(create_task, initTaskQueue())
         for res in results:
             _, _, n, t = res
-            if n != t:
+            tup_n = tuple(n)
+            if n != t and tup_n not in seen_n:
                 iStorage.append(res)
+                seen_n.add(tup_n)
     return iStorage
 
 def tasks_futures():
     iStorage = []
+    seen_n = set()
     with concurrent.futures.ProcessPoolExecutor() as executor:
         futures = [executor.submit(create_task, i) for i in initTaskQueue()]
         completed = 0
@@ -194,8 +208,10 @@ def tasks_futures():
         for future in concurrent.futures.as_completed(futures):
             completed += 1
             task, _, n, t = future.result()
-            if n != t:
+            tup_n = tuple(n)
+            if n != t and tup_n not in seen_n:
                 iStorage.append((task, n, t))
+                seen_n.add(tup_n)
             print(f'\033[K[P] completed {completed/futures_len*100:.4f}% tasks completed.', end='\r')
         print(f'\033[K[P] completed. 100%')
     return iStorage if iStorage != None else []
@@ -203,7 +219,7 @@ def tasks_futures():
 def tasks_futures_press():
     iStorage = []
     # with Manager() as me:
-        
+    seen_n = set()
     with concurrent.futures.ProcessPoolExecutor() as executor:
         futures = [executor.submit(create_task, i) for i in initTaskQueue()]
         completed = 0
@@ -215,11 +231,13 @@ def tasks_futures_press():
         for future in concurrent.futures.as_completed(futures):
             completed += 1
             _, _, n, t = future.result()
+            
             if n != t:
                 ns = ' '.join((f'{x:02}' for x in n))
                 ts = ' '.join((f'{x:02}' for x in t))
-                if sq3.check_data_r_number_exists(ns) == False:
+                if ns not in seen_n:
                     sq3.add_data(ns, ts)
+                    seen_n.add(ns)
             print(f'\033[K[P] completed {completed/futures_len*100:.4f}% tasks completed.', end='\r')
         iStorage = sq3.read_data()
         print(f'\033[K[P] completed. 100%')
