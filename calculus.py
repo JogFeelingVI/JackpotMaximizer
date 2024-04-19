@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-29 23:38:12
+# @Last Modified time: 2024-04-20 07:35:18
 from codex import funcs_v2
 from codex.runingtime import runingtime
 
@@ -22,8 +22,8 @@ def Moni_T():
         'n': 1000,
         'r': 6,
         'b': 1,
-        'Compared-R': [2, 9, 12, 19, 21, 31],
-        'Compared-B': [4]
+        'Compared-R': [4, 6, 7, 14, 15, 24],
+        'Compared-B': [8]
     }
     act = funcs_v2.action(args)
 
