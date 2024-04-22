@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-10 15:06:36
+# @Last Modified time: 2024-04-22 10:35:24
 
 from codex import funcs_v2
 import Insight, time, datetime, threading, pathlib, emoji, sys, ast
@@ -11,7 +11,7 @@ ARGS = {
     'dnsr': False, 
     'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
 cyns_info = pathlib.Path('cyns.log')
-match_cyns = [x for x in range(1, 10)]
+match_cyns = {4:47.5366, 5:1.4627, 6:0.009}
 result = []
 
 RED = "\033[91m"
@@ -58,7 +58,7 @@ def whoistime():
     # (2024年04月05日 星期五 23时01分51秒)
     return f"{now.year}年{now.month}月{now.day}日 {weekday_cn}, {now.hour}点{now.minute}分{now.second}秒"
 
-def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:list = match_cyns):
+def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:dict = match_cyns):
     print(f'Welcome to the world of wealth. {g(whoistime())}')
     try:
         while tasks:
@@ -89,14 +89,8 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:lis
             fromid, cyn, n, t = diff_info
             logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
             match cyn:
-                case Bz if Bz == min(mcyns):
-                    print(f'{r(logs)} {Bz = }')
-                    with open(cyns_info, "a") as file:
-                        # 将信息写入文件
-                        file.write(f'{logs}\n')
-                    tasks.pop()
-                case Gf if Gf in mcyns:
-                    print(f'{y(logs)} {Bz = }')
+                case  {4:int() as L4, 5:int() as L5} if 0.1 < L5 < mcyns[5] and 46.9 < L4 < mcyns[4]:
+                    print(f'{r(logs)} {cyn = }')
                     with open(cyns_info, "a") as file:
                         # 将信息写入文件
                         file.write(f'{logs}\n')

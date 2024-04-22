@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-10 20:47:58
+# @Last Modified time: 2024-04-22 10:25:20
 
 import functools
 import itertools, re, time
@@ -45,11 +45,11 @@ from codex import sq3database, tonji, diffwhere
 def diffMain(show:bool = True, result:list=[]) -> tuple[int,int, list, list]:
     diff = diffwhere
     dataForCyn = diff.tasks_futures_proess_mem(result)
-    # data i = (996, 48, [6, 8, 19, 28, 29, 31], [4])
-    # data i = (998, 46, [8, 9, 18, 19, 20, 33], [5])
-    # data i = (999, 77, [3, 4, 10, 25, 29, 33], [5])
+    # data i = (996, {4:37,5:1}, [6, 8, 19, 28, 29, 31], [4])
+    # data i = (998, {4:46,5:1}, [8, 9, 18, 19, 20, 33], [5])
+    # data i = (999, {4:77,5:1}, [3, 4, 10, 25, 29, 33], [5])
     if dataForCyn.__len__() >0:
-        dataForCyn = sorted(dataForCyn, key= lambda x:x[1])
+        dataForCyn = sorted(dataForCyn, key= lambda x:x[1][5])
         fromids = dataForCyn[0]
     else:
         return (0,0,[],[])
