@@ -2,9 +2,9 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-22 10:35:24
+# @Last Modified time: 2024-04-23 16:34:19
 
-from codex import funcs_v2
+from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, emoji, sys, ast
 
 ARGS = {
@@ -125,6 +125,47 @@ def loadLine(path:pathlib.Path):
         with open('error.log', "a") as file:
             # 将信息写入文件
             file.write(loger(e, 'Jpm_insight -> loadLine'))
+            
+def tongji(path:pathlib.Path):
+    print(f'Welcome to the world of wealth. {g(whoistime())}')
+    try:
+        start_time = time.perf_counter()
+        insert_test = loadLoerLine(path)
+        tjone = tonji.statistics()
+        tjone.Statistical_length = 4
+        count_id = 1
+        for id, r, b in insert_test:
+            n = tonji.sublist(count_id, r, b)
+            tjone.add(n)
+            count_id += 1
+        print(f'====== {time.time()} ======')
+        vid = []
+        for k, v in  tjone.same_numbers_dict.items():
+            print(f'key {k} len {len(v)} value {v}')
+            if len(v) > 1:
+                [vid.append(x) for x in v if x not in vid]
+        info = f' lens {tjone.same_numbers_dict.keys().__len__()}/{vid.__len__()} '
+        print(f'{ info :+^70}')
+        print(f'{vid = }')
+        for i, item in enumerate(insert_test):
+            _, r, b = item
+            if i+1 in vid:
+                print(f'{i+1} / {r} + {b}')
+        # filter_data = sq3.read_data_by_ids(vid)
+        # if filter_data != None:
+        #     for fItem in filter_data:
+        #         id, r, b = fItem
+        #         print(f'id: {id:>3} / {r} + {b}')
+        # else:
+        #     print('No data matching the filter criteria.')
+        end_time = time.perf_counter()
+        print(f'This running time is {g(f"{end_time-start_time-3:.4f}")} seconds. {insert_test.__len__()}')
+    except Exception as e:
+        print(f'ERR: {e}')
+        with open('error.log', "a") as file:
+            # 将信息写入文件
+            file.write(loger(e, 'Jpm_insight -> tongji'))
+        
                 
 def monitor(tasks:list, finished_event:threading.Event):
     while True:
@@ -202,6 +243,12 @@ if __name__ == "__main__":
             print(f'{g(f"Use `Load {path}` to execute the program")}')
             if (p:=pathlib.Path(path)).exists():
                 loadLine(p)
+            else:
+                print(f'Use `load` to start the program, but the `{path}` file does not exist.')
+        case [_, 'tongji', path]:
+            print(f'{g(f"Use `Load {path}` to execute the program")}')
+            if (p:=pathlib.Path(path)).exists():
+                tongji(p)
             else:
                 print(f'Use `load` to start the program, but the `{path}` file does not exist.')
         case [_, 'load']:
