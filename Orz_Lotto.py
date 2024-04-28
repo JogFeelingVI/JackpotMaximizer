@@ -2,9 +2,9 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-08 21:19:48
+# @Last Modified time: 2024-04-28 14:38:23
 import httpx, pathlib, ast
-import threading, json
+import threading, json, re
 import time, datetime
 from typing import Final, Callable
 
@@ -116,38 +116,28 @@ def handle_response(text:str) -> str:
 
 def readCynsInfo():
     cyns_json = pathlib.Path('./cyns.log')
+    search_id_r_b = re.compile(r"id\s+(\d+).*\*(.*)\s\+\s(.*)")
     data = []
     with cyns_json.open('r') as f:
         for line in f:
             line = line.strip()  # 去除首尾空格
             if line:  # 检查是否为空行
-                parts = line.split("/ cyn")
-                # print(f'{parts = }')
-                # # parts = ['@Last Modified time: 2024-04-04 09:36:32 -> id  930 ', ' 26 * [4, 9, 13, 18, 24, 32] + [13]']
-                # return
-                if len(parts) == 2:
-                    # 提取 id 和信息
-                    cyns, info = parts[1].split("*")
-                    # print(f'{id_str = } {info = }')
-                    # return
-                    try:
-                        cyns = int(cyns.strip())
-                        r, b = info.split('+')
-                        r= ' '.join((f'{x:02}' for x in ast.literal_eval(r)))
-                        b = ' '.join((f'{x:02}' for x in ast.literal_eval(b)))
-                        data.append((cyns, f' ➤ {r} ⎯ {b}'))
-                        # print(f'{id_num = } {info = }')
-                        # return 
-                    except ValueError:
-                        print(f"Invalid row: {line}")
+                match_search = search_id_r_b.search(line)
+                if match_search == None:
+                    return 'search_id_r_b is None'
+                
+                _id, _r, _b = match_search.groups()
+                r= ' '.join((f'{x:02}' for x in ast.literal_eval(_r)))
+                b = ' '.join((f'{x:02}' for x in ast.literal_eval(_b)))
+                data.append((int(_id),f'{r} - {b}'))
     # 排序
     data.sort(key=lambda item: item[0])
     infos = []
     count = 0
     # 打印信息，每行后添加空行
-    for item in data[0:10]:
+    for item in data[0:30]:
         id, info = item
-        infos.append(f'{id} {info} \n')
+        infos.append(f'{id:_>4}: {info} \n')
         count +=1 
         if count == 5:
             infos.append('\n')
