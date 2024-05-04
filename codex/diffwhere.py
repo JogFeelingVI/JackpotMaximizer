@@ -2,17 +2,18 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-22 10:22:25
+# @Last Modified time: 2024-05-04 08:21:09
 
 import functools
 import json
+import os
 import pathlib
 import random
 import dataclasses, itertools as itr, concurrent.futures, re, collections
 import time
 from typing import Iterable, List
 from codex import multip_v3, sq3database
-from multiprocessing import Manager as __mange
+from multiprocessing import Manager, cpu_count
 
 cp = "="
 ip = " "
@@ -127,13 +128,13 @@ def nextSample():
         return True
 
 
-def initTaskQueue(result: list = []):
-    if result == []:
-        duibizu = loadDataBase()
-    else:
-        duibizu = result
-    wan = loadGroup()  # 10000
-    return itr.product(duibizu, [wan])
+def initTaskQueue_toList():
+    """
+    sample 样本组 loadDataBase() result
+    comparison loadGroup()
+    """
+    comparison = loadGroup()  # 10000
+    return comparison
 
 
 def __diff__(s: sublist, seq):
@@ -162,23 +163,40 @@ def __diff__(s: sublist, seq):
     return diff_info
 
 
-def create_task(iQx):
-    s, m = iQx
-    s = parseSublist(s)
-    # print(f'create_task {s =}')
-    # s =sublist(id=215, rNumber=[2, 4, 7, 15, 28, 32], bNumber=[3])
-    diff = __diff__(s, m)
-    # print(f'{diff =}')
+def create_task(sample, comparison, pd):
+    temp = []
+    pid = os.getpid()
+    for s in sample:
+        s = parseSublist(s)
+        # print(f'create_task {s =}')
+        # s =sublist(id=215, rNumber=[2, 4, 7, 15, 28, 32], bNumber=[3])
+        diff = __diff__(s, comparison)
+        # print(f'{diff =}')
 
-    cyn = {4:0,5:0}
-    match diff:
-        case {4: a, 5: b}:
-            # print(f'5+0 {diff}')
-            cyn = {4:a, 5:b}
-        case _:
-            pass
+        cyn = {4: 0, 5: 0}
+        match diff:
+            case {4: a, 5: b}:
+                # print(f'5+0 {diff}')
+                cyn = {4: a, 5: b}
+            case _:
+                pass
+        if pid in pd.keys():
+            pd[pid] += 1
+        else:
+            pd[pid] = 1
 
-    return s.id, cyn, s.rNumber, s.bNumber
+        sumx = sum(pd.values())
+        temp.append([s.id, cyn, s.rNumber, s.bNumber])
+        if pd[pid] % 5 == 1:
+            print(f"\033[K[P] diffwhere mission completed {sumx}", end="\r")
+    return temp
+
+
+def done_task(future, storage: List):
+    flist = future.result()
+    for fi in flist:
+        id, cyns, n, b = fi
+        storage.append((id, cyns, n, b))
 
 
 def tasks_futures_proess_mem(result: list = []):
@@ -186,24 +204,38 @@ def tasks_futures_proess_mem(result: list = []):
     cyns.from_id, cyns.cyn, data.r_numbers, data.b_numbers
     """
     iStorage = []
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        futures = [
-            executor.submit(create_task, i) for i in initTaskQueue(result=result)
-        ]
-        completed = 0
+    
+    with Manager() as mem:
+        pd = mem.dict(collections.defaultdict(int))
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            comparison = initTaskQueue_toList()
+            chunk_size = result.__len__() // cpu_count()
+            chunk_size = chunk_size if chunk_size >=1 else 1
+            chunks = [
+                result[i : i + chunk_size]
+                for i in range(0, result.__len__(), chunk_size)
+            ]
+            
+            futures = [
+                executor.submit(create_task, i, comparison, pd).add_done_callback(
+                    lambda f: done_task(f, iStorage)
+                )
+                for i in chunks
+            ]
+        # completed = 0
 
-        futures_len = futures.__len__()
-        for future in concurrent.futures.as_completed(futures):
-            # 任务完成后，增加完成计数并打印进度
-            completed += 1
-            id, cyns, n, b = future.result()
-            if cyns[4] != 0:
-                iStorage.append((id, cyns, n, b))
-            bil = completed / futures_len
-            # iStorage.append(temp)
-            print(
-                f"\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%",
-                end="\r",
-            )
-        print(f"\033[K[ {completed} ] 100%")
+        # futures_len = futures.__len__()
+        # for future in concurrent.futures.as_completed(futures):
+        #     # 任务完成后，增加完成计数并打印进度
+        #     completed += 1
+        #     id, cyns, n, b = future.result()
+        #     if cyns[4] != 0:
+        #         iStorage.append((id, cyns, n, b))
+        #     bil = completed / futures_len
+        #     # iStorage.append(temp)
+        #     print(
+        #         f"\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%",
+        #         end="\r",
+        #     )
+        # print(f"\033[K[ {completed} ] 100%")
     return iStorage

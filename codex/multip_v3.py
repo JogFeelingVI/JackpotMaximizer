@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-04 00:43:24
+# @Last Modified time: 2024-05-04 07:23:24
 import os, collections
 import re, itertools as itr, concurrent.futures
 from typing import Callable, List, Iterable
@@ -87,14 +87,6 @@ def try_iRx(iRx: str):
     finally:
         return _r
 
-
-def initTaskQueue():
-    global_vars = globals()
-    length = global_vars["bastdata"]["length"]
-    rego = global_vars["bastdata"]["rego"]
-    filter = global_vars["bastdata"]["filter"]
-    data = global_vars["procdata"]
-    return itr.product(range(length), [data], [rego], [filter])
 
 
 def initTaskQueue_to_list():
@@ -197,7 +189,7 @@ def create_task(iq):
     return [task, count, n, t]
 
 
-def create_task_v2(task: range, data, rego, filterx, pd:dict):
+def create_task_v2(task: range, data, rego, filterx, pd):
     temp = []
     pid = os.getpid()
     for task_index in task:
