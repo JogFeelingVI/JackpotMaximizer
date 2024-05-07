@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-23 16:34:19
+# @Last Modified time: 2024-05-07 16:34:36
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, emoji, sys, ast
@@ -132,7 +132,7 @@ def tongji(path:pathlib.Path):
         start_time = time.perf_counter()
         insert_test = loadLoerLine(path)
         tjone = tonji.statistics()
-        tjone.Statistical_length = 4
+        tjone.Statistical_length = 5
         count_id = 1
         for id, r, b in insert_test:
             n = tonji.sublist(count_id, r, b)
@@ -142,11 +142,10 @@ def tongji(path:pathlib.Path):
         vid = []
         for k, v in  tjone.same_numbers_dict.items():
             print(f'key {k} len {len(v)} value {v}')
-            if len(v) > 1:
+            if len(v) in [3,1,2]:
                 [vid.append(x) for x in v if x not in vid]
         info = f' lens {tjone.same_numbers_dict.keys().__len__()}/{vid.__len__()} '
         print(f'{ info :+^70}')
-        print(f'{vid = }')
         for i, item in enumerate(insert_test):
             _, r, b = item
             if i+1 in vid:
@@ -159,7 +158,7 @@ def tongji(path:pathlib.Path):
         # else:
         #     print('No data matching the filter criteria.')
         end_time = time.perf_counter()
-        print(f'This running time is {g(f"{end_time-start_time-3:.4f}")} seconds. {insert_test.__len__()}')
+        print(f'This running time is {g(f"{end_time-start_time:.4f}")} seconds. {insert_test.__len__()}')
     except Exception as e:
         print(f'ERR: {e}')
         with open('error.log', "a") as file:
