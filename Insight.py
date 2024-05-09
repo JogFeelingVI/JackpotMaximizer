@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-22 10:25:20
+# @Last Modified time: 2024-05-09 16:41:16
 
 import functools
 import itertools, re, time
@@ -48,6 +48,8 @@ def diffMain(show:bool = True, result:list=[]) -> tuple[int,int, list, list]:
     # data i = (996, {4:37,5:1}, [6, 8, 19, 28, 29, 31], [4])
     # data i = (998, {4:46,5:1}, [8, 9, 18, 19, 20, 33], [5])
     # data i = (999, {4:77,5:1}, [3, 4, 10, 25, 29, 33], [5])
+    #  (999, {4: 0, 5: 0}, [1, 5, 15, 16, 26, 29], [3])
+    # print(f'{dataForCyn=}')
     if dataForCyn.__len__() >0:
         dataForCyn = sorted(dataForCyn, key= lambda x:x[1][5])
         fromids = dataForCyn[0]

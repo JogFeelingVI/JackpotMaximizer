@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-04 08:21:09
+# @Last Modified time: 2024-05-09 16:39:46
 
 import functools
 import json
@@ -83,11 +83,8 @@ def loadDataBase():
 def randome_n(size: int = 6):
     _temp = []
     _base = [x for x in range(1, 34)]
-    while _temp.__len__() != size:
-        _t = random.choice(_base)
-        if _t not in _temp:
-            _temp.append(_t)
-    return sorted(_temp)
+    random.shuffle(_base)
+    return sorted(_base[:size])
 
 
 def randome_t(size: int = 1):
@@ -103,13 +100,18 @@ def randome_t(size: int = 1):
 def loadGroup():
     """Executing comparison group data generation"""
     print("Executing comparison group data generation.")
+    # Retds = []
+    # for x in range(10000):
+    #     Retds.append(randome_n(6))
     p = multip_v3
     p.settingLength(10000)
     p.useRego(False)
     p.useFilter(False)
     p.initPostCall(loadJsonToDict(), 6, 1, "(.*)", "s")
     Retds = p.tasks_futures()
-    return [set(n) for _, n, _ in Retds]
+    Retds = [parseSublist(x).rNumber for x in Retds]
+    # [[72, '03 05 07 16 27 33', '01']
+    return Retds
 
 
 def nextSample():
@@ -148,7 +150,8 @@ def __diff__(s: sublist, seq):
 
     def calculate_diff(seq_m):
         # (0, [5, 13, 22, 25, 26, 32], [6])
-        # print(f'calculate_diff {m=}')
+        # _m = [x for x in seq_m]
+        # print(f'calculate_diff {_m}')
         temp_s = s_r_numbers_set.copy()
         temp_s.intersection_update(seq_m)
         return len(temp_s)
@@ -158,7 +161,7 @@ def __diff__(s: sublist, seq):
 
     # 创建一个 Counter 对象来统计差异级别
     diff_info = collections.Counter(diff_levels)
-    # print(f'diff_info {diff_info}')
+    # print(f'{diff_info = }')
     # diff_info Counter({0: 9147, 6: 628, 5: 100, 4: 7})
     return diff_info
 
@@ -171,7 +174,7 @@ def create_task(sample, comparison, pd):
         # print(f'create_task {s =}')
         # s =sublist(id=215, rNumber=[2, 4, 7, 15, 28, 32], bNumber=[3])
         diff = __diff__(s, comparison)
-        # print(f'{diff =}')
+        # print(f'{diff =} {s=}')
 
         cyn = {4: 0, 5: 0}
         match diff:
@@ -196,7 +199,9 @@ def done_task(future, storage: List):
     flist = future.result()
     for fi in flist:
         id, cyns, n, b = fi
-        storage.append((id, cyns, n, b))
+        # print(f'done {cyns}')
+        if cyns[4] !=0 and cyns[5] != 0:
+            storage.append((id, cyns, n, b))
 
 
 def tasks_futures_proess_mem(result: list = []):
@@ -209,8 +214,8 @@ def tasks_futures_proess_mem(result: list = []):
         pd = mem.dict(collections.defaultdict(int))
         with concurrent.futures.ProcessPoolExecutor() as executor:
             comparison = initTaskQueue_toList()
-            chunk_size = result.__len__() // cpu_count()
-            chunk_size = chunk_size if chunk_size >=1 else 1
+            #print(f'{comparison[0]}')
+            chunk_size = max(1, result.__len__() // cpu_count())
             chunks = [
                 result[i : i + chunk_size]
                 for i in range(0, result.__len__(), chunk_size)

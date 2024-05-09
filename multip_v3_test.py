@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-03 09:32:40
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-03 23:00:58
+# @Last Modified time: 2024-05-09 16:04:04
 
 
 from codex import multip_v3
@@ -30,13 +30,9 @@ def main():
                 p.settingLength(n)
                 p.useRego(loadins)
                 p.initPostCall(data, r, b, ins, usew)
-                if core == False:
-                    Retds = p.tasks_single()
-                else:
-                    if sq3:
-                        Retds = p.tasks_futures_press()
-                    else:
-                        Retds = p.tasks_futures()
+                # Retds = p.tasks_single()
+                Retds = p.tasks_futures_press()
+                # Retds = p.tasks_futures()
             case _:
                 pass
     print(f'{Retds = }')

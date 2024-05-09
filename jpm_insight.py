@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-07 16:34:36
+# @Last Modified time: 2024-05-09 16:44:04
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, emoji, sys, ast
@@ -82,14 +82,14 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:dic
             if  result == []:
                 print(f'{r("The sample parameters are empty, please adjust the parameters and try again...")}')
                 return
-            
+            print(f'result len {result.__len__()}')
             diff_info = Insight.diffMain(show=False, result=result)
             if diff_info == 0:
                 continue
             fromid, cyn, n, t = diff_info
             logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
             match cyn:
-                case  {4:int() as L4, 5:int() as L5} if 0.1 < L5 < mcyns[5] and 46.9 < L4 < mcyns[4]:
+                case  {4:int() as L4, 5:int() as L5} if L5 < mcyns[5] and L4 < mcyns[4]:
                     print(f'{r(logs)} {cyn = }')
                     with open(cyns_info, "a") as file:
                         # 将信息写入文件

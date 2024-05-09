@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-28 14:38:23
+# @Last Modified time: 2024-05-09 16:45:33
 import httpx, pathlib, ast
 import threading, json, re
 import time, datetime
@@ -142,7 +142,10 @@ def readCynsInfo():
         if count == 5:
             infos.append('\n')
             count = 0
-    return ''.join(infos)
+    return_msg =  ''.join(infos)
+    if return_msg == '':
+        return_msg = 'No Find Data.'
+    return return_msg
 
 
 def worker_thread():
