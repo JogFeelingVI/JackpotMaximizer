@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-09 16:45:33
+# @Last Modified time: 2024-05-09 17:01:26
 import httpx, pathlib, ast
 import threading, json, re
 import time, datetime
@@ -118,7 +118,7 @@ def readCynsInfo():
     cyns_json = pathlib.Path('./cyns.log')
     search_id_r_b = re.compile(r"id\s+(\d+).*\*(.*)\s\+\s(.*)")
     data = []
-    with cyns_json.open('r') as f:
+    with cyns_json.open('r+') as f:
         for line in f:
             line = line.strip()  # 去除首尾空格
             if line:  # 检查是否为空行
@@ -130,6 +130,8 @@ def readCynsInfo():
                 r= ' '.join((f'{x:02}' for x in ast.literal_eval(_r)))
                 b = ' '.join((f'{x:02}' for x in ast.literal_eval(_b)))
                 data.append((int(_id),f'{r} - {b}'))
+        f.truncate(0)  # 将文件指针移动到开头
+        f.flush()
     # 排序
     data.sort(key=lambda item: item[0])
     infos = []
