@@ -2,11 +2,13 @@
 # @Author: JogFeelingVI
 # @Date:   2024-04-21 21:05:21
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-07 10:22:42
+# @Last Modified time: 2024-05-12 19:07:43
 
 # 定义源文件夹和目标文件夹
-source_dir=~/Downloads/Github/autoasset
-target_dir=~/Downloads/Github/JackpotMaximizer
+# source_dir=~/Downloads/Github/autoasset
+# target_dir=~/Downloads/Github/JackpotMaximizer
+source_dir=~/Github/autoasset
+target_dir=~/Github/JackpotMaximizer
 
 # 复制文件
 dataf="DataFrame.json"
@@ -20,7 +22,7 @@ if [[ -f "${source_dir}/${json}" ]]; then
     cp "${source_dir}/${json}" "${target_dir}"
     echo "The '${json}' file has been copied."
 else
-    echo "${json} copy failed." 
+    echo "${json} copy failed."
 fi
 
 if [[ -f "${source_dir}/${dataf}" ]]; then
@@ -28,7 +30,7 @@ if [[ -f "${source_dir}/${dataf}" ]]; then
     cp "${source_dir}/${dataf}" "${target_dir}"
     echo "The '${dataf}' file has been copied."
 else
-    echo "${dataf} copy failed." 
+    echo "${dataf} copy failed."
 fi
 
 if [[ -f "${source_dir}/${insx}" ]]; then
@@ -36,7 +38,7 @@ if [[ -f "${source_dir}/${insx}" ]]; then
     cp "${source_dir}/${insx}" "${target_dir}"
     echo "The '${insx}' file has been copied."
 else
-    echo "${insx} copy failed." 
+    echo "${insx} copy failed."
 fi
 
 if [[ -f "${source_dir}/${filterN_v3}" ]]; then
@@ -44,6 +46,5 @@ if [[ -f "${source_dir}/${filterN_v3}" ]]; then
     cp "${source_dir}/${filterN_v3}" "${target_dir}/codex/a"
     echo "The '${filterN_v3}' file has been copied."
 else
-    echo "${filterN_v3} copy failed." 
+    echo "${filterN_v3} copy failed."
 fi
-
