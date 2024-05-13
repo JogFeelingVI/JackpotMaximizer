@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-09 17:01:26
+# @Last Modified time: 2024-05-13 23:09:00
 import httpx, pathlib, ast
 import threading, json, re
 import time, datetime
@@ -117,29 +117,31 @@ def handle_response(text:str) -> str:
 def readCynsInfo():
     cyns_json = pathlib.Path('./cyns.log')
     search_id_r_b = re.compile(r"id\s+(\d+).*\*(.*)\s\+\s(.*)")
+    search_id_cyn_r_b = re.compile(r'id\s+(\d+).*\{(.*)\}\s\*\s(.*)\s\+\s(.*)')
     data = []
     with cyns_json.open('r+') as f:
         for line in f:
             line = line.strip()  # 去除首尾空格
             if line:  # 检查是否为空行
-                match_search = search_id_r_b.search(line)
+                match_search = search_id_cyn_r_b.search(line)
                 if match_search == None:
                     return 'search_id_r_b is None'
                 
-                _id, _r, _b = match_search.groups()
+                _id, cyns, _r, _b = match_search.groups()
                 r= ' '.join((f'{x:02}' for x in ast.literal_eval(_r)))
                 b = ' '.join((f'{x:02}' for x in ast.literal_eval(_b)))
-                data.append((int(_id),f'{r} - {b}'))
-        f.truncate(0)  # 将文件指针移动到开头
-        f.flush()
+                cyns = ast.literal_eval( f'{{{cyns}}}').get(4,-1)
+                data.append((int(_id),cyns,f'{r} - {b}'))
+        # f.truncate(0)  # 将文件指针移动到开头
+        # f.flush()
     # 排序
-    data.sort(key=lambda item: item[0])
+    data.sort(key=lambda item: item[1])
     infos = []
     count = 0
     # 打印信息，每行后添加空行
     for item in data[0:30]:
-        id, info = item
-        infos.append(f'{id:_>4}: {info} \n')
+        id,cyns, info = item
+        infos.append(f'{id:_>4}|{cyns}: {info} \n')
         count +=1 
         if count == 5:
             infos.append('\n')

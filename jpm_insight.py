@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-12 19:13:02
+# @Last Modified time: 2024-05-13 22:46:21
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, emoji, sys, ast
@@ -91,7 +91,7 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:dic
             m5 =  mcyns[5]
             m4 = mcyns[4]
             match cyn:
-                case  {4:int() as L4, 5:int() as L5} if m5-2< L5 < m5 and m4-2< L4 < m4:
+                case  {4:int() as L4, 5:int() as L5} if L5 < m5 and L4 < m4:
                     print(f'{r(logs)} {cyn = }')
                     with open(cyns_info, "a") as file:
                         # 将信息写入文件
