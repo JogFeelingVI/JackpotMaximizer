@@ -2,11 +2,11 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-13 23:09:00
-import httpx, pathlib, ast
-import threading, json, re
+# @Last Modified time: 2024-05-14 16:01:06
+import httpx, pathlib, ast, re
 import time, datetime
 from typing import Final, Callable
+from PIL import Image, ImageDraw, ImageFont
 
 
 RED = "\033[91m"
@@ -136,20 +136,33 @@ def readCynsInfo():
         # f.flush()
     # 排序
     data.sort(key=lambda item: item[1])
-    infos = []
-    count = 0
+    with Image.open('./Fonts/bg.jpg').convert("RGBA") as base:
+        t_number = Image.new("RGBA", base.size, (92, 92, 92, 36))
+        # get a font
+        fnt = ImageFont.truetype("./Fonts/Micro5-Regular.ttf", 70)
+        # get a drawing context
+        d = ImageDraw.Draw(t_number)
+        # draw text, half opacity
+        d.text((10, 10), "Hello", font=fnt, fill=(255, 255, 255, 128))
+        # draw text, full opacity
+        d.text((10, 60), "World", font=fnt, fill=(255, 255, 255, 255))
+
+        out = Image.alpha_composite(base, t_number)
+        out.show()
+    # infos = []
+    # count = 0
     # 打印信息，每行后添加空行
-    for item in data[0:30]:
-        id,cyns, info = item
-        infos.append(f'{id:_>4}|{cyns}: {info} \n')
-        count +=1 
-        if count == 5:
-            infos.append('\n')
-            count = 0
-    return_msg =  ''.join(infos)
-    if return_msg == '':
-        return_msg = 'No Find Data.'
-    return return_msg
+    # for item in data[0:30]:
+    #     id,cyns, info = item
+    #     infos.append(f'{id:_>4}|{cyns}: {info} \n')
+    #     count +=1 
+    #     if count == 5:
+    #         infos.append('\n')
+    #         count = 0
+    # return_msg =  ''.join(infos)
+    # if return_msg == '':
+    #     return_msg = 'No Find Data.'
+    return 'return_msg'
 
 
 def worker_thread():
