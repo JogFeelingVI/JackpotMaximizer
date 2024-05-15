@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-15 17:10:24
+# @Last Modified time: 2024-05-15 17:43:07
 # @overwatch https://core.telegram.org/bots/api#sendphoto
 
 import httpx, pathlib, ast, re
@@ -106,23 +106,23 @@ class OrzBot:
             case str() as sp:
                 p = pathlib.Path(sp)
                 if p.exists():
-                    files.append(p)
+                    files.append(p.absolute())
             case list() as lp:
                 for sp in lp:
                     p = pathlib.Path(sp)
                     if p.exists():
-                        files.append(p)
+                        files.append(p.absolute())
         # 确保文件全部存在 并将所有文件转换 pathlib
         for f in files:
-            with open(f, 'rb') as pf:
-                post_files = {"photo": pf}
-                data = {"chat_id": chat_id, "caption": caption}
-                response = self.client.post(url, json=data, files=post_files)
-                if response.status_code == 200:
-                    print("The picture was sent successfully.")
-                else:
-                    print(f"Image sending failed, error code:{response.status_code}")
-                    print(response.text)
+            photo = {'photo': open(f.absolute(), 'rb')}
+            data = {"chat_id": chat_id, "caption": caption}
+            response = self.client.post(url, files=photo, json=data)
+            if response.status_code == 200:
+                print("The picture was sent successfully.")
+            else:
+                print(f"Image sending failed, error code:{response.status_code}")
+                print(response.text)
+            pathlib.Path(f).rmdir()
 
     def start(self):
         offset = None
