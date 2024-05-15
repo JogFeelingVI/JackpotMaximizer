@@ -2,16 +2,16 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-14 16:04:53
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-14 17:12:40
+# @Last Modified time: 2024-05-15 16:21:07
 
-import httpx, pathlib, ast, re
-import time, datetime
+import pathlib, ast, re, datetime
 from typing import Final, Callable
 from PIL import Image, ImageDraw, ImageFont
 
 
 def loadtojpg():
     cyns_json = pathlib.Path("./cyns.log")
+    pngs = []
     search_id_r_b = re.compile(r"id\s+(\d+).*\*(.*)\s\+\s(.*)")
     search_id_cyn_r_b = re.compile(r"id\s+(\d+).*\{(.*)\}\s\*\s(.*)\s\+\s(.*)")
     data = []
@@ -70,7 +70,10 @@ def loadtojpg():
             dtime = now.strftime("%Y/%m/%d %H:%M:%S")
             d.text((xpoint + 290, ypoint), dtime, font=fnt45, fill=(92, 92, 92, 198)) 
             out = Image.alpha_composite(base, t_number)
-            out.save(f'./jpmpng/Jpm_{now.strftime("%Y%m%d_%H%M%S")}_{i:>04}.png')
+            png = f'./jpmpng/Jpm_{now.strftime("%Y%m%d_%H%M%S")}_{i:>04}.png'
+            pngs.append(png)
+            out.save(png)
+    return pngs, dtime
 
 
 def main():
