@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-09 16:41:16
+# @Last Modified time: 2024-05-16 17:31:39
 
 import functools
 import itertools, re, time
@@ -51,7 +51,8 @@ def diffMain(show:bool = True, result:list=[]) -> tuple[int,int, list, list]:
     #  (999, {4: 0, 5: 0}, [1, 5, 15, 16, 26, 29], [3])
     # print(f'{dataForCyn=}')
     if dataForCyn.__len__() >0:
-        dataForCyn = sorted(dataForCyn, key= lambda x:x[1][5])
+        dataForCyn = sorted(dataForCyn, key= lambda x:x[1][4])
+        print(f'{dataForCyn[0] = }\n{dataForCyn[-1] = }')
         fromids = dataForCyn[0]
     else:
         return (0,0,[],[])
