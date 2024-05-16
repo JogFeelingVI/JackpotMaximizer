@@ -2,17 +2,15 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-14 16:04:53
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-15 16:21:07
+# @Last Modified time: 2024-05-16 09:01:46
 
 import pathlib, ast, re, datetime
 from typing import Final, Callable
 from PIL import Image, ImageDraw, ImageFont
 
 
-def loadtojpg():
+def loadtoData():
     cyns_json = pathlib.Path("./cyns.log")
-    pngs = []
-    search_id_r_b = re.compile(r"id\s+(\d+).*\*(.*)\s\+\s(.*)")
     search_id_cyn_r_b = re.compile(r"id\s+(\d+).*\{(.*)\}\s\*\s(.*)\s\+\s(.*)")
     data = []
     with cyns_json.open("r+") as f:
@@ -21,17 +19,21 @@ def loadtojpg():
             if line:  # 检查是否为空行
                 match_search = search_id_cyn_r_b.search(line)
                 if match_search == None:
-                    return "search_id_r_b is None"
+                    return data
 
                 _id, cyns, _r, _b = match_search.groups()
                 r = " ".join((f"{x:02}" for x in ast.literal_eval(_r)))
                 b = " ".join((f"{x:02}" for x in ast.literal_eval(_b)))
                 cyns = ast.literal_eval(f"{{{cyns}}}").get(4, -1)
                 data.append((int(_id), cyns, f"{r} - {b}"))
-        # f.truncate(0)  # 将文件指针移动到开头
-        # f.flush()
+        f.truncate(0)  # 将文件指针移动到开头
+        f.flush()
     # 排序
     data.sort(key=lambda item: item[1])
+    return data
+
+def datatoPng(data:list):
+    pngs = []
     with Image.open("./Fonts/bg.jpg").convert("RGBA") as base:
         # get a font
         fnt65 = ImageFont.truetype("./Fonts/Micro5-Regular.ttf", 65)
@@ -70,10 +72,10 @@ def loadtojpg():
             dtime = now.strftime("%Y/%m/%d %H:%M:%S")
             d.text((xpoint + 290, ypoint), dtime, font=fnt45, fill=(92, 92, 92, 198)) 
             out = Image.alpha_composite(base, t_number)
-            png = f'./jpmpng/Jpm_{now.strftime("%Y%m%d_%H%M%S")}_{i:>04}.png'
+            png = f'./jpmpng/{now.strftime("%H%M%S")}_{i:>04}.png'
             pngs.append(png)
             out.save(png)
-    return pngs, dtime
+    return pngs
 
 
 def main():
@@ -82,7 +84,10 @@ def main():
     #     if i % 5 == 0 and i != 0:
     #         print("-" * 8)
     #     print("*" * 16)
-    loadtojpg()
+    data = loadtoData()
+    pngs = datatoPng(data=data)
+    for png in pngs:
+        print(f'png {png=}')
 
 
 if __name__ == "__main__":

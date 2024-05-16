@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-15 17:43:07
+# @Last Modified time: 2024-05-16 09:01:25
 # @overwatch https://core.telegram.org/bots/api#sendphoto
 
 import httpx, pathlib, ast, re
@@ -68,9 +68,9 @@ class OrzBot:
                                 f"Welcome to `Orz-Lotto` bot, which is a lottery service robot. chatid: {chat_id}",
                             )
                         case "check":
-                            print(f'chatid: {chat_id}')
-                            ps, dtime = readCynsInfo()
-                            self.send_photo(chat_id, ps, dtime)
+                            print(f'check chatid: {chat_id}')
+                            pngs = readCynsInfo()
+                            self.send_photo(chat_id, pngs, now_dt())
                         case "help":
                             self.send_message(
                                 chat_id, "Available commands:/start, /help, /check"
@@ -99,30 +99,34 @@ class OrzBot:
             print(f"Message sending failed, error code:{response.status_code}")
             print(response.text)
 
-    def send_photo(self, chat_id, pngs: str | List[str], caption: str):
+    def send_photo(self, chat_id, pngs, caption: str):
         url = self.baseUrl + "/sendPhoto"
-        files = []
-        match pngs:
-            case str() as sp:
-                p = pathlib.Path(sp)
-                if p.exists():
-                    files.append(p.absolute())
-            case list() as lp:
-                for sp in lp:
-                    p = pathlib.Path(sp)
-                    if p.exists():
-                        files.append(p.absolute())
+        # files = []
+        # match pngs:
+        #     case str() as sp:
+        #         p = pathlib.Path(sp)
+        #         if p.exists():
+        #             files.append(p.absolute())
+        #     case list() as lp:
+        #         for sp in lp:
+        #             p = pathlib.Path(sp)
+        #             if p.exists():
+        #                 files.append(p.absolute())
         # 确保文件全部存在 并将所有文件转换 pathlib
-        for f in files:
-            photo = {'photo': open(f.absolute(), 'rb')}
-            data = {"chat_id": chat_id, "caption": caption}
-            response = self.client.post(url, files=photo, json=data)
-            if response.status_code == 200:
-                print("The picture was sent successfully.")
-            else:
-                print(f"Image sending failed, error code:{response.status_code}")
-                print(response.text)
-            pathlib.Path(f).rmdir()
+        for f in pngs:
+            filePath = pathlib.Path(f'./{f}')
+            if filePath.exists():
+                photo = {'photo': open(filePath, mode='rb')}
+                data = {"chat_id": chat_id, "caption": caption}
+                response = self.client.post(url, files=photo, data=data)
+                # print(f'{response.text}')
+                if response.status_code == 200:
+                    print("The picture was sent successfully.")
+                    filePath.unlink()
+                else:
+                    print(f"Image sending failed, error code:{response.status_code}")
+                    print(response.text)
+                
 
     def start(self):
         offset = None
@@ -163,10 +167,8 @@ def handle_response(text: str) -> str:
 
 
 def readCynsInfo():
-    loadtopng, dtime = Orz_Loadtojpg.loadtojpg()
-    for png in loadtopng:
-        print(f"@{dtime} -> {png}")
-    return loadtopng, dtime
+    data = Orz_Loadtojpg.loadtoData()
+    return Orz_Loadtojpg.datatoPng(data)
 
 
 def worker_thread():
