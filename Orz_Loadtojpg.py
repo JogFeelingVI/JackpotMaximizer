@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-14 16:04:53
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-16 10:15:05
+# @Last Modified time: 2024-05-16 15:36:15
 
 import pathlib, ast, re, datetime
 from typing import Final, Callable
@@ -26,7 +26,7 @@ def loadtoData():
                 b = " ".join((f"{x:02}" for x in ast.literal_eval(_b)))
                 cyns = ast.literal_eval(f"{{{cyns}}}").get(4, -1)
                 data.append((int(_id), cyns, f"{r} - {b}"))
-    cyns_json.unlink()
+    # cyns_json.unlink()
     # 排序
     data.sort(key=lambda item: item[1])
     return data
@@ -52,7 +52,7 @@ def datatoPng(data:list):
                     # infos.append('\n')
                     d.text(
                         (xpoint, ypoint),
-                        "-" * 30,
+                        "-" * 28,
                         font=fnt45,
                         fill=(92, 92, 92, 234),
                     )
@@ -60,7 +60,7 @@ def datatoPng(data:list):
                 # print(f"{count = }")
                 d.text((xpoint, ypoint), cyns, font=fnt45, fill=(92, 92, 92, 198))
                 d.text(
-                    (xpoint + 160, ypoint),
+                    (xpoint + 180, ypoint),
                     info,
                     font=fnt65,
                     fill=(13, 13, 13, 234),
