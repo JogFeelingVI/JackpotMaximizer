@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-14 16:04:53
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-16 09:01:46
+# @Last Modified time: 2024-05-16 10:15:05
 
 import pathlib, ast, re, datetime
 from typing import Final, Callable
@@ -26,8 +26,7 @@ def loadtoData():
                 b = " ".join((f"{x:02}" for x in ast.literal_eval(_b)))
                 cyns = ast.literal_eval(f"{{{cyns}}}").get(4, -1)
                 data.append((int(_id), cyns, f"{r} - {b}"))
-        f.truncate(0)  # 将文件指针移动到开头
-        f.flush()
+    cyns_json.unlink()
     # 排序
     data.sort(key=lambda item: item[1])
     return data

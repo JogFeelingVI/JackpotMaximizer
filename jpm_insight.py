@@ -2,14 +2,14 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-15 15:25:26
+# @Last Modified time: 2024-05-16 10:17:01
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast
 
 ARGS = {
     'dnsr': False, 
-    'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': False, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
+    'noinx': False, 'fix': 'a', 'cpu': 'c', 'loadins': True, 'usew': 's', 'debug': False, 'ins': '(.*)', 'n': 1000, 'r': 6, 'b': 1, 'subcommand': 'load'}
 cyns_info = pathlib.Path('cyns.log')
 match_cyns = {4:47.5366, 5:1.4627, 6:0.009}
 result = []
