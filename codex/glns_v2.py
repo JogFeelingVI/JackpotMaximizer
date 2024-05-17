@@ -2,10 +2,10 @@
 # @Author: JogFeelingVI
 # @Date:   2023-09-21 21:14:47
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-07 08:01:10
+# @Last Modified time: 2024-05-17 10:14:25
 import itertools, random, math
 from collections import Counter, deque
-from codex import groove, note
+from codex import note
 from typing import Any, List
 from functools import partial
 
@@ -201,23 +201,7 @@ class glnsMpls:
                         self.producer.update({'r': r})
                         self.producer.update({'b': b})
                         print('[c] use choices')
-                    case 'g':
-                        js_data = groove.bitx_read()
-
-                        if js_data != None:
-                            r = partial(
-                                groove.random_ex(json_data=js_data,
-                                                 max_length=self.rLen,
-                                                 RBC=groove.RC).creation)
-                            b = partial(
-                                groove.random_ex(json_data=js_data,
-                                                 max_length=self.bLen,
-                                                 RBC=groove.BC).creation)
-                            self.producer.update({'r': r})
-                            self.producer.update({'b': b})
-                            print('[g] use Groove')
-                        else:
-                            print(f'js data is None')
+                    
 
             # print(f'glns init done')
 

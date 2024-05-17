@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-04-21 21:05:21
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-16 10:14:08
+# @Last Modified time: 2024-05-17 10:11:34
 
 # 定义源文件夹和目标文件夹
 source_dir=~/Downloads/Github/autoasset
@@ -43,7 +43,7 @@ fi
 
 if [[ -f "${source_dir}/${filterN_v3}" ]]; then
     echo "The '${filterN_v3}' file exists."
-    cp "${source_dir}/${filterN_v3}" "${target_dir}/codex/a"
+    cp "${source_dir}/${filterN_v3}" "${target_dir}/${filterN_v3}"
     echo "The '${filterN_v3}' file has been copied."
 else
     echo "${filterN_v3} copy failed."
