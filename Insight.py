@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-01-07 14:18:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-17 09:28:48
+# @Last Modified time: 2024-05-17 17:10:32
 
 import functools
 import itertools, re, time
@@ -42,7 +42,7 @@ from codex import sq3database, tonji, diffwhere
 #             print('No data matching the filter criteria.')
 
 
-def diffMain(show:bool = True, result:list=[]) -> tuple[int,int, list, list]:
+def diffMain(result:list=[]):
     diff = diffwhere
     dataForCyn = diff.tasks_futures_proess_mem(result)
     # data i = (996, {4:37,5:1}, [6, 8, 19, 28, 29, 31], [4])
@@ -51,20 +51,12 @@ def diffMain(show:bool = True, result:list=[]) -> tuple[int,int, list, list]:
     #  (999, {4: 0, 5: 0}, [1, 5, 15, 16, 26, 29], [3])
     # print(f'{dataForCyn=}')
     if dataForCyn.__len__() > 0:
-        dataForCyn = [x for x in dataForCyn if x[1][5] <= 1]
-        dataForCyn = sorted(dataForCyn, key= lambda x:x[1][4])
-        print(f'{dataForCyn[0] = }\n{dataForCyn[-1] = }')
-        fromids = dataForCyn[0]
+        dataForCyn = [x for x in dataForCyn if x[1][5] in [2, 3]]
+        dataForCyn = sorted(dataForCyn, key= lambda x:x[1][4], reverse=True)
+        print(f'min: {dataForCyn[0][1]} max{dataForCyn[-1][1] }')
     else:
-        return (0,0,[],[])
-        
-    if show:
-        for df in dataForCyn[-20::]:
-            fromid, cyn, n, t = df
-            # Nr_str = ' '.join([f"{x:02}" for x in _s.rNumber])
-            # Nb_str = ' '.join([f"{x:02}" for x in _s.bNumber])
-            print(f'id {fromid:>4} / cyn {cyn} * {n} + {t}')
-    return fromids
+        return None
+    return dataForCyn
 
 
 if __name__ == "__main__":

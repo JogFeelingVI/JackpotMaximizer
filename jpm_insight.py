@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-16 10:17:01
+# @Last Modified time: 2024-05-17 16:48:33
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast
@@ -58,7 +58,32 @@ def whoistime():
     # (2024年04月05日 星期五 23时01分51秒)
     return f"{now.year}年{now.month}月{now.day}日 {weekday_cn}, {now.hour}点{now.minute}分{now.second}秒"
 
-def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:dict = match_cyns):
+def main_rego(args:dict = ARGS, mcyns:dict = match_cyns):
+    start_time = time.perf_counter()
+    # 获得act 传回来的参数
+    def m_result(r):
+        global result
+        print(f'exec callblack {r[0][1]}')
+        result = r
+    now = funcs_v2.Lastime()
+    funcs_v2.action(args, callblack=m_result)
+    if  result == []:
+        print(f'{r("The sample parameters are empty, please adjust the parameters and try again...")}')
+        return
+    print(f'result len {result.__len__()}')
+    diff_info = Insight.diffMain(result=result)
+    if diff_info == None:
+        return
+    with open(cyns_info, "a") as file:
+                        # 将信息写入文件
+                        
+        for diff_item in diff_info:
+            fromid, cyn, n, t = diff_item
+            logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
+            print(f'{r(logs)} {cyn = }', end='\r')
+            file.write(f'{logs}\n')
+
+def main(tasks:list, args:dict = ARGS, mcyns:dict = match_cyns):
     print(f'Welcome to the world of wealth. {g(whoistime())}')
     try:
         while tasks:
@@ -83,15 +108,16 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:dic
                 print(f'{r("The sample parameters are empty, please adjust the parameters and try again...")}')
                 return
             print(f'result len {result.__len__()}')
-            diff_info = Insight.diffMain(show=False, result=result)
-            if diff_info == 0:
+            diff_info = Insight.diffMain(result=result)
+            if diff_info == None:
                 continue
-            fromid, cyn, n, t = diff_info
+            
+            fromid, cyn, n, t = diff_info[0]
             logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
             m5 =  mcyns[5]
             m4 = mcyns[4]
             match cyn:
-                case  {4:int() as L4, 5:int() as L5} if L5 < m5 and L4 < m4:
+                case  {4:int() as L4} if L4 > m4:
                     print(f'{r(logs)} {cyn = }')
                     with open(cyns_info, "a") as file:
                         # 将信息写入文件
@@ -103,12 +129,9 @@ def main(tasks:list, finished_event:threading.Event, args:dict = ARGS, mcyns:dic
             print(f'This running time is {g(f"{end_time-start_time-3:.4f}")} seconds. {tasks.__len__()}')
     except Exception as e:
         print(f'ERR: {e}')
-        finished_event.set()
         with open('error.log', "a") as file:
             # 将信息写入文件
             file.write(loger(e, 'Jpm_insight -> main'))
-    finally:
-        finished_event.set()
         
 def loadLine(path:pathlib.Path):
     print(f'Welcome to the world of wealth. {g(whoistime())}')
@@ -118,7 +141,10 @@ def loadLine(path:pathlib.Path):
         if insert_test == []:
             print(f'{r("The sample parameters are empty, please adjust the parameters and try again...")}')
             return
-        Insight.diffMain(show=True, result=insert_test)
+        diff_info = Insight.diffMain(result=insert_test)
+        if diff_info != None:
+            for item in diff_info:
+                print(f'{item}')
         end_time = time.perf_counter()
         print(f'This running time is {g(f"{end_time-start_time-3:.4f}")} seconds. {insert_test.__len__()}')
             
@@ -233,13 +259,11 @@ if __name__ == "__main__":
         case [_,'explore']:
             print(f'{g("Use `explore` to execute the program")}')
             tasks = [x for x in range(300)]
-            finished_event = threading.Event()
-            mainx = threading.Thread(target=main, args=(tasks, finished_event), name="workman")
-            # watcher = threading.Thread(target=monitor, args=(tasks, finished_event), name='watcher')
-            mainx.start()
-            # watcher.start()
-            mainx.join()
-            # watcher.join()
+            main(tasks=tasks)
+        case [_, 'explore', 'rego']:
+            ARGS.update({'cpu':'d'})
+            print(f'{g("Use `explore` to execute the program")} CPU = rego ')
+            main_rego()
         case [_, 'load', path]:
             print(f'{g(f"Use `Load {path}` to execute the program")}')
             if (p:=pathlib.Path(path)).exists():

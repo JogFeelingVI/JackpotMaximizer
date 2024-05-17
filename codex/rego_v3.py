@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 # @Author: Your name
 # @Date:   2023-12-26 20:55:18
-# @Last Modified by:   Your name
-# @Last Modified time: 2024-01-03 15:47:04
+# @Last Modified by:   JogFeelingVI
+# @Last Modified time: 2024-05-17 15:37:22
 
 from typing import List
 from functools import partial
-import pathlib, re
-from codex import ospath
-
-from codex import note
+import pathlib, re, itertools
+from codex import ospath, note
+from dataclasses import dataclass
 
 filenam = ospath.findAbsp.file_path('insx.rego')
 
@@ -20,20 +19,25 @@ def load_rego_v2() -> str:
     with rego.open(mode='r', encoding='utf-8') as go:
         return go.read()
 
+@dataclass
+class range_itertools:
+    ranges = dict.fromkeys(range(1, 8),[x for x in range(1, 34)])
+    
+    def product(self):
+        '''from key product all list'''
+        keys = sorted(self.ranges.keys())
+        range_p = itertools.product(*[self.ranges[key] for key in keys])
+        return range_p
 
-# class Note:
-
-#     def __init__(self) -> None:
-#         self.number = []
-#         self.tiebie = []
-#         self.setnumber_R = set()
-#         self.setnumber_B = set()
-
-#     def index(self, i=1):
-#         return 1
-
+    def add(self, bitx:int, number_list:List[int]):
+        '''
+        bitx 1 2 3 4 5 6 7
+        number_list [1,2,3,4...33]
+        '''
+        self.ranges[bitx] = number_list
 
 class Lexer:
+    range_product = range_itertools()
 
     def __init__(self, debug='') -> None:
         self.debug = debug
@@ -56,7 +60,7 @@ class Lexer:
                     result.update({index: handler(match=match)})
                     index += 1
                     break
-        return result
+        return result, self.range_product
 
     def handle_paichu(self, match):
         match_list = match.group(0).split()
@@ -84,6 +88,7 @@ class Lexer:
         match_list = match.group(0).split()
         numbers = [int(x) for x in match_list[1:-1]]
         bit = int(match.group(1)[-1])
+        self.range_product.add(bit, numbers)
         partial_func = partial(rego_filter.f_bit, args=numbers, index=bit)
         if self.debug.count('v') == 1:
             print(f'debug bit {match.group(0)} | {numbers} ? {bit}')
@@ -93,6 +98,7 @@ class Lexer:
         match_list = match.group(0).split()
         numbers = [int(x) for x in match_list[1:-1]]
         bit = int(match.group(1)[-1])
+        self.range_product.add(bit, [x for x in range(1, 34) if x not in numbers])
         partial_func = partial(rego_filter.f_bitex, args=numbers, index=bit)
         if self.debug.count('v') == 1:
             print(f'debug bit {match.group(0)} | {numbers} ? {bit}')

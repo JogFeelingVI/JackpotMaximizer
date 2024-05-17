@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-04 07:23:24
+# @Last Modified time: 2024-05-17 16:00:39
 import os, collections
 import re, itertools as itr, concurrent.futures
 from typing import Callable, List, Iterable
@@ -72,7 +72,7 @@ def initPostCall(cdic: dict, r: int, b: int, iRx: str, scw: str):
     fite = filters_v3
     fite.initialization()
     temp["glns"] = glns_v2.glnsMpls(cdic, r, b, scw).producer
-    temp["rego"] = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
+    temp["rego"], temp["product"] = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
     temp["filter"] = fite.Checkfunc()
     temp["depth"] = global_vars["bastdata"]["depth"]
     temp["iRx"] = try_iRx(iRx=iRx)
@@ -86,7 +86,6 @@ def try_iRx(iRx: str):
         _r = re.compile("(.*)")
     finally:
         return _r
-
 
 
 def initTaskQueue_to_list():
@@ -146,7 +145,7 @@ def filter_map(zio, dr):
                 "acvalue": bool() as ac,
                 "jmsht": bool() as five,
             } if ac == True and five == True:
-                if sum(not value for value in filterx.values()) > 1:
+                if sum(not value for value in filterx.values()) > 0:
                     # print(f'T, T {filterx}')
                     rfilter = False
             case {
@@ -156,7 +155,7 @@ def filter_map(zio, dr):
                 # print(f'F, _ {filterx}')
                 rfilter = False
             case _:
-                if sum(not value for value in filterx.values()) > 1:
+                if sum(not value for value in filterx.values()) > 0:
                     # print(f'T, T {filterx}')
                     rfilter = False
     # for k, func in data['filter'].items():
@@ -234,7 +233,7 @@ def tasks_single():
 
 def done_task(future, storage: List, seen: set):
     temp, pid = future.result()
-    
+
     count = 0
     for i in temp:
         # i = [58, 3000, [0], [0]]
@@ -250,12 +249,32 @@ def done_task(future, storage: List, seen: set):
     # print(f"Complete effective tasks {count} from worker-{pid}")
 
 
+def tasks_from_regos():
+    global_vars = globals()
+    product = global_vars["procdata"]["product"]
+    iStorage = []
+    _, data, rego, filterx = initTaskQueue_to_list()
+    idx = 0
+    for p_item in product.product():
+        a, b, c, d, e, f, z = p_item
+        if a < b < c < d < e < f:
+            n = [a, b, c, d, e, f]
+            t = [z]
+            rfilter = combinations_ols([a, b, c, d, e, f], [z], (data, rego, filterx))
+            
+            if rfilter == True:
+                iStorage.append([idx, n, t])
+            idx += 1
+            # print(f'{iStorage.__len__()}')
+    return iStorage
+
+
 def tasks_futures():
     iStorage = []
     seen_n = set()
     with Manager() as mem:
         pd = mem.dict(collections.defaultdict(int))
-        
+
         with concurrent.futures.ProcessPoolExecutor() as executor:
             length, data, rego, filterx = initTaskQueue_to_list()
             chunk_size = length // cpu_count()
@@ -263,9 +282,9 @@ def tasks_futures():
                 range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
             ]
             futures = [
-                executor.submit(create_task_v2, i, data, rego, filterx, pd).add_done_callback(
-                    lambda f: done_task(f, iStorage, seen_n)
-                )
+                executor.submit(
+                    create_task_v2, i, data, rego, filterx, pd
+                ).add_done_callback(lambda f: done_task(f, iStorage, seen_n))
                 for i in chunks
             ]
 

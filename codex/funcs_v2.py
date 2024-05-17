@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-03 23:09:41
+# @Last Modified time: 2024-05-17 16:17:19
 import pathlib, json, re, datetime
 from codex import gethtml_v2, multip_v3
 
@@ -115,11 +115,10 @@ class load:
             for k, v in args.items():
                 print(f'{k:>6}: {f"{v}"}')
 
-    def __cpu_one(
-        self, args: dict, data: dict, core: bool = False, sq3: bool = True
-    ) -> list:
+    def __cpu_one(self, args: dict, data: dict, core:int) -> list:
         """
         only cpu A run work
+        core 1 单核 2 多核并启动SQ3 3 多核但不启动sq3
         """
         Retds = []
         match args:
@@ -135,13 +134,16 @@ class load:
                 p.settingLength(n)
                 p.useRego(loadins)
                 p.initPostCall(data, r, b, ins, usew)
-                if core == False:
-                    Retds = p.tasks_single()
-                else:
-                    if sq3:
+                match core:
+                    case 1:
+                        Retds = p.tasks_single()
+                    case 2:
                         Retds = p.tasks_futures_press()
-                    else:
+                    case 3:
                         Retds = p.tasks_futures()
+                    case 4:
+                        Retds = p.tasks_from_regos()
+                        
             case _:
                 pass
         return Retds
@@ -151,8 +153,8 @@ class load:
         #     for inx in reds:
         #         self.__echo__(inx)
 
-    def __cpu_callblack(self, args: dict, data: dict):
-        result = self.__cpu_one(args, data, True, False)
+    def __cpu_callblack(self, args: dict, data: dict, core:int=3):
+        result = self.__cpu_one(args, data, core)
         try:
             self.cpucallblack(result)
         finally:
@@ -161,7 +163,7 @@ class load:
     def __cpu_simulation(self, args: dict, data: dict):
         match args:
             case {"Compared-R": list() as cR, "Compared-B": list() as cB}:
-                Retds = self.__cpu_one(args, data, True)
+                Retds = self.__cpu_one(args, data, 3)
                 Rex: list = [y for x in Retds for y in self.__diff__(x, cR, cB)]
                 iRex = len(Rex)
                 if iRex == 0:
@@ -275,15 +277,17 @@ class load:
                 Return_data = []
                 match cpu:
                     case "o":
-                        Return_data = self.__cpu_one(args, _data)
+                        Return_data = self.__cpu_one(args, _data, 1)
                     case "a":
-                        Return_data = self.__cpu_one(args, _data, True)
+                        Return_data = self.__cpu_one(args, _data, 3)
                         # Enable multi-core
                     case "m":
                         self.__cpu_simulation(args, _data)
                     case "c":
                         # 特殊执行方式 用来支持jpm_insight
                         self.__cpu_callblack(args, _data)
+                    case "d":
+                        self.__cpu_callblack(args, _data, 4)
                     case _:
                         print(f'No way to parse unknown parameter "{cpu}"')
                 if Return_data == []:
