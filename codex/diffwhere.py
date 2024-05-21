@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-09 16:39:46
+# @Last Modified time: 2024-05-21 10:36:22
 
 import functools
 import json
@@ -227,20 +227,5 @@ def tasks_futures_proess_mem(result: list = []):
                 )
                 for i in chunks
             ]
-        # completed = 0
-
-        # futures_len = futures.__len__()
-        # for future in concurrent.futures.as_completed(futures):
-        #     # 任务完成后，增加完成计数并打印进度
-        #     completed += 1
-        #     id, cyns, n, b = future.result()
-        #     if cyns[4] != 0:
-        #         iStorage.append((id, cyns, n, b))
-        #     bil = completed / futures_len
-        #     # iStorage.append(temp)
-        #     print(
-        #         f"\033[K[{cp*int(bil*50)}{ip*(50-int(bil*50))}] {bil*100:.2f}%",
-        #         end="\r",
-        #     )
-        # print(f"\033[K[ {completed} ] 100%")
+    print(f'completed 100% {" "* 60}')
     return iStorage

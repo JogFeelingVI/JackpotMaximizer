@@ -2,10 +2,10 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-17 16:48:33
+# @Last Modified time: 2024-05-21 10:40:30
 
 from codex import funcs_v2, tonji
-import Insight, time, datetime, threading, pathlib, sys, ast
+import Insight, time, datetime, threading, pathlib, sys, ast, collections
 
 ARGS = {
     'dnsr': False, 
@@ -76,12 +76,33 @@ def main_rego(args:dict = ARGS, mcyns:dict = match_cyns):
         return
     with open(cyns_info, "a") as file:
                         # 将信息写入文件
-                        
-        for diff_item in diff_info:
-            fromid, cyn, n, t = diff_item
+        grouped_arrays = collections.defaultdict(list)
+        for array in diff_info:
+            third_element = tuple(array[2])
+            grouped_arrays[third_element].append(array)
+        
+        fromid, cyn, n, t = 0, {},[],[]
+        for third_element, group in grouped_arrays.items():
+            for _g in group:
+                _f, _c, _n, _t = _g
+                if _n != n:
+                    fromid, cyn,n,t = _f,_c,_n,_t
+                else:
+                    t.extend(_t)
+            L4, L5 = cyn[4], cyn[5]
             logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
-            print(f'{r(logs)} {cyn = }', end='\r')
-            file.write(f'{logs}\n')
+            if abs((L4 + L5)-49.008) <= 0.01:
+                print(f'{r(third_element)} {cyn = }', end='\r')
+                file.write(f'{logs}\n')
+        print(f'completed 100% {" "* 60}')
+        
+        # for diff_item in diff_info:
+        #     fromid, cyn, n, t = diff_item
+        #     L4, L5 = cyn[4], cyn[5]
+        #     if abs((L4 + L5)-49.008) <= 0.01:
+        #         logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
+        #         print(f'{r(logs)} {cyn = }', end='\r')
+        #         file.write(f'{logs}\n')
 
 def main(tasks:list, args:dict = ARGS, mcyns:dict = match_cyns):
     print(f'Welcome to the world of wealth. {g(whoistime())}')
@@ -117,7 +138,7 @@ def main(tasks:list, args:dict = ARGS, mcyns:dict = match_cyns):
             m5 =  mcyns[5]
             m4 = mcyns[4]
             match cyn:
-                case  {4:int() as L4} if L4 > m4:
+                case  {4:int() as L4, 5:int() as L5} if abs((L4 + L5)-49.008) <= 0.01  :
                     print(f'{r(logs)} {cyn = }')
                     with open(cyns_info, "a") as file:
                         # 将信息写入文件
