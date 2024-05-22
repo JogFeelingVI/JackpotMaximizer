@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-14 16:04:53
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-22 22:11:01
+# @Last Modified time: 2024-05-22 23:02:55
 
 import pathlib, ast, re, datetime
 from typing import Final, Callable
@@ -148,18 +148,26 @@ def datatoPngv3(data: list):
                     (xpoint, ypoint),
                     "-" * int(splen),
                     font=font_tips,
-                    fill=(92, 92, 92, 234),
+                    fill=(164, 164, 164, 178),
                 )
                 ypoint += font_tips.size * 1.2
             # print(f"{count = }")
-            d.text((xpoint, ypoint), cyns, font=font_change, fill=(92, 92, 92, 178))
+            d.text((xpoint, ypoint), cyns, font=font_change, fill=(150, 150, 150, 178))
             cynsplis = d.textlength(f"{cyns} ", font=font_change)
-            d.text(
-                (xpoint + cynsplis, ypoint),
-                info,
-                font=font_change,
-                fill=(13, 13, 13, 234),
-            )
+            #! 在这里改变行的字体颜色
+            char_widths = [font_change.getlength(char) for char in info]
+            xcw =0
+            color = (34, 40, 58, 178)
+            for i, char in enumerate(info):
+                if char == '-':
+                    color = (84, 102, 159, 178)
+                d.text(
+                    (xpoint + cynsplis + xcw, ypoint),
+                    char,
+                    font=font_change,
+                    fill=color,
+                )
+                xcw += char_widths[i]
             count += 1
             ypoint += font_change.size * 1.4
             # 确认是否需要保存
@@ -176,7 +184,7 @@ def datatoPngv3(data: list):
             if abs_now > 0.932 or index + 1 == data.__len__():
 
                 dypoint = base_w - d.textlength(now, font_tips) - 25
-                d.text((dypoint, ypoint), now, font=font_tips, fill=(92, 92, 92, 198))
+                d.text((dypoint, ypoint), now, font=font_tips, fill=(92, 92, 92, 178))
                 out = Image.alpha_composite(base, t_number)
                 png = f'./jpmpng/{datetime.datetime.now().strftime("%H%M%S")}_{count:>02}P{page}.png'
                 pngs.append(png)
