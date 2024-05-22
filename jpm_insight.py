@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-21 10:40:30
+# @Last Modified time: 2024-05-22 17:26:56
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast, collections
@@ -58,7 +58,7 @@ def whoistime():
     # (2024年04月05日 星期五 23时01分51秒)
     return f"{now.year}年{now.month}月{now.day}日 {weekday_cn}, {now.hour}点{now.minute}分{now.second}秒"
 
-def main_rego(args:dict = ARGS, mcyns:dict = match_cyns):
+def main_rego(args:dict = ARGS):
     start_time = time.perf_counter()
     # 获得act 传回来的参数
     def m_result(r):
@@ -89,25 +89,18 @@ def main_rego(args:dict = ARGS, mcyns:dict = match_cyns):
                     fromid, cyn,n,t = _f,_c,_n,_t
                 else:
                     t.extend(_t)
-            L4, L5 = cyn[4], cyn[5]
+            L456 = sum((cyn.get(4, 0), cyn.get(5, 0), cyn.get(6, 0))) / 10000
             logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
-            if abs((L4 + L5)-49.008) <= 0.01:
+            if abs(L456-0.004900) <=0.0002:
                 print(f'{r(third_element)} {cyn = }', end='\r')
                 file.write(f'{logs}\n')
         print(f'completed 100% {" "* 60}')
-        
-        # for diff_item in diff_info:
-        #     fromid, cyn, n, t = diff_item
-        #     L4, L5 = cyn[4], cyn[5]
-        #     if abs((L4 + L5)-49.008) <= 0.01:
-        #         logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
-        #         print(f'{r(logs)} {cyn = }', end='\r')
-        #         file.write(f'{logs}\n')
 
-def main(tasks:list, args:dict = ARGS, mcyns:dict = match_cyns):
+def main(tasks:int =100, args:dict = ARGS):
     print(f'Welcome to the world of wealth. {g(whoistime())}')
     try:
-        while tasks:
+        task = []
+        while task.__len__() < tasks:
             start_time = time.perf_counter()
             # 获得act 传回来的参数
             def m_result(r):
@@ -132,22 +125,45 @@ def main(tasks:list, args:dict = ARGS, mcyns:dict = match_cyns):
             diff_info = Insight.diffMain(result=result)
             if diff_info == None:
                 continue
-            
-            fromid, cyn, n, t = diff_info[0]
-            logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
-            m5 =  mcyns[5]
-            m4 = mcyns[4]
-            match cyn:
-                case  {4:int() as L4, 5:int() as L5} if abs((L4 + L5)-49.008) <= 0.01  :
-                    print(f'{r(logs)} {cyn = }')
-                    with open(cyns_info, "a") as file:
-                        # 将信息写入文件
-                        file.write(f'{logs}\n')
-                    tasks.pop()
-                case _:
-                    print(f'{b(logs)}')
+            # ???
+            echo = False
+            with open(cyns_info, "a") as file:
+                for item in diff_info.copy():
+                    fromid, cyn, n, t = item
+                    logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
+                    L456 = sum((cyn.get(4, 0), cyn.get(5, 0), cyn.get(6, 0))) / 10000
+                    if abs(L456-0.004900) <= 0.0002:
+                        task.append(item)
+                        if echo == False:
+                            print(f'{r(logs)}')
+                            echo = True
+            # ???
             end_time = time.perf_counter()
-            print(f'This running time is {g(f"{end_time-start_time-3:.4f}")} seconds. {tasks.__len__()}')
+            print(f'This running time is {g(f"{end_time-start_time-3:.4f}")} seconds. {task.__len__()}')
+        # task done 
+        print(f'task {tasks} is done.')
+        grouped_arrays = collections.defaultdict(list)
+        for array in task:
+            third_element = tuple(array[2])
+            grouped_arrays[third_element].append(array)
+        
+        fromid, cyn, n, t = 0, {},[],[]
+        with open(cyns_info, "a") as file:
+            for third_element, group in grouped_arrays.items():
+                for _g in group:
+                    _f, _c, _n, _t = _g
+                    if _n != n:
+                        fromid, cyn,n,t = _f,_c,_n,_t
+                    else:
+                        _t = [x for x in _t if x not in t]
+                        t.extend(_t)
+                
+                logs = f'{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}'
+                print(f'{r(third_element)} {cyn = }', end='\r')
+                file.write(f'{logs}\n')
+                
+        print(f'completed 100% {" "* 60}')
+        
     except Exception as e:
         print(f'ERR: {e}')
         with open('error.log', "a") as file:
@@ -279,7 +295,7 @@ if __name__ == "__main__":
             extract_and_print_info(cyns_info)
         case [_,'explore']:
             print(f'{g("Use `explore` to execute the program")}')
-            tasks = [x for x in range(300)]
+            tasks = 200
             main(tasks=tasks)
         case [_, 'explore', 'rego']:
             ARGS.update({'cpu':'d'})

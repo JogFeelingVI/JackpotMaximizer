@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-31 17:33:32
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-16 09:01:25
+# @Last Modified time: 2024-05-22 15:39:43
 # @overwatch https://core.telegram.org/bots/api#sendphoto
 
 import httpx, pathlib, ast, re
@@ -168,7 +168,7 @@ def handle_response(text: str) -> str:
 
 def readCynsInfo():
     data = Orz_Loadtojpg.loadtoData()
-    return Orz_Loadtojpg.datatoPng(data)
+    return Orz_Loadtojpg.datatoPngv3(data)
 
 
 def worker_thread():
