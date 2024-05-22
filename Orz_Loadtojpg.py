@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-14 16:04:53
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-22 21:58:10
+# @Last Modified time: 2024-05-22 22:11:01
 
 import pathlib, ast, re, datetime
 from typing import Final, Callable
@@ -152,7 +152,7 @@ def datatoPngv3(data: list):
                 )
                 ypoint += font_tips.size * 1.2
             # print(f"{count = }")
-            d.text((xpoint, ypoint), cyns, font=font_change, fill=(92, 92, 92, 198))
+            d.text((xpoint, ypoint), cyns, font=font_change, fill=(92, 92, 92, 178))
             cynsplis = d.textlength(f"{cyns} ", font=font_change)
             d.text(
                 (xpoint + cynsplis, ypoint),
@@ -164,7 +164,7 @@ def datatoPngv3(data: list):
             ypoint += font_change.size * 1.4
             # 确认是否需要保存
             now = (
-                f"{count:>04}"
+                f"{count:>04}{page:>02}"
                 + " * "
                 + datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             )
