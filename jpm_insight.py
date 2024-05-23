@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-22 17:26:56
+# @Last Modified time: 2024-05-23 15:04:54
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast, collections
@@ -99,6 +99,7 @@ def main_rego(args:dict = ARGS):
 def main(tasks:int =100, args:dict = ARGS):
     print(f'Welcome to the world of wealth. {g(whoistime())}')
     try:
+        sq = time.perf_counter()
         task = []
         while task.__len__() < tasks:
             start_time = time.perf_counter()
@@ -109,15 +110,7 @@ def main(tasks:int =100, args:dict = ARGS):
                 result = r
             now = funcs_v2.Lastime()
             funcs_v2.action(args, callblack=m_result)
-            # if (insert_test:=loadLoerLine()) == []:
-            #     funcs_v2.action(args, callblack=m_result)
-            # else:
-            #     tasks = [x for x in range(insert_test.__len__())]
-            #     mcyns = [x for x in range(500)]
-            #     Insight.diffMain(show=True, result=insert_test)
-            #     return
-            # print(f'{result[0]}')
-            # (0, [9, 12, 16, 17, 31, 33], [8])
+            
             if  result == []:
                 print(f'{r("The sample parameters are empty, please adjust the parameters and try again...")}')
                 return
@@ -162,7 +155,7 @@ def main(tasks:int =100, args:dict = ARGS):
                 print(f'{r(third_element)} {cyn = }', end='\r')
                 file.write(f'{logs}\n')
                 
-        print(f'completed 100% {" "* 60}')
+        print(f'completed 100% {" "*10} {time.perf_counter() - sq:.4f} seconds.')
         
     except Exception as e:
         print(f'ERR: {e}')
