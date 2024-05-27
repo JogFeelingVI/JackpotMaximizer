@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-27 15:00:44
+# @Last Modified time: 2024-05-27 15:38:38
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast, collections
@@ -167,15 +167,9 @@ def main(tasks: int = 25, args: dict = ARGS):
             print(
                 f'This running time is {g(f"{end_time-start_time-3:.4f}")} seconds. {task.__len__()}'
             )
-        # task done
-        print(f"task {tasks} is done.")
-        groupby_bit1 = collections.defaultdict(int)
-        for array in task:
-            _b = array[2][0]
-            groupby_bit1[_b] += 1
-        print(groupby_bit1)
         
         # 查找随机过程中最少的值 
+        task = sorted(task,key=lambda x:x[1][4])
         grouped_arrays = collections.defaultdict(list)
         for array in task:
             third_element = tuple(array[2])
