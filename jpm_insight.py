@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-24 15:09:27
+# @Last Modified time: 2024-05-27 15:00:44
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast, collections
@@ -12,7 +12,7 @@ ARGS = {
     "noinx": False,
     "fix": "a",
     "cpu": "c",
-    "loadins": False,
+    "loadins": True,
     "usew": "s",
     "debug": False,
     "ins": "(.*)",
@@ -115,13 +115,13 @@ def main_rego(args: dict = ARGS):
                     t.extend(_t)
             L456 = sum((cyn.get(4, 0), cyn.get(5, 0), cyn.get(6, 0))) / 10000
             logs = f"{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}"
-            if abs(L456 - 0.004900) <= 0.0002:
+            if L456 <= 0.0049:
                 print(f"{r(third_element)} {cyn = }", end="\r")
                 file.write(f"{logs}\n")
         print(f'completed 100% {" "* 60}')
 
 
-def main(tasks: int = 100, args: dict = ARGS):
+def main(tasks: int = 25, args: dict = ARGS):
     print(f"Welcome to the world of wealth. {g(whoistime())}")
     try:
         sq = time.perf_counter()
@@ -148,18 +148,20 @@ def main(tasks: int = 100, args: dict = ARGS):
             if diff_info == None:
                 continue
             # ???
-            echo = False
             with open(cyns_info, "a") as file:
+                temptask = []
                 for item in diff_info.copy():
                     fromid, cyn, n, t = item
                     logs = f"{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}"
                     L456 = sum((cyn.get(4, 0), cyn.get(5, 0), cyn.get(6, 0))) / 10000
                     # print(f'{L456}')
-                    if abs(L456 - 0.0049) in [0.0001, 0.0]:
-                        task.append(item)
-                        if echo == False:
-                            print(f"{r(logs)}")
-                            echo = True
+                    if L456 <= 0.0049:
+                        temptask.append(item)
+                        # if echo == False:
+                        #     print(f"{r(logs)}")
+                        #     echo = True
+                temptask = sorted(temptask,key=lambda x:x[1][4])
+                task.append(temptask[0])
             # ???
             end_time = time.perf_counter()
             print(
@@ -340,7 +342,7 @@ if __name__ == "__main__":
             extract_and_print_info(cyns_info)
         case [_, "explore", "task", task_args]:
             print(f'{g("Use `explore` to execute the program")}')
-            a = 300
+            a = 25
             try:
                 a = int(task_args)
             except:
