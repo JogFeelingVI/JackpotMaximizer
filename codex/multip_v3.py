@@ -1,11 +1,12 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-17 16:00:39
+# @Last Modified time: 2024-06-01 00:29:41
+from functools import partial
 import os, collections
 import re, itertools as itr, concurrent.futures
 from typing import Callable, List, Iterable
-from codex import glns_v2, rego_v3, note, filters_v3, sq3database
+from codex import BigLottery52, rego_v3, note, filters_v3, sq3database
 from multiprocessing import Manager, Queue, cpu_count
 
 
@@ -66,12 +67,14 @@ def settingLength(n: int = 25):
     return n
 
 
-def initPostCall(cdic: dict, r: int, b: int, iRx: str, scw: str):
+def initPostCall(r: int, b: int, iRx: str):
     global_vars = globals()
     temp = {}
     fite = filters_v3
     fite.initialization()
-    temp["glns"] = glns_v2.glnsMpls(cdic, r, b, scw).producer
+    temp['rLen'] = r
+    temp['bLen'] = b
+    # temp["glns"] = glns_v2.glnsMpls(cdic, r, b, scw).producer
     temp["rego"], temp["product"] = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
     temp["filter"] = fite.Checkfunc()
     temp["depth"] = global_vars["bastdata"]["depth"]
@@ -145,7 +148,7 @@ def filter_map(zio, dr):
                 "acvalue": bool() as ac,
                 "jmsht": bool() as five,
             } if ac == True and five == True:
-                if sum(not value for value in filterx.values()) > 0:
+                if sum(not value for value in filterx.values()) > 1:
                     # print(f'T, T {filterx}')
                     rfilter = False
             case {
@@ -155,7 +158,7 @@ def filter_map(zio, dr):
                 # print(f'F, _ {filterx}')
                 rfilter = False
             case _:
-                if sum(not value for value in filterx.values()) > 0:
+                if sum(not value for value in filterx.values()) > 1:
                     # print(f'T, T {filterx}')
                     rfilter = False
     # for k, func in data['filter'].items():
@@ -164,15 +167,29 @@ def filter_map(zio, dr):
     #     break
     return rfilter
 
+def mark_by_BigLotter52(r:int = 6, b:int =1):
+    rngs_r = [range(1, 34)]
+    rngs_b = [range(1, 17)]
+    conf = {
+        "red": partial(BigLottery52.coda_sec, rngs=rngs_r, k=r),
+        "blue": partial(BigLottery52.coda_sec, rngs=rngs_b, k=b),
+    }
+    numx = BigLottery52.mark(config=conf)
+    return numx['red'], numx['blue']
+
 
 def create(pcall_data: dict, rego: bool, filter: bool):  # -> list[Any] | None:
     if not pcall_data:
         print(f"Not Find PostCall Data!")
         return [0, [0], [0]]
     count = 0
+    lr, lb = pcall_data['rLen'], pcall_data['bLen']
     while 1:
-        _n = pcall_data["glns"]["r"]()
-        _t = pcall_data["glns"]["b"]()
+        #? 这里需要修改为 BigLottule
+        # print(f'user BigLottule', end='\r')?
+        _n, _t = mark_by_BigLotter52(lr, lb)
+        # _n = pcall_data["glns"]["r"]()
+        # _t = pcall_data["glns"]["b"]()
         rfilter = combinations_ols(_n, _t, (pcall_data, rego, filter))
         if rfilter == True:
             return [count, _n, _t]

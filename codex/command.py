@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 17:48:34
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-03-28 18:58:00
+# @Last Modified time: 2024-06-01 00:00:42
 import argparse
 
 
@@ -63,7 +63,7 @@ class loading:
             'Filtering numbers using regular expressions exp --ins ^(02|03|05)'
         )
         load_args.add_argument('-n',
-                               default=5,
+                               default=25,
                                type=int,
                                help='Generate 10 pieces of data')
         load_args.add_argument('-r',

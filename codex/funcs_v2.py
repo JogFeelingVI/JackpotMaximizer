@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-17 16:17:19
+# @Last Modified time: 2024-05-31 23:45:49
 import pathlib, json, re, datetime
 from codex import gethtml_v2, multip_v3
 
@@ -25,7 +25,7 @@ class action:
             case {"subcommand": str() as act} if act in ["simulation", "load"]:
                 load(args, callblack)
             case _:
-                print(f'Unrecognized parameter: {args}.')
+                print(f"Unrecognized parameter: {args}.")
 
 
 class update:
@@ -115,7 +115,7 @@ class load:
             for k, v in args.items():
                 print(f'{k:>6}: {f"{v}"}')
 
-    def __cpu_one(self, args: dict, data: dict, core:int) -> list:
+    def __cpu_one(self, args: dict, core: int) -> list:
         """
         only cpu A run work
         core 1 单核 2 多核并启动SQ3 3 多核但不启动sq3
@@ -128,12 +128,12 @@ class load:
                 "r": int() as r,
                 "b": int() as b,
                 "ins": str() as ins,
-                "usew": str() as usew,
+                # "usew": str() as usew,
             }:
                 p = multip_v3
                 p.settingLength(n)
                 p.useRego(loadins)
-                p.initPostCall(data, r, b, ins, usew)
+                p.initPostCall(r, b, ins)
                 match core:
                     case 1:
                         Retds = p.tasks_single()
@@ -143,7 +143,7 @@ class load:
                         Retds = p.tasks_futures()
                     case 4:
                         Retds = p.tasks_from_regos()
-                        
+
             case _:
                 pass
         return Retds
@@ -153,17 +153,17 @@ class load:
         #     for inx in reds:
         #         self.__echo__(inx)
 
-    def __cpu_callblack(self, args: dict, data: dict, core:int=3):
-        result = self.__cpu_one(args, data, core)
+    def __cpu_callblack(self, args: dict, core: int = 3):
+        result = self.__cpu_one(args, core)
         try:
             self.cpucallblack(result)
         finally:
             return result
 
-    def __cpu_simulation(self, args: dict, data: dict):
+    def __cpu_simulation(self, args: dict):
         match args:
             case {"Compared-R": list() as cR, "Compared-B": list() as cB}:
-                Retds = self.__cpu_one(args, data, 3)
+                Retds = self.__cpu_one(args, 3)
                 Rex: list = [y for x in Retds for y in self.__diff__(x, cR, cB)]
                 iRex = len(Rex)
                 if iRex == 0:
@@ -265,29 +265,29 @@ class load:
         _data = self.__loaddata()
         match args:
             case {
-                "fix": str() as fix,
+                # "fix": str() as fix,
                 "cpu": str() as cpu,
-                "usew": str() as usew,
+                # "usew": str() as usew,
                 "debug": bool() as debug,
                 "dnsr": bool() as dnsr,
                 "noinx": bool() as noinx,
             }:
-                self.__fixrba(fix, _data)
+                # self.__fixrba(fix, _data)
                 self.__show_args(args, debug)
                 Return_data = []
                 match cpu:
                     case "o":
-                        Return_data = self.__cpu_one(args, _data, 1)
+                        Return_data = self.__cpu_one(args, 1)
                     case "a":
-                        Return_data = self.__cpu_one(args, _data, 3)
+                        Return_data = self.__cpu_one(args, 3)
                         # Enable multi-core
                     case "m":
-                        self.__cpu_simulation(args, _data)
+                        self.__cpu_simulation(args)
                     case "c":
                         # 特殊执行方式 用来支持jpm_insight
-                        self.__cpu_callblack(args, _data)
+                        self.__cpu_callblack(args)
                     case "d":
-                        self.__cpu_callblack(args, _data, 4)
+                        self.__cpu_callblack(args, 4)
                     case _:
                         print(f'No way to parse unknown parameter "{cpu}"')
                 if Return_data == []:

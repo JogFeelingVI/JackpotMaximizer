@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-21 10:36:22
+# @Last Modified time: 2024-06-01 00:20:43
 
 import functools
 import json
@@ -107,7 +107,7 @@ def loadGroup():
     p.settingLength(10000)
     p.useRego(False)
     p.useFilter(False)
-    p.initPostCall(loadJsonToDict(), 6, 1, "(.*)", "s")
+    p.initPostCall(6, 1, "(.*)")
     Retds = p.tasks_futures()
     Retds = [parseSublist(x).rNumber for x in Retds]
     # [[72, '03 05 07 16 27 33', '01']
