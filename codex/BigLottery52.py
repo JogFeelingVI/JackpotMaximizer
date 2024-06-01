@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-31 23:24:12
+# @Last Modified time: 2024-06-01 08:12:55
 import collections, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets
 from dataclasses import dataclass
 from functools import partial
@@ -16,7 +16,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 debug = "vv"
-cpus = cpn if (cpn:=os.cpu_count()) != None else 4
+cpus = cpn if (cpn := os.cpu_count()) != None else 4
 
 RED = "\033[91m"
 YELLOW = "\033[93m"
@@ -95,6 +95,7 @@ def coda(rngs: list | range, k: int = 2):
     random.shuffle(numbers)
     return sorted(numbers[:k])
 
+
 def coda_sec(rngs: list | range, k: int = 2):
     match rngs:
         case range() as rng:
@@ -109,16 +110,17 @@ def coda_sec(rngs: list | range, k: int = 2):
                         numbers.extend(n)
                     case range() as r:
                         numbers.extend((x for x in r))
-    random.shuffle(numbers)
+    # random.shuffle(numbers)
     codae = set()
     while len(codae) < k:
         index = secrets.randbelow(len(numbers))
         codae.add(numbers[index])
         del numbers[index]
-        random.shuffle(numbers)
+        # random.shuffle(numbers)
     return sorted(list(codae))
-        
-def mark(config:dict = {}):
+
+
+def mark(config: dict = {}):
     keys = config.keys()
     temp = dict().fromkeys(keys, [])
     for k, funx in config.items():
@@ -128,47 +130,46 @@ def mark(config:dict = {}):
     return temp
 
 
-def mark_by(config: dict = {}, irangs:range=range(1, 1000)):
+def mark_by(config: dict = {}, irangs: range = range(1, 1000)):
     """
     {
         'bule':coda(rngs,k=5), yellow: coda(rngs,k=2)
     }
     """
-    iRngs = []    
-    for i in irangs:
-        iRngs.append((i, mark(config=config)))
-    return iRngs
+    p = lambda x: (x, mark(config=config))
+
+    return [p(i) for i in irangs]
 
 
 def done(future, numbers: list, length: int):
     items = future.result()
     for idx, item in items:
-        numbers.append(item)
-        pass_d = "■" * int(50 * numbers.__len__() / length)
-        pass_e = "■" * (50 - pass_d.__len__())
-        print(f"{ENDC}+ {sB(pass_d)}{pass_e}", end="\r")
+        numbers[idx] = item
 
 
 def data_factory(config: dict, length: int = 500):
-    print(sY('Prepare multi-threaded environment, please wait...'), end='\r')
-    numbers = []
+    print(sY("Prepare multi-threaded environment, please wait..."))
+    numbers = [None] * length
     with concurrent.futures.ProcessPoolExecutor() as executor:
         chunk_size = length // cpus
         chunks = [
-                range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
-            ]
+            range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
+        ]
         futures = [
             executor.submit(mark_by, config, i).add_done_callback(
                 lambda future: done(future, numbers, length)
             )
             for i in chunks
         ]
+        while True:
+            percentage = (length - numbers.count(None)) / length
+            pass_d = "■" * int(percentage * 50)
+            # pass_e = "■" * (50 - pass_d.__len__())
+            print(f"{ENDC}+ {pass_d} {percentage * 100 :.2f}%", end="\r")
+            if numbers.count(None) == 0:
+                break
     # numbers = mark_by(congfig=config)
     tips = f"data factory all done {length}"
-    print(' ' * 52,end='\r')
-    print(f'{sY(tips)}')
+    print(" " * 52, end="\r")
+    print(f"{sY(tips)}")
     return numbers
-
-
-
-

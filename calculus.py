@@ -2,7 +2,7 @@
 # @Author: JogFeelingVi
 # @Date: 2022-10-03 15:26:39
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-01 00:07:57
+# @Last Modified time: 2024-06-01 13:34:31
 from codex import funcs_v2
 from codex.runingtime import runingtime
 
@@ -14,7 +14,7 @@ def Moni_T():
         "debug": False,
         "dnsr": False,
         "noinx": False,
-        "loadins": False,
+        "loadins": True,
         # "usew": "s",
         # "fix": "a",
         "cpu": "m",

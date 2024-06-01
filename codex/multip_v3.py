@@ -1,9 +1,9 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-01 00:29:41
+# @Last Modified time: 2024-06-01 20:45:44
 from functools import partial
-import os, collections
+import os, collections, time
 import re, itertools as itr, concurrent.futures
 from typing import Callable, List, Iterable
 from codex import BigLottery52, rego_v3, note, filters_v3, sq3database
@@ -72,8 +72,8 @@ def initPostCall(r: int, b: int, iRx: str):
     temp = {}
     fite = filters_v3
     fite.initialization()
-    temp['rLen'] = r
-    temp['bLen'] = b
+    temp["rLen"] = r
+    temp["bLen"] = b
     # temp["glns"] = glns_v2.glnsMpls(cdic, r, b, scw).producer
     temp["rego"], temp["product"] = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
     temp["filter"] = fite.Checkfunc()
@@ -167,15 +167,14 @@ def filter_map(zio, dr):
     #     break
     return rfilter
 
-def mark_by_BigLotter52(r:int = 6, b:int =1):
-    rngs_r = [range(1, 34)]
-    rngs_b = [range(1, 17)]
+
+def mark_by_BigLotter52(r: int = 6, b: int = 1):
     conf = {
-        "red": partial(BigLottery52.coda_sec, rngs=rngs_r, k=r),
-        "blue": partial(BigLottery52.coda_sec, rngs=rngs_b, k=b),
+        "red": partial(BigLottery52.coda_sec, rngs=range(1, 34), k=r),
+        "blue": partial(BigLottery52.coda_sec, rngs=range(1, 17), k=b),
     }
     numx = BigLottery52.mark(config=conf)
-    return numx['red'], numx['blue']
+    return numx["red"], numx["blue"]
 
 
 def create(pcall_data: dict, rego: bool, filter: bool):  # -> list[Any] | None:
@@ -183,9 +182,9 @@ def create(pcall_data: dict, rego: bool, filter: bool):  # -> list[Any] | None:
         print(f"Not Find PostCall Data!")
         return [0, [0], [0]]
     count = 0
-    lr, lb = pcall_data['rLen'], pcall_data['bLen']
+    lr, lb = pcall_data["rLen"], pcall_data["bLen"]
     while 1:
-        #? 这里需要修改为 BigLottule
+        # ? 这里需要修改为 BigLottule
         # print(f'user BigLottule', end='\r')?
         _n, _t = mark_by_BigLotter52(lr, lb)
         # _n = pcall_data["glns"]["r"]()
@@ -205,33 +204,17 @@ def create_task(iq):
     return [task, count, n, t]
 
 
-def create_task_v2(task: range, data, rego, filterx, pd):
-    temp = []
-    pid = os.getpid()
-    for task_index in task:
-        if pid in pd.keys():
-            pd[pid] += 1
-        else:
-            pd[pid] = 1
-        sumx = sum(pd.values())
-        temp.append([task_index, *create(data, rego, filterx)])
-        if task_index % 5 == 1:
-            print(f"\033[K[P] mission completed {sumx}", end="\r")
-    return temp, pid
+def create_task_v2(task: range, data, rego, filterx):
+    stime = time.perf_counter()
+    pf = lambda x: [x, *create(data, rego, filterx)]
+    return [pf(x) for x in task], (time.perf_counter() - stime) / task.__len__()
 
 
 def tasks_single():
-    global_vars = globals()
-    length = global_vars["bastdata"]["length"]
-    iStorage = []
-    seen_n = set()
-    # sq3 = sq3database.Sqlite3Database()
-    # sq3.connect()
-    # if sq3.is_connected() == False:
-    #     sq3.create_table_data()
-    # if sq3.is_Data_already_exists():
-    #     sq3.clear_table_data()
     length, data, rego, filterx = initTaskQueue_to_list()
+    iStorage = [None] * length
+    seen_n = set()
+
     for index in range(length):
         rx = create(data, rego, filterx)
         _, n, t = rx
@@ -239,19 +222,20 @@ def tasks_single():
             ns = " ".join((f"{x:02}" for x in n))
             ts = " ".join((f"{x:02}" for x in t))
             if ns not in seen_n:
-                iStorage.append([index, ns, ts])
+                iStorage[index] = [index, ns, ts]
                 seen_n.add(ns)
-        print(f"\033[K[P] completed {index/length*100:.4f}% tasks completed.", end="\r")
+                percentage = index / length
+                # pass_e = "■" * (50 - pass_d.__len__())
+                print(f"\033[0m+ generated {percentage * 100 :.2f}%", end="\r")
     # iStorage = sq3.read_data()
     # sq3.disconnect()
-    print(f"\033[K[P] completed. 100%")
-    return iStorage if iStorage != None else []
+    print(f"There are `{length - iStorage.count(None)}` valid data generated")
+    return [x for x in iStorage if x != None]
 
 
 def done_task(future, storage: List, seen: set):
-    temp, pid = future.result()
-
-    count = 0
+    temp, ptime = future.result()
+    # print(f'{BigLottery52.sG(ptime)}', end='\r')
     for i in temp:
         # i = [58, 3000, [0], [0]]
         ids, deep, n, t = i
@@ -259,14 +243,15 @@ def done_task(future, storage: List, seen: set):
             ns = " ".join((f"{x:02}" for x in n))
             ts = " ".join((f"{x:02}" for x in t))
             if ns not in seen:
-                storage.append([ids, ns, ts])
+                storage[ids] = [ids, ns, ts]
                 seen.add(ns)
-                count += 1
-        # print(f"\033[K[P] {echo}", end="\r")
-    # print(f"Complete effective tasks {count} from worker-{pid}")
-
+        else:
+            storage[ids] = -1
+        # pross(storage)
+        
 
 def tasks_from_regos():
+    '''通过rego 进行笛卡尔匹配'''
     global_vars = globals()
     product = global_vars["procdata"]["product"]
     iStorage = []
@@ -278,7 +263,7 @@ def tasks_from_regos():
             n = [a, b, c, d, e, f]
             t = [z]
             rfilter = combinations_ols([a, b, c, d, e, f], [z], (data, rego, filterx))
-            
+
             if rfilter == True:
                 iStorage.append([idx, n, t])
             idx += 1
@@ -287,25 +272,34 @@ def tasks_from_regos():
 
 
 def tasks_futures():
-    iStorage = []
-    seen_n = set()
-    with Manager() as mem:
-        pd = mem.dict(collections.defaultdict(int))
-
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            length, data, rego, filterx = initTaskQueue_to_list()
-            chunk_size = length // cpu_count()
-            chunks = [
-                range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
-            ]
-            futures = [
-                executor.submit(
-                    create_task_v2, i, data, rego, filterx, pd
-                ).add_done_callback(lambda f: done_task(f, iStorage, seen_n))
-                for i in chunks
-            ]
-
-    return iStorage if iStorage != None else []
+    print(f'{BigLottery52.sY("tasks_futures is runing...")}')
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        length, data, rego, filterx = initTaskQueue_to_list()
+        iStorage = [None] * length
+        seen_n = set()
+        chunk_size = length // cpu_count()
+        _info = f'seting args {length} {chunk_size}'
+        print(f'{BigLottery52.sY(_info)}')
+        chunks = [
+            range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
+        ]
+        futures = [
+            executor.submit(
+                create_task_v2, i, data, rego, filterx
+            ).add_done_callback(lambda f: done_task(f, iStorage, seen_n))
+            for i in chunks
+        ]
+        
+        # while True:
+        #     percentage = (length - iStorage.count(None)) / length
+        #     pass_d = "■" * int(percentage * 50)
+        #     # pass_e = "■" * (50 - pass_d.__len__())
+        #     print(f"{BigLottery52.ENDC}+ futures {pass_d} {percentage * 100 :.2f}%", end="\r")
+        #     if iStorage.count(None) == 0 :
+        #         break
+        #     time.sleep(3)
+    print(f"There are `{length - iStorage.count(-1)}` valid data generated")
+    return [x for x in iStorage if isinstance(x, list)]
 
 
 def tasks_futures_press():
