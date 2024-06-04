@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-28 09:14:42
+# @Last Modified time: 2024-06-02 23:24:26
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast, collections
@@ -115,9 +115,7 @@ def main_rego(args: dict = ARGS):
                     t.extend(_t)
             L456 = sum((cyn.get(4, 0), cyn.get(5, 0), cyn.get(6, 0))) / 10000
             logs = f"{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}"
-            if L456 <= 0.0049:
-                print(f"{r(third_element)} {cyn = }", end="\r")
-                file.write(f"{logs}\n")
+            file.write(f"{logs}\n")
         print(f'completed 100% {" "* 60}')
 
 
