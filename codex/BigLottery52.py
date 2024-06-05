@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-01 08:12:55
+# @Last Modified time: 2024-06-05 08:07:57
 import collections, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets
 from dataclasses import dataclass
 from functools import partial
@@ -155,21 +155,22 @@ def data_factory(config: dict, length: int = 500):
         chunks = [
             range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
         ]
-        futures = [
-            executor.submit(mark_by, config, i).add_done_callback(
-                lambda future: done(future, numbers, length)
-            )
-            for i in chunks
-        ]
+        futures = [None] * chunks.__len__()
+        for index, rng in enumerate(chunks):
+            futures[index] = executor.submit(mark_by, config, rng).add_done_callback(lambda future: done(future, numbers, length))
+            init_info = f'Initialization futures, index {index}'
+            print(f'{sG(init_info)}', end='\r')
+        print(f'{sG(init_info)}')
         while True:
             percentage = (length - numbers.count(None)) / length
             pass_d = "■" * int(percentage * 50)
             # pass_e = "■" * (50 - pass_d.__len__())
-            print(f"{ENDC}+ {pass_d} {percentage * 100 :.2f}%", end="\r")
+            print(f"{ENDC}DataFactory {pass_d} {percentage * 100 :.2f}%", end="\r")
+            time.sleep(0.5)
             if numbers.count(None) == 0:
                 break
     # numbers = mark_by(congfig=config)
-    tips = f"data factory all done {length}"
-    print(" " * 52, end="\r")
-    print(f"{sY(tips)}")
+    print(f"{ENDC}DataFactory {pass_d} 100.00%")
+    tips = f"data factory all done {length:,}"
+    print(f"{sB(tips)}")
     return numbers
