@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-04 14:23:38
+# @Last Modified time: 2024-06-06 08:07:33
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast, collections
@@ -94,7 +94,7 @@ def main_rego(args: dict = ARGS):
             f'{r("The sample parameters are empty, please adjust the parameters and try again...")}'
         )
         return
-    print(f"result len {result.__len__()}")
+    print(f"result len {result.__len__():,}")
     diff_info = Insight.diffMain(result=result)
     if diff_info == None:
         return
