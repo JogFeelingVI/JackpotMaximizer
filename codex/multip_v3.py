@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-01 20:45:44
+# @Last Modified time: 2024-06-07 10:23:55
 from functools import partial
 import os, collections, time
 import re, itertools as itr, concurrent.futures
@@ -168,11 +168,7 @@ def filter_map(zio, dr):
     return rfilter
 
 
-def mark_by_BigLotter52(r: int = 6, b: int = 1):
-    conf = {
-        "red": partial(BigLottery52.coda_sec, rngs=range(1, 34), k=r),
-        "blue": partial(BigLottery52.coda_sec, rngs=range(1, 17), k=b),
-    }
+def mark_by_BigLotter52(conf):
     numx = BigLottery52.mark(config=conf)
     return numx["red"], numx["blue"]
 
@@ -183,10 +179,14 @@ def create(pcall_data: dict, rego: bool, filter: bool):  # -> list[Any] | None:
         return [0, [0], [0]]
     count = 0
     lr, lb = pcall_data["rLen"], pcall_data["bLen"]
+    conf = {
+        "red": partial(BigLottery52.coda_sec, rngs=range(1, 34), k=lr),
+        "blue": partial(BigLottery52.coda_sec, rngs=range(1, 17), k=lb),
+    }
     while 1:
         # ? 这里需要修改为 BigLottule
         # print(f'user BigLottule', end='\r')?
-        _n, _t = mark_by_BigLotter52(lr, lb)
+        _n, _t = mark_by_BigLotter52(conf)
         # _n = pcall_data["glns"]["r"]()
         # _t = pcall_data["glns"]["b"]()
         rfilter = combinations_ols(_n, _t, (pcall_data, rego, filter))
@@ -214,10 +214,13 @@ def tasks_single():
     length, data, rego, filterx = initTaskQueue_to_list()
     iStorage = [None] * length
     seen_n = set()
+    lr, lb = data["rLen"], data["bLen"]
 
     for index in range(length):
         rx = create(data, rego, filterx)
+        # ? rx = {'red': [1, 3, 4, 15, 16, 33], 'blue': [5]}
         _, n, t = rx
+
         if n != t:
             ns = " ".join((f"{x:02}" for x in n))
             ts = " ".join((f"{x:02}" for x in t))
@@ -233,8 +236,8 @@ def tasks_single():
     return [x for x in iStorage if x != None]
 
 
-def done_task(future, storage: List, seen: set):
-    temp, ptime = future.result()
+def done_task(future, storage: BigLottery52.jindu, seen: set):
+    temp, ptime = future
     # print(f'{BigLottery52.sG(ptime)}', end='\r')
     for i in temp:
         # i = [58, 3000, [0], [0]]
@@ -243,15 +246,13 @@ def done_task(future, storage: List, seen: set):
             ns = " ".join((f"{x:02}" for x in n))
             ts = " ".join((f"{x:02}" for x in t))
             if ns not in seen:
-                storage[ids] = [ids, ns, ts]
+                storage.Finished(ids, [ids, ns, ts])
                 seen.add(ns)
-        else:
-            storage[ids] = -1
         # pross(storage)
-        
+
 
 def tasks_from_regos():
-    '''通过rego 进行笛卡尔匹配'''
+    """通过rego 进行笛卡尔匹配"""
     global_vars = globals()
     product = global_vars["procdata"]["product"]
     iStorage = []
@@ -267,39 +268,35 @@ def tasks_from_regos():
             if rfilter == True:
                 iStorage.append([idx, n, t])
             idx += 1
-            # print(f'{iStorage.__len__()}')
+        print(f"{iStorage.__len__()}")
     return iStorage
 
 
+
 def tasks_futures():
+    '''新版本的 tasks_futures '''
     print(f'{BigLottery52.sY("tasks_futures is runing...")}')
     with concurrent.futures.ProcessPoolExecutor() as executor:
         length, data, rego, filterx = initTaskQueue_to_list()
-        iStorage = [None] * length
+        jindux = BigLottery52.jindu(length)
         seen_n = set()
         chunk_size = length // cpu_count()
-        _info = f'seting args {length} {chunk_size}'
-        print(f'{BigLottery52.sY(_info)}')
+        _info = f"seting args {length} {chunk_size}"
+        print(f"{BigLottery52.sY(_info)}")
         chunks = [
             range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
         ]
-        futures = [
-            executor.submit(
-                create_task_v2, i, data, rego, filterx
-            ).add_done_callback(lambda f: done_task(f, iStorage, seen_n))
-            for i in chunks
-        ]
+        futures = []
+        for irng in chunks:
+            futures.append(executor.submit(create_task_v2, irng, data, rego, filterx))
+            
+        for future in concurrent.futures.as_completed(futures):
+            items = future.result()
+            done_task(future=items, storage=jindux, seen=seen_n)
+        jindux.echo(sda=0)
         
-        # while True:
-        #     percentage = (length - iStorage.count(None)) / length
-        #     pass_d = "■" * int(percentage * 50)
-        #     # pass_e = "■" * (50 - pass_d.__len__())
-        #     print(f"{BigLottery52.ENDC}+ futures {pass_d} {percentage * 100 :.2f}%", end="\r")
-        #     if iStorage.count(None) == 0 :
-        #         break
-        #     time.sleep(3)
-    print(f"There are `{length - iStorage.count(-1)}` valid data generated")
-    return [x for x in iStorage if isinstance(x, list)]
+    print(f"There are `{length - jindux.block.count(None)}` valid data generated")
+    return [x for x in jindux.block if isinstance(x, list)]
 
 
 def tasks_futures_press():

@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-06 08:07:33
+# @Last Modified time: 2024-06-07 10:16:50
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast, collections
@@ -154,21 +154,21 @@ def main(tasks: int = 25, args: dict = ARGS):
                     logs = f"{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}"
                     L456 = sum((cyn.get(4, 0), cyn.get(5, 0), cyn.get(6, 0))) / 10000
                     # print(f'{L456}')
-                    if L456 <= 0.0049:
+                    if 0.0048 <= L456 <= 0.0050:
                         temptask.append(item)
                         # if echo == False:
                         #     print(f"{r(logs)}")
                         #     echo = True
-                temptask = sorted(temptask,key=lambda x:x[1][4])
+                temptask = sorted(temptask, key=lambda x: x[1][4])
                 task.append(temptask[0])
             # ???
             end_time = time.perf_counter()
             print(
                 f'This running time is {g(f"{end_time-start_time-3:.4f}")} seconds. {task.__len__()}'
             )
-        
-        # 查找随机过程中最少的值 
-        task = sorted(task,key=lambda x:x[1][4])
+
+        # 查找随机过程中最少的值
+        task = sorted(task, key=lambda x: x[1][4])
         grouped_arrays = collections.defaultdict(list)
         for array in task:
             third_element = tuple(array[2])
@@ -190,7 +190,6 @@ def main(tasks: int = 25, args: dict = ARGS):
                 file.write(f"{logs}\n")
 
         print(f'completed 100% {" "*16} {time.perf_counter() - sq:.4f} seconds.')
-        
 
     except Exception as e:
         print(f"ERR: {e}")
@@ -339,7 +338,7 @@ if __name__ == "__main__":
             try:
                 a = int(task_args)
             except:
-                print(f'explore task int type, you input {task_args}')
+                print(f"explore task int type, you input {task_args}")
             main(tasks=a)
         case [_, "explore", "rego"]:
             ARGS.update({"cpu": "d"})

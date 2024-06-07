@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-31 23:45:49
+# @Last Modified time: 2024-06-07 07:49:07
 import pathlib, json, re, datetime
 from codex import gethtml_v2, multip_v3
 
@@ -86,28 +86,6 @@ class load:
         finally:
             return json_str
 
-    def __fixrba(self, rba: str, data: dict) -> None:
-        """
-        fix r b a
-        rba is [ r, b, a ]
-        """
-        fix = {}
-        match rba:
-            case "r":
-                na = [x for x in range(1, 34)]
-            case "b":
-                na = [x for x in range(1, 17)]
-            case "a":
-                self.__fixrba("r", data)
-                self.__fixrba("b", data)
-                return
-            case _:
-                return
-        _data = set(data[rba.upper()]) ^ set(na)
-        fix.update({rba: (x for x in _data) if _data.__len__() != 0 else 0})
-        for key, val in fix.items():
-            if isinstance(val, int) == False:
-                print(f'Fix {" ".join(map(str , val))} of column "{key}"')
 
     @staticmethod
     def __show_args(args: dict, debug: bool):
@@ -154,6 +132,7 @@ class load:
         #         self.__echo__(inx)
 
     def __cpu_callblack(self, args: dict, core: int = 3):
+        print(f'cpu callblack core {core}')
         result = self.__cpu_one(args, core)
         try:
             self.cpucallblack(result)

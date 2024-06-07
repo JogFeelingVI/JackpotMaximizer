@@ -2,8 +2,8 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-05 08:07:57
-import collections, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets
+# @Last Modified time: 2024-06-07 09:30:47
+import multiprocessing, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets
 from dataclasses import dataclass
 from functools import partial
 from typing import Callable, List
@@ -29,6 +29,35 @@ sR = lambda s: f"{RED}{s}{ENDC}"
 sY = lambda s: f"{YELLOW}{s}{ENDC}"
 sB = lambda s: f"{BLUE}{s}{ENDC}"
 sG = lambda s: f"{GREEN}{s}{ENDC}"
+
+
+class jindu:
+    def __init__(self, length: int = 1000) -> None:
+        self.length = length
+        self.block = [None] * length
+        self.echotime = time.perf_counter()
+        self.lock = multiprocessing.Lock()
+        self.press = ""
+
+    def Finished(self, index: int, value):
+        with self.lock:
+            try:
+                self.block[index] = value
+            except:
+                pass
+            finally:
+                self.echo()
+
+    def echo(self, sda=9):
+        if (nt := time.perf_counter() - self.echotime) > 0.3 or sda == 0:
+            pe = (self.length - self.block.count(None)) / self.length
+            pe_d = "■" * int(pe * 50)
+            self.echotime = time.perf_counter()
+            self.press = f"{ENDC}DataFactory {pe_d} {pe * 100 :.2f}%"
+            if sda > 0:
+                print(f"{self.press}", end="\r")
+            else:
+                print(f"{self.press} END")
 
 
 @dataclass
@@ -121,6 +150,7 @@ def coda_sec(rngs: list | range, k: int = 2):
 
 
 def mark(config: dict = {}):
+    """具体执行过程 在封装"""
     keys = config.keys()
     temp = dict().fromkeys(keys, [])
     for k, funx in config.items():
@@ -130,47 +160,44 @@ def mark(config: dict = {}):
     return temp
 
 
-def mark_by(config: dict = {}, irangs: range = range(1, 1000)):
+def mark_by(func: Callable, config: dict = {}, irangs: range = range(1, 1000)):
     """
     {
         'bule':coda(rngs,k=5), yellow: coda(rngs,k=2)
     }
     """
-    p = lambda x: (x, mark(config=config))
-
+    p = lambda x: (x, func(config=config))
     return [p(i) for i in irangs]
 
 
-def done(future, numbers: list, length: int):
-    items = future.result()
+def done(items, numbers: jindu):
     for idx, item in items:
-        numbers[idx] = item
+        numbers.Finished(index=idx, value=item)
 
 
-def data_factory(config: dict, length: int = 500):
+def data_factory(
+    config: dict,
+    makrfun: Callable = mark,
+    length: int = 500,
+):
     print(sY("Prepare multi-threaded environment, please wait..."))
-    numbers = [None] * length
+    # numbers = [None] * length
+    jindux = jindu(length)
     with concurrent.futures.ProcessPoolExecutor() as executor:
         chunk_size = length // cpus
         chunks = [
             range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
         ]
-        futures = [None] * chunks.__len__()
-        for index, rng in enumerate(chunks):
-            futures[index] = executor.submit(mark_by, config, rng).add_done_callback(lambda future: done(future, numbers, length))
-            init_info = f'Initialization futures, index {index}'
-            print(f'{sG(init_info)}', end='\r')
-        print(f'{sG(init_info)}')
-        while True:
-            percentage = (length - numbers.count(None)) / length
-            pass_d = "■" * int(percentage * 50)
-            # pass_e = "■" * (50 - pass_d.__len__())
-            print(f"{ENDC}DataFactory {pass_d} {percentage * 100 :.2f}%", end="\r")
-            time.sleep(0.5)
-            if numbers.count(None) == 0:
-                break
-    # numbers = mark_by(congfig=config)
-    print(f"{ENDC}DataFactory {pass_d} 100.00%")
+        futures = []
+        for rng in chunks:
+            futures.append(executor.submit(mark_by, makrfun, config, rng))
+        init_info = f"Initialization futures, index {futures.__len__()}"
+        print(f"{sG(init_info)}")
+        for future in concurrent.futures.as_completed(futures):
+            items = future.result()
+            done(items=items, numbers=jindux)
+        jindux.echo(sda=0)
+
     tips = f"data factory all done {length:,}"
     print(f"{sB(tips)}")
-    return numbers
+    return jindux.block
