@@ -1,7 +1,7 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-07 10:23:55
+# @Last Modified time: 2024-06-07 10:38:44
 from functools import partial
 import os, collections, time
 import re, itertools as itr, concurrent.futures
@@ -268,7 +268,7 @@ def tasks_from_regos():
             if rfilter == True:
                 iStorage.append([idx, n, t])
             idx += 1
-        print(f"{iStorage.__len__()}")
+        # print(f"{iStorage.__len__()}")
     return iStorage
 
 
