@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-07 07:49:07
+# @Last Modified time: 2024-06-12 20:29:24
 import pathlib, json, re, datetime
 from codex import gethtml_v2, multip_v3
 
@@ -108,6 +108,7 @@ class load:
                 "ins": str() as ins,
                 # "usew": str() as usew,
             }:
+                #! 从这里开始修改 适配新的coda
                 p = multip_v3
                 p.settingLength(n)
                 p.useRego(loadins)

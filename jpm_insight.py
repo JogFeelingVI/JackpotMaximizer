@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-11 13:18:09
+# @Last Modified time: 2024-06-13 09:21:27
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast, collections
@@ -152,14 +152,17 @@ def main(tasks: int = 25, args: dict = ARGS):
                 for item in diff_info.copy():
                     fromid, cyn, n, t = item
                     logs = f"{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}"
-                    L456 = sum((cyn.get(4, 0), cyn.get(5, 0), cyn.get(6, 0))) / 10000
+                    L4 = cyn.get(4, 0)
+                    L5 = cyn.get(5, 0)
+                    L6 =cyn.get(6,0)
+                    if L4 == 47:
                     # print(f'{L456}')
-                    if L456 == 0.00490:
                         temptask.append(item)
-                        # if echo == False:
-                        #     print(f"{r(logs)}")
-                        #     echo = True
-                temptask = sorted(temptask, key=lambda x: x[1][4])
+                            
+                            # if echo == False:
+                            #     print(f"{r(logs)}")
+                            #     echo = True
+                temptask = sorted(temptask, key=lambda x: x[1][5])
                 task.append(temptask[0])
             # ???
             end_time = time.perf_counter()

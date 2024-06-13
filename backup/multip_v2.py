@@ -5,7 +5,8 @@
 from datetime import datetime as dtime
 import multiprocessing as mlps, re, itertools as itr
 from typing import List, Iterable
-from codex import glns_v2, rego_v3, note, filters_v3
+from backup import glns_v2
+from codex import rego_v3, note, filters_v3
 from functools import partial
 
 

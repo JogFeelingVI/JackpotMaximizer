@@ -1,16 +1,16 @@
 # @Author: JogFeelingVi
 # @Date: 2023-03-23 22:38:54
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-07 10:38:44
+# @Last Modified time: 2024-06-12 20:39:38
 from functools import partial
 import os, collections, time
 import re, itertools as itr, concurrent.futures
 from typing import Callable, List, Iterable
-from codex import BigLottery52, rego_v3, note, filters_v3, sq3database
+from codex import BigLottery52_old, rego_v3, note, filters_v3, sq3database
 from multiprocessing import Manager, Queue, cpu_count
 
 
-bastdata = {"depth": 3000, "prompt": "[=]", "rego": False, "length": 25, "filter": True}
+bastdata = {"depth": 3000, "prompt": "[=]", "rego": False, "length": 25, "filter": True,}
 procdata = {}
 
 
@@ -169,7 +169,7 @@ def filter_map(zio, dr):
 
 
 def mark_by_BigLotter52(conf):
-    numx = BigLottery52.mark(config=conf)
+    numx = BigLottery52_old.mark(config=conf)
     return numx["red"], numx["blue"]
 
 
@@ -180,8 +180,8 @@ def create(pcall_data: dict, rego: bool, filter: bool):  # -> list[Any] | None:
     count = 0
     lr, lb = pcall_data["rLen"], pcall_data["bLen"]
     conf = {
-        "red": partial(BigLottery52.coda_sec, rngs=range(1, 34), k=lr),
-        "blue": partial(BigLottery52.coda_sec, rngs=range(1, 17), k=lb),
+        "red": partial(BigLottery52_old.coda_sec, rngs=range(1, 34), k=lr),
+        "blue": partial(BigLottery52_old.coda_sec, rngs=range(1, 17), k=lb),
     }
     while 1:
         # ? 这里需要修改为 BigLottule
@@ -236,7 +236,7 @@ def tasks_single():
     return [x for x in iStorage if x != None]
 
 
-def done_task(future, storage: BigLottery52.jindu, seen: set):
+def done_task(future, storage: BigLottery52_old.jindu, seen: set):
     temp, ptime = future
     # print(f'{BigLottery52.sG(ptime)}', end='\r')
     for i in temp:
@@ -275,14 +275,14 @@ def tasks_from_regos():
 
 def tasks_futures():
     '''新版本的 tasks_futures '''
-    print(f'{BigLottery52.sY("tasks_futures is runing...")}')
+    print(f'{BigLottery52_old.sY("tasks_futures is runing...")}')
     with concurrent.futures.ProcessPoolExecutor() as executor:
         length, data, rego, filterx = initTaskQueue_to_list()
-        jindux = BigLottery52.jindu(length)
+        jindux = BigLottery52_old.jindu(length)
         seen_n = set()
         chunk_size = length // cpu_count()
         _info = f"seting args {length} {chunk_size}"
-        print(f"{BigLottery52.sY(_info)}")
+        print(f"{BigLottery52_old.sY(_info)}")
         chunks = [
             range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
         ]

@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2023-12-26 20:55:18
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-05-17 15:37:22
+# @Last Modified time: 2024-06-13 00:02:16
 
 from typing import List
 from functools import partial
@@ -111,6 +111,9 @@ class Lexer:
 
 
 class rego_filter:
+    '''
+    data {'red': [2, 4, 8, 16, 24, 33], 'bule': [10]}
+    '''
 
     @staticmethod
     def f_paichu_r(N: note.Note, args: List) -> bool:
