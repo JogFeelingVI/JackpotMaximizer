@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-13 16:20:36
+# @Last Modified time: 2024-06-14 09:19:30
 import multiprocessing, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets, inspect
 from dataclasses import dataclass
 from functools import partial
@@ -167,6 +167,8 @@ def filters(config:dict = {}, item:dict={}):
     '''
     # item={'red': [2, 11, 17, 23, 26, 33], 'bule': [7]}
     Target = config.get('Target')
+    # print(f'debug -> {config}')
+    # return
     if Target:
         funi = [p for k,p in config.items() if k != 'Target']
         bn = item[Target]

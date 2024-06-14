@@ -2,11 +2,11 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-13 16:18:38
+# @Last Modified time: 2024-06-14 09:31:00
 
 from functools import partial
 import re
-from codex import BigLottery52, filters_v4, rego_v3
+from codex import BigLottery52, filters_v4, rego_v4
 
 config = {
     "depth": 3000,
@@ -15,8 +15,7 @@ config = {
     "filter": True,
     "ins": "(.*)",
     "r": 6,
-    "b": 1,
-    "execute_process": None,
+    "b": 1
 }
 
 
@@ -29,8 +28,9 @@ def __init_Config(conf: dict):
 def __init_PostCall():
     global config
     temp = {}
-    
-    temp["rego"], temp["product"] = rego_v3.Lexer().pares(rego_v3.load_rego_v2())
+    rego, product = rego_v4.Lexer().pares(rego_v4.load_rego_v2())
+    temp["rego"] = rego
+    temp["product"] = product
     temp["ins"] = __ConversionRegx(config.get("ins", "(.*)"))
     config.update(temp)
 
@@ -39,12 +39,13 @@ def __init_conf():
     global config
     r = config.get("r", 6)
     b = config.get("b", 1)
-    config = {
+    itemJg = {
         "red": partial(BigLottery52.coda_sec, rngs=range(1, 34), k=r),
         "bule": partial(BigLottery52.coda_sec, rngs=range(1, 17), k=b),
     }
     strfmt = "SSQ coda {red} + {bule}"
-    return {"CONF": config, "FMT": strfmt}
+    return {"CONF": itemJg, "FMT": strfmt}
+
 
 def __init_filter():
     global config
@@ -52,7 +53,24 @@ def __init_filter():
     filter.initialization()
     temp = filter.Checkfunc()
     temp.update({"Target": "red"})
-    return {'FILTER':temp}
+    return {"FILTER": temp}
+
+
+def __init_rego(tar:str):
+    """rego to"""
+    global config
+    temp = config.get("rego")
+    rego = {'Target':tar}
+    match tar:
+        case "red":
+            indexs = [1, 2, 3, 4, 5, 6]
+        case 'bule':
+            indexs = [7]
+    if temp:
+        for k, partial_func in temp.items():
+            if partial_func.keywords['index'] in indexs:
+                rego[k] = partial_func
+    return {"FILTER": rego}
 
 
 def __ConversionRegx(ins):
@@ -106,13 +124,27 @@ def tasked():
             },
             "callback": lambda re: print(f"Callback: {re[0]}"),
         },
+        {"type": "initialization", "work": lambda :__init_rego('red')},
+        {
+            "type": "filter",
+            "work": BigLottery52.DataProcessor,
+            "args": {"config": "FILTER", "funx": BigLottery52.filters},
+            "callback": lambda re: print(f"Rego Callback: {re[0]}"),
+        },
+        {"type": "initialization", "work": lambda :__init_rego('bule')},
+        {
+            "type": "filter",
+            "work": BigLottery52.DataProcessor,
+            "args": {"config": "FILTER", "funx": BigLottery52.filters},
+            "callback": lambda re: print(f"Rego Callback: {re[0]}"),
+        },
         {"type": "initialization", "work": __init_filter},
         {
             "type": "filter",
             "work": BigLottery52.DataProcessor,
             "args": {"config": "FILTER", "funx": BigLottery52.filters},
             "callback": lambda re: print(f"FILTER Callback: {re[0]}"),
-        },
+        },        
         {
             "type": "display",
             "work": BigLottery52.display,
