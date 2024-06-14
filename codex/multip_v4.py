@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-14 09:31:00
+# @Last Modified time: 2024-06-14 15:23:13
 
 from functools import partial
 import re
@@ -11,8 +11,8 @@ from codex import BigLottery52, filters_v4, rego_v4
 config = {
     "depth": 3000,
     "n": 25,
-    "loadins": True,
-    "filter": True,
+    "loadins": False,
+    "loadfilter": True,
     "ins": "(.*)",
     "r": 6,
     "b": 1
@@ -27,12 +27,14 @@ def __init_Config(conf: dict):
 
 def __init_PostCall():
     global config
-    temp = {}
-    rego, product = rego_v4.Lexer().pares(rego_v4.load_rego_v2())
-    temp["rego"] = rego
-    temp["product"] = product
-    temp["ins"] = __ConversionRegx(config.get("ins", "(.*)"))
-    config.update(temp)
+    if config.get('loadins'):
+        temp = {}
+        rego, product = rego_v4.Lexer().pares(rego_v4.load_rego_v2())
+        temp["rego"] = rego
+        temp["product"] = product
+        temp["ins"] = __ConversionRegx(config.get("ins", "(.*)"))
+        config.update(temp)
+
 
 
 def __init_conf():
@@ -49,9 +51,11 @@ def __init_conf():
 
 def __init_filter():
     global config
-    filter = filters_v4
-    filter.initialization()
-    temp = filter.Checkfunc()
+    temp = {}
+    if config.get('loadfilter'):
+        filter = filters_v4
+        filter.initialization()
+        temp = filter.Checkfunc()
     temp.update({"Target": "red"})
     return {"FILTER": temp}
 
