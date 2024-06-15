@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-20 08:04:11
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-01 00:20:43
+# @Last Modified time: 2024-06-15 21:12:11
 
 import functools
 import json
@@ -12,7 +12,7 @@ import random
 import dataclasses, itertools as itr, concurrent.futures, re, collections
 import time
 from typing import Iterable, List
-from codex import multip_v3, sq3database
+from codex import multip_v4, sq3database
 from multiprocessing import Manager, cpu_count
 
 cp = "="
@@ -103,12 +103,16 @@ def loadGroup():
     # Retds = []
     # for x in range(10000):
     #     Retds.append(randome_n(6))
-    p = multip_v3
-    p.settingLength(10000)
-    p.useRego(False)
-    p.useFilter(False)
-    p.initPostCall(6, 1, "(.*)")
-    Retds = p.tasks_futures()
+    # p = multip_v3
+    # p.settingLength(10000)
+    # p.useRego(False)
+    # p.useFilter(False)
+    # p.initPostCall(6, 1, "(.*)")
+    # Retds = p.tasks_futures()
+    conf = {"n": 10000, "loadins": False, "loadfilter": False}
+    p = multip_v4
+    p.initialization(conf=conf)
+    Retds = p.tasked()
     Retds = [parseSublist(x).rNumber for x in Retds]
     # [[72, '03 05 07 16 27 33', '01']
     return Retds
@@ -200,7 +204,7 @@ def done_task(future, storage: List):
     for fi in flist:
         id, cyns, n, b = fi
         # print(f'done {cyns}')
-        if cyns[4] !=0 and cyns[5] != 0:
+        if cyns[4] != 0 and cyns[5] != 0:
             storage.append((id, cyns, n, b))
 
 
@@ -209,18 +213,18 @@ def tasks_futures_proess_mem(result: list = []):
     cyns.from_id, cyns.cyn, data.r_numbers, data.b_numbers
     """
     iStorage = []
-    
+
     with Manager() as mem:
         pd = mem.dict(collections.defaultdict(int))
         with concurrent.futures.ProcessPoolExecutor() as executor:
             comparison = initTaskQueue_toList()
-            #print(f'{comparison[0]}')
+            # print(f'{comparison[0]}')
             chunk_size = max(1, result.__len__() // cpu_count())
             chunks = [
                 result[i : i + chunk_size]
                 for i in range(0, result.__len__(), chunk_size)
             ]
-            
+
             futures = [
                 executor.submit(create_task, i, comparison, pd).add_done_callback(
                     lambda f: done_task(f, iStorage)

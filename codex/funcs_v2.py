@@ -2,9 +2,9 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-12 20:29:24
+# @Last Modified time: 2024-06-15 17:06:55
 import pathlib, json, re, datetime
-from codex import gethtml_v2, multip_v3
+from codex import gethtml_v2, multip_v4
 
 
 def Lastime() -> str:
@@ -108,21 +108,27 @@ class load:
                 "ins": str() as ins,
                 # "usew": str() as usew,
             }:
-                #! 从这里开始修改 适配新的coda
-                p = multip_v3
-                p.settingLength(n)
-                p.useRego(loadins)
-                p.initPostCall(r, b, ins)
+                conf = {'n':n,'loadins':loadins,'r':r,'b':b, 'ins':ins}
+                p = multip_v4
+                p.initialization(conf=conf)
                 match core:
-                    case 1:
-                        Retds = p.tasks_single()
-                    case 2:
-                        Retds = p.tasks_futures_press()
-                    case 3:
-                        Retds = p.tasks_futures()
-                    case 4:
-                        Retds = p.tasks_from_regos()
-
+                    case 1|2|3:
+                        Retds = p.tasked()
+                #! 从这里开始修改 适配新的 coda
+                # p = multip_v3
+                # p.settingLength(n)
+                # p.useRego(loadins)
+                # p.initPostCall(r, b, ins)
+                # match core:
+                #     case 1:
+                #         Retds = p.tasks_single()
+                #     case 2:
+                #         Retds = p.tasks_futures_press()
+                #     case 3:
+                #         Retds = p.tasks_futures()
+                #     case 4:
+                #         Retds = p.tasks_from_regos()
+                
             case _:
                 pass
         return Retds
@@ -144,6 +150,7 @@ class load:
         match args:
             case {"Compared-R": list() as cR, "Compared-B": list() as cB}:
                 Retds = self.__cpu_one(args, 3)
+                print(f'{Retds[0]}')
                 Rex: list = [y for x in Retds for y in self.__diff__(x, cR, cB)]
                 iRex = len(Rex)
                 if iRex == 0:
@@ -193,10 +200,11 @@ class load:
             "100",
         ]
         id, Nr, Nb = Rexs
-        Nr = [int(x) for x in Nr.split(" ")]
-        Nb = [int(x) for x in Nb.split(" ")]
+        # print(f'__didd__ {id} {Nr} {Nb}')
+        # Nr = [int(x) for x in Nr.split(" ")]
+        # Nb = [int(x) for x in Nb.split(" ")]
         dif_l = []
-        zipo = multip_v3.ccp(Nr, Nb)
+        zipo = multip_v4.ccp(Nr, Nb)
         # 发现错误 终止执行程序
         for zR, zB in zipo:
             dif_r = (set(zR) & set(cR)).__len__()
@@ -212,7 +220,7 @@ class load:
         xxxxx ^ xxxxx
         """
         glos = []
-        temp = [x for x in rex if x[1] != x[2]]
+        temp = [x for x in rex]
         lent = temp.__len__()
         for i in range(0, lent, step):
             es = i + step
@@ -262,6 +270,7 @@ class load:
                         Return_data = self.__cpu_one(args, 3)
                         # Enable multi-core
                     case "m":
+                        #! 模拟运算核型
                         self.__cpu_simulation(args)
                     case "c":
                         # 特殊执行方式 用来支持jpm_insight

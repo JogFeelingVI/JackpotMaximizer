@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-13 09:21:27
+# @Last Modified time: 2024-06-15 21:29:22
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast, collections
@@ -146,7 +146,7 @@ def main(tasks: int = 25, args: dict = ARGS):
             diff_info = Insight.diffMain(result=result)
             if diff_info == None:
                 continue
-            # ???
+            # ??? (9, {4: 35, 5: 1}, [4, 11, 14, 25, 26, 29], [5])
             with open(cyns_info, "a") as file:
                 temptask = []
                 for item in diff_info.copy():
@@ -162,8 +162,9 @@ def main(tasks: int = 25, args: dict = ARGS):
                             # if echo == False:
                             #     print(f"{r(logs)}")
                             #     echo = True
-                temptask = sorted(temptask, key=lambda x: x[1][5])
-                task.append(temptask[0])
+                if temptask:
+                    temptask = sorted(temptask, key=lambda x: x[1][5])
+                    task.append(temptask[0])
             # ???
             end_time = time.perf_counter()
             print(

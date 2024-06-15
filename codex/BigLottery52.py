@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-14 09:19:30
+# @Last Modified time: 2024-06-15 16:44:20
 import multiprocessing, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets, inspect
 from dataclasses import dataclass
 from functools import partial
@@ -53,7 +53,7 @@ class jindu:
     def echo(self, sda=9):
         if (nt := time.perf_counter() - self.echotime) > 0.3 or sda == 0:
             pe = self.block.__len__() / self.length
-            pe_d = "■" * int(pe * 50)
+            pe_d = "■" * int(50 * pe)
             self.echotime = time.perf_counter()
             self.press = f"{ENDC}DataFactory {pe_d} {pe * 100 :.2f}%"
             if sda > 0:
@@ -256,7 +256,6 @@ def DataProcessor(**kwargs):
         else:
             chunks = [[x] for x in result]
     #? 目前位置 到这里是正常的
-    # print(f'{length = } {len(result)}')
     futures = []
     with concurrent.futures.ProcessPoolExecutor() as executor:
         if config and funx:
@@ -323,12 +322,15 @@ def execute_process(process:List[dict[str, Any]]):
                                     if isinstance(v, str):
                                         kw.update({k:data.get(v, v)})
                                 if step_type == 'filter':
-                                    kw.update({'result': result})
+                                    if result:
+                                        kw.update({'result': result})
+                                    else:
+                                        break
                                 result = step_work(**kw)
                             case _ as args:
                                 result = step_work(args)
                             
-                        if callback:
+                        if callback and result:
                             callback(result)
                     except Exception as e:
                         err_info = f'{step_type} Workflow Errors, fun_work(args).\n  -> {e}'
@@ -346,9 +348,29 @@ def execute_process(process:List[dict[str, Any]]):
                                 for k, v in kw.items():
                                     if isinstance(v, str):
                                         kw.update({k:data.get(v, v)})
-                                        
+                                if result:
+                                    kw.update({'result': result})
+                                    step_work(**kw)
+                                if callback and result:
+                                    callback(result)
+                            case _ as args:
+                                raise Exception(f'Wrong parameter type, <args_type:{type(step_args).__name__}>.')
+                    except Exception as e:
+                        err_info = f'{step_type} Workflow Errors, fun_work(args).\n  -> {e}'
+                        print(f'{sR(err_info)}')
+                    else:
+                        done_info= f'Workflow `{step_type}` has completed. No exceptions were found.'
+                        print(f'{sY(done_info)}')
+            case 'other':
+                if step_work and step_args:
+                    #! 判断 step_args 类型
+                    try:
+                        match step_args:
+                            case dict() as kw:        
                                 kw.update({'result': result})
-                                step_work(**kw)
+                                temp = step_work(**kw)
+                                if callback and temp:
+                                    callback(temp)
                             case _ as args:
                                 raise Exception(f'Wrong parameter type, <args_type:{type(step_args).__name__}>.')
                     except Exception as e:

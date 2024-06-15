@@ -12,13 +12,9 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "load",
-                "--loadins",
-                "--cpu",
-                "o",
-                "-n10",
-                "--ins",
-                "^(03)\\s(08)\\s(13)(.*)"
+                "explore",
+                "task",
+                "5"
             ]
         }
     ]

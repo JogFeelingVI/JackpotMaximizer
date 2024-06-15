@@ -2,10 +2,11 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-14 15:23:13
+# @Last Modified time: 2024-06-15 21:16:22
 
 from functools import partial
-import re
+import re, itertools
+from typing import Iterable
 from codex import BigLottery52, filters_v4, rego_v4
 
 config = {
@@ -15,7 +16,7 @@ config = {
     "loadfilter": True,
     "ins": "(.*)",
     "r": 6,
-    "b": 1
+    "b": 1,
 }
 
 
@@ -27,14 +28,13 @@ def __init_Config(conf: dict):
 
 def __init_PostCall():
     global config
-    if config.get('loadins'):
-        temp = {}
+    temp = {}
+    temp["ins"] = __ConversionRegx(config.get("ins", "(.*)"))
+    if config.get("loadins"):
         rego, product = rego_v4.Lexer().pares(rego_v4.load_rego_v2())
         temp["rego"] = rego
         temp["product"] = product
-        temp["ins"] = __ConversionRegx(config.get("ins", "(.*)"))
-        config.update(temp)
-
+    config.update(temp)
 
 
 def __init_conf():
@@ -52,7 +52,7 @@ def __init_conf():
 def __init_filter():
     global config
     temp = {}
-    if config.get('loadfilter'):
+    if config.get("loadfilter"):
         filter = filters_v4
         filter.initialization()
         temp = filter.Checkfunc()
@@ -60,20 +60,21 @@ def __init_filter():
     return {"FILTER": temp}
 
 
-def __init_rego(tar:str):
+def __init_rego(tar: str):
     """rego to"""
     global config
     temp = config.get("rego")
-    rego = {'Target':tar}
+    rego = {"Target": tar}
     match tar:
         case "red":
             indexs = [1, 2, 3, 4, 5, 6]
-        case 'bule':
+        case "bule":
             indexs = [7]
-    if temp:
-        for k, partial_func in temp.items():
-            if partial_func.keywords['index'] in indexs:
-                rego[k] = partial_func
+    if config.get('loadins'):
+        if temp:
+            for k, partial_func in temp.items():
+                if partial_func.keywords["index"] in indexs:
+                    rego[k] = partial_func
     return {"FILTER": rego}
 
 
@@ -114,8 +115,30 @@ def initialization(conf: dict):
             print(f"initialization {name} Error.\n  -> {e}")
 
 
+def formmattolist(**kwargs):
+    """
+    格式转换 format 'index,red,bule'
+    """
+    format = kwargs.get("format")
+    result = kwargs.get("result")
+    result_to = []
+    if format and result:
+        geshi = str(format).split(",")
+        for index, res_item in enumerate(result):
+            n = []
+            for _f in geshi:
+                match _f:
+                    case "index":
+                        n.append(index)
+                    case str() as keys:
+                        n.append(res_item.get(keys))
+            result_to.append(n)
+    return result_to
+
+
 def tasked():
     global config
+    tasked_data = []
     temp: list = [
         {"type": "initialization", "work": __init_conf},
         {
@@ -128,14 +151,14 @@ def tasked():
             },
             "callback": lambda re: print(f"Callback: {re[0]}"),
         },
-        {"type": "initialization", "work": lambda :__init_rego('red')},
+        {"type": "initialization", "work": lambda: __init_rego("red")},
         {
             "type": "filter",
             "work": BigLottery52.DataProcessor,
             "args": {"config": "FILTER", "funx": BigLottery52.filters},
             "callback": lambda re: print(f"Rego Callback: {re[0]}"),
         },
-        {"type": "initialization", "work": lambda :__init_rego('bule')},
+        {"type": "initialization", "work": lambda: __init_rego("bule")},
         {
             "type": "filter",
             "work": BigLottery52.DataProcessor,
@@ -148,17 +171,33 @@ def tasked():
             "work": BigLottery52.DataProcessor,
             "args": {"config": "FILTER", "funx": BigLottery52.filters},
             "callback": lambda re: print(f"FILTER Callback: {re[0]}"),
-        },        
+        },
+        # {
+        #     "type": "display",
+        #     "work": BigLottery52.display,
+        #     "args": {
+        #         "FMT": "FMT",
+        #         "PZ": {"red": BigLottery52.sR, "bule": BigLottery52.sG},
+        #     },
+        #     "callback": lambda re: print(f"display Callback: {re[0]}"),
+        # },
         {
-            "type": "display",
-            "work": BigLottery52.display,
-            "args": {
-                "FMT": "FMT",
-                "PZ": {"red": BigLottery52.sR, "bule": BigLottery52.sG},
-            },
+            "type": "other",
+            "work": formmattolist,
+            "args": {"format": "index,red,bule"},
+            "callback": lambda re: tasked_data.extend(re),
         },
     ]
     BigLottery52.execute_process(process=temp)
+    return tasked_data
+
+
+def ccp(a: Iterable, b: Iterable) -> itertools.product:
+    """ """
+    Lir = itertools.combinations(a, 6)
+    Lib = itertools.combinations(b, 1)
+    zipo = itertools.product(Lir, Lib)
+    return zipo
 
 
 def main():
