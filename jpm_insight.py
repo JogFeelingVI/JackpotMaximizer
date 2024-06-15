@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-03-29 23:50:41
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-15 21:29:22
+# @Last Modified time: 2024-06-16 00:23:18
 
 from codex import funcs_v2, tonji
 import Insight, time, datetime, threading, pathlib, sys, ast, collections
@@ -12,7 +12,7 @@ ARGS = {
     "noinx": False,
     "fix": "a",
     "cpu": "c",
-    "loadins": True,
+    "loadins": False,
     "usew": "s",
     "debug": False,
     "ins": "(.*)",
@@ -123,10 +123,10 @@ def main_rego(args: dict = ARGS):
 def main(tasks: int = 25, args: dict = ARGS):
     print(f"Welcome to the world of wealth. {g(whoistime())}")
     try:
-        sq = time.perf_counter()
+        sq = []
         task = []
         while task.__len__() < tasks:
-            start_time = time.perf_counter()
+            sq.append(time.perf_counter())
 
             # 获得act 传回来的参数
             def m_result(r):
@@ -154,22 +154,21 @@ def main(tasks: int = 25, args: dict = ARGS):
                     logs = f"{now} -> id {fromid:>4} / cyn {cyn} * {n} + {t}"
                     L4 = cyn.get(4, 0)
                     L5 = cyn.get(5, 0)
-                    L6 =cyn.get(6,0)
-                    if L4 == 47:
-                    # print(f'{L456}')
+                    L6 = cyn.get(6, 0)
+                    if L4 in [46, 47, 48] and L5 in [0, 1, 2]:
+                        # print(f'{L456}')
                         temptask.append(item)
-                            
-                            # if echo == False:
-                            #     print(f"{r(logs)}")
-                            #     echo = True
+
+                        # if echo == False:
+                        #     print(f"{r(logs)}")
+                        #     echo = True
                 if temptask:
                     temptask = sorted(temptask, key=lambda x: x[1][5])
                     task.append(temptask[0])
             # ???
-            end_time = time.perf_counter()
-            print(
-                f'This running time is {g(f"{end_time-start_time-3:.4f}")} seconds. {task.__len__()}'
-            )
+            sq.append(time.perf_counter())
+            _a, _b = sq[-2:]
+            print(f'This running time is {g(f"{_b-_a:.4f}")} seconds. {task.__len__()}')
 
         # 查找随机过程中最少的值
         task = sorted(task, key=lambda x: x[1][4])
@@ -193,7 +192,7 @@ def main(tasks: int = 25, args: dict = ARGS):
                 print(f"{r(third_element)} {cyn = }", end="\r")
                 file.write(f"{logs}\n")
 
-        print(f'completed 100% {" "*16} {time.perf_counter() - sq:.4f} seconds.')
+        print(f'completed 100% {" "*16} {time.perf_counter() - sq[0]:.4f} seconds.')
 
     except Exception as e:
         print(f"ERR: {e}")
