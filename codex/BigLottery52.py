@@ -2,13 +2,13 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-15 16:44:20
+# @Last Modified time: 2024-06-20 12:17:51
 import multiprocessing, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets, inspect
 from dataclasses import dataclass
 from functools import partial
 from typing import Callable, List, Any
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 logging.basicConfig(
     level=logging.INFO,
@@ -180,6 +180,27 @@ def filters(config:dict = {}, item:dict={}):
             return None
     return None
 
+def differ(config:dict={}, item:dict={}):
+    '''
+    "type": "differ",
+    "work": BigLottery52.DataProcessor,
+    "args": {"config": {'conf':"CONF", 'lens':10000, 'Probability':{'bule':[4, 0.0005, 0.0001], 'yellow':[1, 0.3, 0.01]},},  "funx": BigLottery52.differ},
+    "callback": lambda re: print(f"FILTER differ Callback: {re[0]}"),
+    
+    Probability
+        {'bule':[4, 0.0005, 0.0001], 'yellow':[1, 0.3, 0.01]}},
+    '''
+    lens = config.get('lens', 100)
+    Probability = config.get('Probability', {})
+    Comparison_group = config.get('Comparison_group', [])
+    
+    for p, (count, probability, Tolerance) in Probability.items():
+        temp = [len(set(item[p]) & set(cg[p])) for cg in Comparison_group].count(count)
+        # print(f'{p} {temp / lens}')
+        if abs(temp / lens - probability) > Tolerance:
+            return None
+    return item
+
 
 def Processor_rng(func: Callable, irangs, config: dict = {}, ):
     """
@@ -256,6 +277,7 @@ def DataProcessor(**kwargs):
         else:
             chunks = [[x] for x in result]
     #? 目前位置 到这里是正常的
+    
     futures = []
     with concurrent.futures.ProcessPoolExecutor() as executor:
         if config and funx:
@@ -295,7 +317,7 @@ def execute_process(process:List[dict[str, Any]]):
     dict
         type function_type
     '''
-    data = {'TIME':time.perf_counter()}
+    data = {}
     result = []
     for step in process:
         step_type = step.get("type")
@@ -338,6 +360,37 @@ def execute_process(process:List[dict[str, Any]]):
                     else:
                         done_info= f'Workflow `{step_type}` has completed. No exceptions were found.'
                         print(f'{sY(done_info)}')
+            case 'differ':
+                if step_work and step_args:
+                    try:
+                        #! 判断 这里需要优化 
+                        match step_args:
+                            case dict() as kw:
+                                conf = kw.get('config',{})
+                                lens = conf.get('lens',100)
+                                conf_name = conf.get('conf', '')
+                                mark_conf = data.get(conf_name)
+                                # print(f'{conf = }')
+                                if mark_conf:
+                                    conf.update({'Comparison_group':[mark(config=mark_conf) for _ in range(lens)]})
+                                kw.update({'config': conf})
+                                if result:
+                                        kw.update({'result': result})
+                                else:
+                                    break
+                                result = step_work(**kw)
+                            case _ as args:
+                                pass
+                            
+                        if callback and result:
+                            callback(result)
+                    except Exception as e:
+                        err_info = f'{step_type} Workflow Errors, fun_work(args).\n  -> {e}'
+                        print(f'{sR(err_info)}')
+                    else:
+                        done_info= f'Workflow `{step_type}` has completed. No exceptions were found.'
+                        print(f'{sY(done_info)}')
+                #! differ end
             case 'display':
                 #? 这里开始执行显示程序    
                 if step_work and step_args:
@@ -379,5 +432,6 @@ def execute_process(process:List[dict[str, Any]]):
                     else:
                         done_info= f'Workflow `{step_type}` has completed. No exceptions were found.'
                         print(f'{sY(done_info)}')
+            
             case _:
                 print(f'execute_process configuration error. {step_type}')

@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-02-21 12:37:31
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-04-20 07:22:57
+# @Last Modified time: 2024-06-15 21:48:19
 from collections import Counter
 from typing import List
 from functools import partial
@@ -144,8 +144,9 @@ class works:
     @staticmethod
     def acvalue(N: note.Note, recommend: List[str]) -> bool:
         """计算数字复杂程度 默认 P len = 6 这里操造成效率低下"""
-        p = itertools.product(N.number[1::], N.number[0:5])
-        ac = [1 for a, b in p if a - b > 0.1].__len__() - 1 - len(N.number)
+        f= lambda x: x[0]-x[1]
+        p = itertools.product(N.number, N.number)
+        ac = set(_n for x in p if (_n:=f(x)) > 0).__len__() - 1 - len(N.number)
         return [False, True][ac in map(int, recommend)]
 
     @staticmethod

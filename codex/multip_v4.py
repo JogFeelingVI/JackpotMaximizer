@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-15 21:16:22
+# @Last Modified time: 2024-06-20 10:16:26
 
 from functools import partial
 import re, itertools
@@ -163,7 +163,7 @@ def tasked():
             "type": "filter",
             "work": BigLottery52.DataProcessor,
             "args": {"config": "FILTER", "funx": BigLottery52.filters},
-            "callback": lambda re: print(f"Rego Callback: {re[0]}"),
+            "callback": lambda re: print(f"REGO Callback: {re[0]}"),
         },
         {"type": "initialization", "work": __init_filter},
         {
@@ -171,6 +171,13 @@ def tasked():
             "work": BigLottery52.DataProcessor,
             "args": {"config": "FILTER", "funx": BigLottery52.filters},
             "callback": lambda re: print(f"FILTER Callback: {re[0]}"),
+        },
+        #! 新的filter 初始化工作
+        {
+            "type": "differ",
+            "work": BigLottery52.DataProcessor,
+            "args": {"config": {'conf':"CONF", 'lens':10000, 'Probability':{'red':[4, 0.0047, 0.0001]},},  "funx": BigLottery52.differ},
+            "callback": lambda re: print(f"FILTER differ Callback: {re[0]}"),
         },
         # {
         #     "type": "display",
