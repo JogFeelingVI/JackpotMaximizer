@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-20 12:17:51
+# @Last Modified time: 2024-06-25 10:07:15
 import multiprocessing, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets, inspect
 from dataclasses import dataclass
 from functools import partial
@@ -24,7 +24,7 @@ RED = "\033[91m"
 YELLOW = "\033[93m"
 BLUE = "\033[94m"
 GREEN = "\033[92m"
-ENDC = "\033[0m"  # 重置颜色
+ENDC = "\033[0m" # 重置颜色
 
 # 打印彩色字符
 sR = lambda s: f"{RED}{s}{ENDC}"
@@ -191,14 +191,14 @@ def differ(config:dict={}, item:dict={}):
         {'bule':[4, 0.0005, 0.0001], 'yellow':[1, 0.3, 0.01]}},
     '''
     lens = config.get('lens', 100)
-    Probability = config.get('Probability', {})
+    Probability = config.get('Probability', [])
     Comparison_group = config.get('Comparison_group', [])
-    
-    for p, (count, probability, Tolerance) in Probability.items():
-        temp = [len(set(item[p]) & set(cg[p])) for cg in Comparison_group].count(count)
-        # print(f'{p} {temp / lens}')
-        if abs(temp / lens - probability) > Tolerance:
-            return None
+    fps = lambda a:len(a) - len(set(a))
+    keyname, count, probability, Tolerance = Probability
+    temp = sum([1 for cg in Comparison_group if fps(item[keyname]+ cg[keyname]) == count])
+    # print(f'rest {temp} {lens} {temp/lens = }')
+    if abs(temp / lens - probability) > Tolerance:
+        return None
     return item
 
 
@@ -213,10 +213,13 @@ def Processor_rng(func: Callable, irangs, config: dict = {}, ):
     
     match list(parameters.keys()):
         case ['config']:
-            p = lambda x: func(config=config)
+            p = partial(func, config=config)
+            return [p() for _ in irangs]
         case ['config', 'item']:
             p = lambda i: func(config=config, item=i)
-    return [p(i) for i in irangs]
+            return [p(ix) for ix in irangs ]
+    # return [p(i) for i in irangs]
+    
 
 
 def done(items, numbers: jindu):
@@ -241,7 +244,7 @@ def display(**kwargs):
                 if p in item.keys():
                     itemEx.update({p:codafmt(item[p], z)})
                 else:
-                    raise Exception(f'{p} Wrong parameter configuration. IN [{' '.join(item.keys())}].')
+                    raise Exception(f'{p} Wrong parameter configuration. IN [{" ".join(item.keys())}].')
             print(fmt.format(**itemEx))
             
     else:   
@@ -257,6 +260,11 @@ def DataProcessor(**kwargs):
     result = kwargs.get('result')
     length = kwargs.get('length')
     #? 这里 jindux = jindu(length)
+    #? config dict_keys(['conf', 'lens', 'Probability', 'Comparison_group']) None <class 'list'>
+    #? config dict_keys(['Target', 'jo2', 'zh2', 'wDx2']) None <class 'list'>
+    #? config dict_keys(['Target', 'jo1', 'wDx1', 'zh1', 'he1', 'b2in', 'b4in', 'mod4', 'mod6', 'mod8', 'ac']) None <class 'list'>
+    #? config dict_keys(['bule', 'yellow']) 500000 <class 'NoneType'>
+    #! 测试组
     if length and result == None:
         jindux = jindu(length)
         chunk_size = length // cpus
@@ -266,17 +274,29 @@ def DataProcessor(**kwargs):
         ]
         else:
             chunks = [[i] for i in range(0, length)]
-    elif length == None and result:
-        length = len(result)
-        jindux = jindu(length)
-        chunk_size = length // cpus
-        if chunk_size != 0:
-            chunks = [
-            result[i : i + chunk_size] for i in range(0, length, chunk_size)
-        ]
-        else:
-            chunks = [[x] for x in result]
-    #? 目前位置 到这里是正常的
+    else:
+        match config:
+            case {'Target': n}:
+                if result:
+                    length = len(result)
+                    jindux = jindu(length)
+                    chunk_size = length // cpus
+                    if chunk_size != 0:
+                        chunks = [
+                        result[i : i + chunk_size] for i in range(0, length, chunk_size)]
+                    else:
+                        chunks = [[x] for x in result]
+            case {'Comparison_group':cg, 'Probability':pro}:
+                if result:
+                    length = len(result)
+                    jindux = jindu(length)
+                    chunk_size = 50
+                    if chunk_size != 0:
+                        chunks = [
+                        result[i : i + chunk_size] for i in range(0, length, chunk_size)]
+                    else:
+                        chunks = [[x] for x in result]
+    # #? 目前位置 到这里是正常的
     
     futures = []
     with concurrent.futures.ProcessPoolExecutor() as executor:
@@ -319,6 +339,7 @@ def execute_process(process:List[dict[str, Any]]):
     '''
     data = {}
     result = []
+    diff_1w = []
     for step in process:
         step_type = step.get("type")
         step_work = step.get('work')
@@ -332,7 +353,7 @@ def execute_process(process:List[dict[str, Any]]):
                         data.update(step_work(step_args))
                     else:
                         data.update(step_work())
-                init_info = f'Initialization of workflow basic variables has been completed.\n  -> {' '.join(data.keys())}'
+                init_info = f'Initialization of workflow basic variables has been completed.\n  -> {" ".join(data.keys())}'
                 print(f'{sB(init_info)}')
             case 'create'| 'filter':
                 if step_work and step_args:
@@ -343,12 +364,17 @@ def execute_process(process:List[dict[str, Any]]):
                                 for k, v in kw.items():
                                     if isinstance(v, str):
                                         kw.update({k:data.get(v, v)})
-                                if step_type == 'filter':
-                                    if result:
-                                        kw.update({'result': result})
-                                    else:
-                                        break
-                                result = step_work(**kw)
+                                match step_type:
+                                    case 'create':
+                                        result = step_work(**kw)
+                                        kw.update({'length':10000})
+                                        diff_1w = step_work(**kw)
+                                    case 'filter':
+                                        if result:
+                                            kw.update({'result': result})
+                                            result = step_work(**kw)
+                                        else:
+                                            break
                             case _ as args:
                                 result = step_work(args)
                             
@@ -367,17 +393,17 @@ def execute_process(process:List[dict[str, Any]]):
                         match step_args:
                             case dict() as kw:
                                 conf = kw.get('config',{})
-                                lens = conf.get('lens',100)
                                 conf_name = conf.get('conf', '')
                                 mark_conf = data.get(conf_name)
                                 # print(f'{conf = }')
                                 if mark_conf:
-                                    conf.update({'Comparison_group':[mark(config=mark_conf) for _ in range(lens)]})
+                                    conf.update({'Comparison_group':diff_1w})
                                 kw.update({'config': conf})
                                 if result:
                                         kw.update({'result': result})
                                 else:
                                     break
+                                # return
                                 result = step_work(**kw)
                             case _ as args:
                                 pass
