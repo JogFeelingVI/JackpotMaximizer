@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-25 10:07:15
+# @Last Modified time: 2024-06-29 09:17:57
 import multiprocessing, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets, inspect
 from dataclasses import dataclass
 from functools import partial
@@ -196,7 +196,6 @@ def differ(config:dict={}, item:dict={}):
     fps = lambda a:len(a) - len(set(a))
     keyname, count, probability, Tolerance = Probability
     temp = sum([1 for cg in Comparison_group if fps(item[keyname]+ cg[keyname]) == count])
-    # print(f'rest {temp} {lens} {temp/lens = }')
     if abs(temp / lens - probability) > Tolerance:
         return None
     return item
@@ -254,50 +253,49 @@ def DataProcessor(**kwargs):
     '''
     kwargs is Dict
         exp {'config':'CONF','funx':BigLottery52.mark, 'length':5*1*10000}
+        1 kw = dict_keys(['config', 'funx', 'length'])
+        2 filter kw = dict_keys(['config', 'funx', 'result'])
+        3 differ kw = dict_keys(['Probability', 'funx', 'Comparison_group', 'result'])
     '''
-    config = kwargs.get('config')
-    funx = kwargs.get('funx')
-    result = kwargs.get('result')
-    length = kwargs.get('length')
-    #? 这里 jindux = jindu(length)
-    #? config dict_keys(['conf', 'lens', 'Probability', 'Comparison_group']) None <class 'list'>
-    #? config dict_keys(['Target', 'jo2', 'zh2', 'wDx2']) None <class 'list'>
-    #? config dict_keys(['Target', 'jo1', 'wDx1', 'zh1', 'he1', 'b2in', 'b4in', 'mod4', 'mod6', 'mod8', 'ac']) None <class 'list'>
-    #? config dict_keys(['bule', 'yellow']) 500000 <class 'NoneType'>
-    #! 测试组
-    if length and result == None:
-        jindux = jindu(length)
-        chunk_size = length // cpus
-        if chunk_size != 0:
-            chunks = [
-            range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
-        ]
-        else:
-            chunks = [[i] for i in range(0, length)]
-    else:
-        match config:
-            case {'Target': n}:
-                if result:
-                    length = len(result)
-                    jindux = jindu(length)
-                    chunk_size = length // cpus
-                    if chunk_size != 0:
-                        chunks = [
-                        result[i : i + chunk_size] for i in range(0, length, chunk_size)]
-                    else:
-                        chunks = [[x] for x in result]
-            case {'Comparison_group':cg, 'Probability':pro}:
-                if result:
-                    length = len(result)
-                    jindux = jindu(length)
-                    chunk_size = 50
-                    if chunk_size != 0:
-                        chunks = [
-                        result[i : i + chunk_size] for i in range(0, length, chunk_size)]
-                    else:
-                        chunks = [[x] for x in result]
-    # #? 目前位置 到这里是正常的
-    
+    match kwargs:
+        case {'config':conf, 'funx':f, 'length':length}:
+            config = conf
+            funx = f
+            jindux = jindu(length)
+            chunk_size = length // cpus
+            if chunk_size != 0:
+                chunks = [
+                range(length)[i : i + chunk_size] for i in range(0, length, chunk_size)
+            ]
+            else:
+                chunks = [[i] for i in range(0, length)]
+        case {'config':conf, 'funx':f, 'result':result}:
+            config = conf
+            funx = f
+            match conf:
+                case {'Target':n}:
+                    if result:
+                        length = len(result)
+                        jindux = jindu(length)
+                        chunk_size = length // cpus
+                        if chunk_size != 0:
+                            chunks = [
+                            result[i : i + chunk_size] for i in range(0, length, chunk_size)]
+                        else:
+                            chunks = [[x] for x in result]
+        case {'Probability':pro, 'funx':funx, 'Comparison_group':cg, 'result':result}:
+            config = {}
+            if result:
+                length = len(result)
+                jindux = jindu(length)
+                chunk_size = 50
+                if chunk_size != 0:
+                    chunks = [
+                    result[i : i + chunk_size] for i in range(0, length, chunk_size)]
+                else:
+                    chunks = [[x] for x in result]
+                config.update({"Probability":pro, "Comparison_group": cg, "lens":len(cg)})
+    #? 目前位置 到这里是正常的
     futures = []
     with concurrent.futures.ProcessPoolExecutor() as executor:
         if config and funx:
@@ -327,19 +325,16 @@ def execute_process(process:List[dict[str, Any]]):
                 callback: function
             }
         ]
-    
     function_type
         initialization 初始化程序执行的基本数据
         create 创建数据
         filter 过滤内容
         display 展示成果
-    
     dict
         type function_type
     '''
     data = {}
     result = []
-    diff_1w = []
     for step in process:
         step_type = step.get("type")
         step_work = step.get('work')
@@ -367,8 +362,6 @@ def execute_process(process:List[dict[str, Any]]):
                                 match step_type:
                                     case 'create':
                                         result = step_work(**kw)
-                                        kw.update({'length':10000})
-                                        diff_1w = step_work(**kw)
                                     case 'filter':
                                         if result:
                                             kw.update({'result': result})
@@ -387,27 +380,24 @@ def execute_process(process:List[dict[str, Any]]):
                         done_info= f'Workflow `{step_type}` has completed. No exceptions were found.'
                         print(f'{sY(done_info)}')
             case 'differ':
-                if step_work and step_args:
+                if step_work and step_args and isinstance(step_args, dict):
                     try:
-                        #! 判断 这里需要优化 
-                        match step_args:
-                            case dict() as kw:
-                                conf = kw.get('config',{})
-                                conf_name = conf.get('conf', '')
-                                mark_conf = data.get(conf_name)
-                                # print(f'{conf = }')
-                                if mark_conf:
-                                    conf.update({'Comparison_group':diff_1w})
-                                kw.update({'config': conf})
-                                if result:
-                                        kw.update({'result': result})
-                                else:
-                                    break
-                                # return
-                                result = step_work(**kw)
-                            case _ as args:
-                                pass
-                            
+                        #! 判断 这里需要优化
+                        diff_cankao =[]
+                        for step, configs in step_args.items():
+                            match configs:
+                                case {'config': _} as stepa:
+                                    for k, v in stepa.items():
+                                        if isinstance(v, str):
+                                            stepa.update({k:data.get(v, v)})
+                                    diff_cankao = step_work(**stepa)
+                                case {'Probability': _} as stepx:
+                                    if diff_cankao and result:
+                                        stepx.update({'Comparison_group': diff_cankao})
+                                        stepx.update({'result': result})
+                                        result = step_work(**stepx)
+                            print(f'differ -> {sR(step)} $' + sG(f'{len(result)}/{len(diff_cankao)}'))
+                                    
                         if callback and result:
                             callback(result)
                     except Exception as e:

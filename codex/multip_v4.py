@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-25 10:06:35
+# @Last Modified time: 2024-06-29 09:28:08
 
 from functools import partial
 import re, itertools
@@ -176,7 +176,13 @@ def tasked():
         {
             "type": "differ",
             "work": BigLottery52.DataProcessor,
-            "args": {"config": {'conf':"CONF", 'lens':10000, 'Probability':['red',4, 0.0047, 0.0001],},  "funx": BigLottery52.differ},
+            "args": {
+                "step1": {"config": "CONF", "funx": BigLottery52.mark, "length": 10000},
+                "step2": {
+                    "Probability": ["red", 4, 0.0047, 0.0001],
+                    "funx": BigLottery52.differ,
+                }
+            },
             "callback": lambda re: print(f"FILTER differ Callback: {re[0]}"),
         },
         # {
