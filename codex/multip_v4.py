@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-29 09:28:08
+# @Last Modified time: 2024-06-30 13:59:25
 
 from functools import partial
 import re, itertools
@@ -181,19 +181,14 @@ def tasked():
                 "step2": {
                     "Probability": ["red", 4, 0.0047, 0.0001],
                     "funx": BigLottery52.differ,
+                },
+                "step3": {
+                    "Probability": ["red", 5, 0.0001, 0.0001],
+                    "funx": BigLottery52.differ,
                 }
             },
             "callback": lambda re: print(f"FILTER differ Callback: {re[0]}"),
         },
-        # {
-        #     "type": "display",
-        #     "work": BigLottery52.display,
-        #     "args": {
-        #         "FMT": "FMT",
-        #         "PZ": {"red": BigLottery52.sR, "bule": BigLottery52.sG},
-        #     },
-        #     "callback": lambda re: print(f"display Callback: {re[0]}"),
-        # },
         {
             "type": "other",
             "work": formmattolist,
