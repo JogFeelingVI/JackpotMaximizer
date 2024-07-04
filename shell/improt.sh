@@ -2,13 +2,13 @@
 # @Author: JogFeelingVI
 # @Date:   2024-04-21 21:05:21
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-30 15:03:35
+# @Last Modified time: 2024-07-04 13:28:26
 
 # 定义源文件夹和目标文件夹
-# source_dir=~/Downloads/Github/autoasset
-# target_dir=~/Downloads/Github/JackpotMaximizer
-source_dir=~/Github/autoasset
-target_dir=~/Github/JackpotMaximizer
+source_dir=~/Downloads/Github/autoasset
+target_dir=~/Downloads/Github/JackpotMaximizer
+# source_dir=~/Github/autoasset
+# target_dir=~/Github/JackpotMaximizer
 
 # 复制文件
 dataf="DataFrame.json"
