@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
 # @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-29 09:17:57
+# @Last Modified time: 2024-07-07 08:29:51
 import multiprocessing, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets, inspect
 from dataclasses import dataclass
 from functools import partial
@@ -44,7 +44,11 @@ class jindu:
     def Finished(self, value):
         with self.lock:
             try:
-                self.block.append(value)
+                match value:
+                    case dict():
+                        self.block.append(value)
+                    case list():
+                        self.block.extend(value)
             except:
                 pass
             finally:
@@ -211,20 +215,28 @@ def Processor_rng(func: Callable, irangs, config: dict = {}, ):
     parameters = signature.parameters
     
     match list(parameters.keys()):
+        # case ['config']:
+        #     # p = partial(func, config=config)
+        #     return [func(config=config) for _ in irangs]
+        # case ['config', 'item']:
+        #     # p = lambda i: func(config=config, item=i)
+        #     return [func(config=config, item=ix) for ix in irangs ]
         case ['config']:
-            p = partial(func, config=config)
-            return [p() for _ in irangs]
+            # p = partial(func, config=config)
+            return [n for _ in irangs if (n:=func(config=config))]
         case ['config', 'item']:
-            p = lambda i: func(config=config, item=i)
-            return [p(ix) for ix in irangs ]
+            # p = lambda i: func(config=config, item=i)
+            return [n for ix in irangs if (n:=func(config=config, item=ix))]
     # return [p(i) for i in irangs]
     
 
 
 def done(items, numbers: jindu):
-    for item in items:
-        if item:
-            numbers.Finished(value=item)
+    '''这里修改为可以添加序列的方法'''
+    # for item in items:
+    #     if item:
+    #         numbers.Finished(value=item)
+    numbers.Finished(items)
 
 
 def display(**kwargs):
