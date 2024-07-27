@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2024-06-30 07:04:55
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-30 15:04:26
+# @Last Modified by:   Your name
+# @Last Modified time: 2024-07-23 07:09:49
 from codex import multip_v4
 import time, datetime, threading, pathlib, sys, ast, collections
 
 ARGS = {"n": 1000, "loadins": True, "loadfilter": True}
 
 cyns_info = pathlib.Path("cyns.log")
-match_cyns = {4: 47.5366, 5: 1.4627, 6: 0.009}
+match_cyns = {4: 47, 5: 1.5, 6: 0}
 result = []
 
 RED = "\033[91m"

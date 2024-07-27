@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2024-05-14 16:04:53
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-07 06:23:30
+# @Last Modified by:   Your name
+# @Last Modified time: 2024-07-27 09:46:52
 
 import pathlib, ast, re, datetime
 from typing import Final, Callable
@@ -23,6 +23,7 @@ def clear_jpmpng():
 def loadtoData():
     cyns_json = pathlib.Path("./cyns.log")
     search_id_cyn_r_b = re.compile(r"id\s+(\d+).*\{(.*)\}\s\*\s(.*)\s\+\s(.*)")
+    idex_range = list('ABCDEFGHIJKLMNUVWXYZ')
     data = []
     with cyns_json.open("r+") as f:
         for line in f:
@@ -36,7 +37,9 @@ def loadtoData():
                 r = " ".join((f"{x:02}" for x in ast.literal_eval(_r)))
                 b = " ".join((f"{x:02}" for x in ast.literal_eval(_b)))
                 cyns = ast.literal_eval(f"{{{cyns}}}").get(4, -1)
-                data.append((int(_id), cyns, f"{r} - {b}"))
+                _id = idex_range[0]
+                idex_range.remove(_id)
+                data.append((_id, cyns, f"{r} - {b}"))
     # cyns_json.unlink()
     # 排序
     data.sort(key=lambda item: item[1])
