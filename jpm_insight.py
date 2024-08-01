@@ -2,9 +2,9 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-30 07:04:55
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-07-23 07:09:49
+# @Last Modified time: 2024-08-01 18:35:07
 from codex import multip_v4
-import time, datetime, threading, pathlib, sys, ast, collections
+import time, datetime, threading, pathlib, sys, ast, collections, re
 
 ARGS = {"n": 1000, "loadins": True, "loadfilter": True}
 
@@ -56,6 +56,65 @@ def explore_task(task: int = 25):
                     time.sleep(1)
 
 
+def load_cynslog(path:str='./cyns.log"'):
+    cyns_json = pathlib.Path(path)
+    search_id_cyn_r_b = re.compile(r"id\s+(\d+).*\{(.*)\}\s\*\s(.*)\s\+\s(.*)")
+    idex_range = [f"{x:02}" for x in range(1, 10000)]
+    data = []
+    with cyns_json.open("r+") as f:
+        for line in f:
+            line = line.strip()  # 去除首尾空格
+            if line:  # 检查是否为空行
+                match_search = search_id_cyn_r_b.search(line)
+                if match_search == None:
+                    return data
+                _id, cyns, _r, _b = match_search.groups()
+                _cyns = ast.literal_eval(f"{{{cyns}}}")
+                _id = idex_range[0]
+                idex_range.remove(_id)
+                data.append({"red": ast.literal_eval(_r), "bule": ast.literal_eval(_b), "id":_id, "logs":0})
+    # cyns_json.unlink()
+    # 排序
+    return data
+
+
+def load(task:int=20):
+    cyns_json = pathlib.Path("./cyns.log")
+    cyns_data = load_cynslog("./cyns.log")
+    Start_Time = Lastime()
+    def recyns(p:str):
+        return cyns_data
+    p = multip_v4
+    p.initialization(conf=ARGS)
+    tasks = [0] * task
+    while tasks.count(0) != 0:
+        Retds = p.loadtask(loadlog=recyns)
+        if Retds:
+            for rix in Retds:
+                find_id = dict(rix).get('id', '')
+                for cd in cyns_data:
+                    if cd['id'] == find_id:
+                        cd['logs'] += 1
+        index = tasks.index(0)
+        tasks[index] = 1
+    print(f'{r("Mission completed, sorting in progress.")}')
+    data = sorted(cyns_data, key=lambda item: item['logs'], reverse=True)
+    info = f'#\n# The differ program has been executed, the task\n# parameter is {task}, and the execution results are as\n# follows: data lens {len(data)}\n#\n'
+    with open(cyns_info, "a") as file:
+        file.write(f"{info}\n")
+        for _da in data:
+            # {'red': [6, 7, 13, 20, 25, 29], 'bule': [16], 'id': '05', 'logs': 8, 'DFR4': 48, 'DFR5': 0}
+            _r, _b, _id, logs, *_ = _da.values()
+            n = f'{_r}'
+            t = f'{_b}'
+            cyns = {4:logs}
+            logstr = f"{Start_Time} -> id {_id:>4} / cyn {cyns} * {n} + {t}"
+            print(f'{logstr = }')
+            file.write(f'{logstr}\n')
+            time.sleep(1)
+        
+
+
 if __name__ == "__main__":
     argvs = ["check", "explore", "load"]
     print(f"{sys.argv = }")
@@ -63,5 +122,8 @@ if __name__ == "__main__":
         case [_, "check"]:
             print(f"runting check...")
         case [_, "explore", "task", task_args]:
-            print(f"runting explore -> task -> {task_args}")
+            print(f"runting explore -> task {task_args}")
             explore_task(task=int(task_args))
+        case [_, "load", "task", task_args ]:
+            print(f"runting differ -> task {task_args}")
+            load(task=int(task_args))

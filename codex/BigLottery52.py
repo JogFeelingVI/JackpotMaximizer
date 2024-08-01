@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-07-07 08:29:51
+# @Last Modified by:   Your name
+# @Last Modified time: 2024-08-01 16:36:50
 import multiprocessing, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets, inspect
 from dataclasses import dataclass
 from functools import partial
@@ -199,7 +199,10 @@ def differ(config:dict={}, item:dict={}):
     Comparison_group = config.get('Comparison_group', [])
     fps = lambda a:len(a) - len(set(a))
     keyname, count, probability, Tolerance = Probability
+    # "red", 4, 0.0047, 0.0001
+    
     temp = sum([1 for cg in Comparison_group if fps(item[keyname]+ cg[keyname]) == count])
+    item[f'DFR{count}'] = temp
     if abs(temp / lens - probability) > Tolerance:
         return None
     return item

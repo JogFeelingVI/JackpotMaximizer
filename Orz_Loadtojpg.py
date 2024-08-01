@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-14 16:04:53
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-07-27 09:46:52
+# @Last Modified time: 2024-08-01 18:04:50
 
 import pathlib, ast, re, datetime
 from typing import Final, Callable
@@ -30,16 +30,14 @@ def loadtoData():
             line = line.strip()  # 去除首尾空格
             if line:  # 检查是否为空行
                 match_search = search_id_cyn_r_b.search(line)
-                if match_search == None:
-                    return data
-
-                _id, cyns, _r, _b = match_search.groups()
-                r = " ".join((f"{x:02}" for x in ast.literal_eval(_r)))
-                b = " ".join((f"{x:02}" for x in ast.literal_eval(_b)))
-                cyns = ast.literal_eval(f"{{{cyns}}}").get(4, -1)
-                _id = idex_range[0]
-                idex_range.remove(_id)
-                data.append((_id, cyns, f"{r} - {b}"))
+                if match_search != None:
+                    _id, cyns, _r, _b = match_search.groups()
+                    r = " ".join((f"{x:02}" for x in ast.literal_eval(_r)))
+                    b = " ".join((f"{x:02}" for x in ast.literal_eval(_b)))
+                    cyns = ast.literal_eval(f"{{{cyns}}}").get(4, -1)
+                    _id = idex_range[0]
+                    idex_range.remove(_id)
+                    data.append((_id, cyns, f"{r} - {b}"))
     # cyns_json.unlink()
     # 排序
     data.sort(key=lambda item: item[1])

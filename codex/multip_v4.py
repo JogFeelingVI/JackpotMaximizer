@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-30 13:59:25
+# @Last Modified by:   Your name
+# @Last Modified time: 2024-08-01 17:29:03
 
 from functools import partial
 import re, itertools
@@ -135,6 +135,13 @@ def formmattolist(**kwargs):
             result_to.append(n)
     return result_to
 
+def tolist(**kwargs):
+    """
+    格式转换 format 'index,red,bule'
+    """
+    result = kwargs.get("result")
+    return result
+
 
 def tasked():
     global config
@@ -198,6 +205,43 @@ def tasked():
     ]
     BigLottery52.execute_process(process=temp)
     return tasked_data
+
+def loadtask(loadlog):
+    tasked_cyns = []
+    retx = []
+    temp: list = [
+        {"type": "initialization", "work": __init_conf},
+        {
+            "type": "create",
+            "work": loadlog,
+            "args": {"p":"./cyns.log"},
+            "callback": lambda rx: tasked_cyns.extend(rx),
+        },
+        {
+            "type": "differ",
+            "work": BigLottery52.DataProcessor,
+            "args": {
+                "step1": {"config": "CONF", "funx": BigLottery52.mark, "length": 10000},
+                "step2": {
+                    "Probability": ["red", 4, 0.0047, 0.0001],
+                    "funx": BigLottery52.differ,
+                },
+                "step3": {
+                    "Probability": ["red", 5, 0.0001, 0.0001],
+                    "funx": BigLottery52.differ,
+                }
+            },
+            "callback": lambda re: print(f"FILTER differ Callback: {re[0]}"),
+        },
+        {
+            "type": "other",
+            "work": tolist,
+            "args": {"format": "index,red,bule"},
+            "callback": lambda re: retx.extend(re),
+        }
+    ]
+    BigLottery52.execute_process(process=temp)
+    return retx
 
 
 def ccp(a: Iterable, b: Iterable) -> itertools.product:
