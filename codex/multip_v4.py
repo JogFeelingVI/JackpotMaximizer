@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-08-01 17:29:03
+# @Last Modified time: 2024-08-02 10:25:17
 
 from functools import partial
 import re, itertools
@@ -199,7 +199,7 @@ def tasked():
         {
             "type": "other",
             "work": formmattolist,
-            "args": {"format": "index,red,bule"},
+            "args": {"format": "index,red,bule,DFR4,DFR5"},
             "callback": lambda re: tasked_data.extend(re),
         },
     ]

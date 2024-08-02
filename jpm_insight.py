@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-30 07:04:55
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-08-01 18:35:07
+# @Last Modified time: 2024-08-02 10:43:15
 from codex import multip_v4
 import time, datetime, threading, pathlib, sys, ast, collections, re
 
@@ -47,21 +47,22 @@ def explore_task(task: int = 25):
             tasks[index] = 1
             with open(cyns_info, "a") as file:
                 for rdx in Retds:
-                    fromid, n, t = rdx
+                    fromid, n, t, dfr4, dfr5 = rdx
+                    cyns = {4:dfr4, 5:dfr5}
                     logs = (
-                        f"{Start_Time} -> id {fromid:>4} / cyn {match_cyns} * {n} + {t}"
+                        f"{Start_Time} -> id {fromid:>4} / cyn {cyns} * {n} + {t}"
                     )
                     print(f"Logs: {logs}")
                     file.write(f"{logs}\n")
                     time.sleep(1)
 
 
-def load_cynslog(path:str='./cyns.log"'):
-    cyns_json = pathlib.Path(path)
+def load_cynslog(path:pathlib.Path):
+    # cyns_json = pathlib.Path(path)
     search_id_cyn_r_b = re.compile(r"id\s+(\d+).*\{(.*)\}\s\*\s(.*)\s\+\s(.*)")
     idex_range = [f"{x:02}" for x in range(1, 10000)]
     data = []
-    with cyns_json.open("r+") as f:
+    with path.open("r+") as f:
         for line in f:
             line = line.strip()  # 去除首尾空格
             if line:  # 检查是否为空行
@@ -78,9 +79,9 @@ def load_cynslog(path:str='./cyns.log"'):
     return data
 
 
-def load(task:int=20):
+def load_task(task:int=20):
     cyns_json = pathlib.Path("./cyns.log")
-    cyns_data = load_cynslog("./cyns.log")
+    cyns_data = load_cynslog(cyns_json)
     Start_Time = Lastime()
     def recyns(p:str):
         return cyns_data
@@ -108,7 +109,7 @@ def load(task:int=20):
             n = f'{_r}'
             t = f'{_b}'
             cyns = {4:logs}
-            logstr = f"{Start_Time} -> id {_id:>4} / cyn {cyns} * {n} + {t}"
+            logstr = f"{Start_Time} -> id {_id:>4} / logs {cyns} * {n} + {t}"
             print(f'{logstr = }')
             file.write(f'{logstr}\n')
             time.sleep(1)
@@ -125,5 +126,5 @@ if __name__ == "__main__":
             print(f"runting explore -> task {task_args}")
             explore_task(task=int(task_args))
         case [_, "load", "task", task_args ]:
-            print(f"runting differ -> task {task_args}")
-            load(task=int(task_args))
+            print(f"runting loader -> task {task_args}")
+            load_task(task=int(task_args))
