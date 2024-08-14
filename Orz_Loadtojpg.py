@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-14 16:04:53
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-08-01 18:04:50
+# @Last Modified time: 2024-08-14 10:42:25
 
 import pathlib, ast, re, datetime
 from typing import Final, Callable
@@ -23,7 +23,7 @@ def clear_jpmpng():
 def loadtoData():
     cyns_json = pathlib.Path("./cyns.log")
     search_id_cyn_r_b = re.compile(r"id\s+(\d+).*\{(.*)\}\s\*\s(.*)\s\+\s(.*)")
-    idex_range = list('ABCDEFGHIJKLMNUVWXYZ')
+    idex_range = []
     data = []
     with cyns_json.open("r+") as f:
         for line in f:
@@ -35,12 +35,16 @@ def loadtoData():
                     r = " ".join((f"{x:02}" for x in ast.literal_eval(_r)))
                     b = " ".join((f"{x:02}" for x in ast.literal_eval(_b)))
                     cyns = ast.literal_eval(f"{{{cyns}}}").get(4, -1)
-                    _id = idex_range[0]
-                    idex_range.remove(_id)
+                    try:
+                        _id = idex_range.pop(0)
+                    except IndexError:
+                        idex_range.extend(list('ABCDEFGHIJKLMNUVWXYZ'))
+                        _id = idex_range.pop(0)
+                    print(f'ID debug {_id}')
                     data.append((_id, cyns, f"{r} - {b}"))
     # cyns_json.unlink()
     # 排序
-    data.sort(key=lambda item: item[1])
+    # data.sort(key=lambda item: item[1])
     return data
 
 
@@ -141,7 +145,7 @@ def datatoPngv3(data: list):
             font_change = ImageFont.truetype("./Fonts/Roboto-Medium.ttf", fontsize)
             print(f"Change font size to {fontsize}")
             # 修改条目字体以适应大小
-            cyns = f"{id}|{cyns}"
+            cyns = f"{id}{cyns}"
             if count % 5 == 0 and count != 0:
                 # infos.append('\n')
                 splen = (base_w - 25 * 2) / d.textlength("-", font_tips)
