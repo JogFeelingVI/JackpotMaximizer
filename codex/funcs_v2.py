@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: JogFeelingVI
 # @Date:   2024-03-26 14:13:37
-# @Last Modified by:   JogFeelingVI
-# @Last Modified time: 2024-06-15 17:06:55
+# @Last Modified by:   Your name
+# @Last Modified time: 2024-08-28 00:03:05
 import pathlib, json, re, datetime
 from codex import gethtml_v2, multip_v4
 
@@ -239,7 +239,8 @@ class load:
         if Rexs == 0:
             print(f"")
             return
-        inx, Nr, Nb = Rexs
+        # print(f'Rexs {Rexs}')
+        inx, Nr, Nb, *_ = Rexs
 
         # 发现错误 终止执行程序
         lis = f"{Nr} + {Nb}"
