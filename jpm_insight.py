@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-30 07:04:55
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-08-02 10:43:15
+# @Last Modified time: 2024-09-03 06:58:50
 from codex import multip_v4
 import time, datetime, threading, pathlib, sys, ast, collections, re
 
@@ -36,15 +36,14 @@ def Lastime() -> str:
 
 
 def explore_task(task: int = 25):
-    tasks = [0] * task
-    while tasks.count(0) != 0:
+    tasks = []
+    while tasks.__len__() < task:
         Start_Time = Lastime()
         p = multip_v4
         p.initialization(conf=ARGS)
         Retds = p.tasked()
         if Retds:
-            index = tasks.index(0)
-            tasks[index] = 1
+            tasks.extend([1] * Retds.__len__()) 
             with open(cyns_info, "a") as file:
                 for rdx in Retds:
                     fromid, n, t, dfr4, dfr5 = rdx
