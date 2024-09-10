@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-30 07:04:55
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-09-03 06:58:50
+# @Last Modified time: 2024-09-10 17:48:09
 from codex import multip_v4
 import time, datetime, threading, pathlib, sys, ast, collections, re
 
@@ -100,7 +100,7 @@ def load_task(task:int=20):
     print(f'{r("Mission completed, sorting in progress.")}')
     data = sorted(cyns_data, key=lambda item: item['logs'], reverse=True)
     info = f'#\n# The differ program has been executed, the task\n# parameter is {task}, and the execution results are as\n# follows: data lens {len(data)}\n#\n'
-    with open(cyns_info, "a") as file:
+    with open(cyns_info, "w") as file:
         file.write(f"{info}\n")
         for _da in data:
             # {'red': [6, 7, 13, 20, 25, 29], 'bule': [16], 'id': '05', 'logs': 8, 'DFR4': 48, 'DFR5': 0}
