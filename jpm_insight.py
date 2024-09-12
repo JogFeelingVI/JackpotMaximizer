@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-30 07:04:55
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-09-10 17:48:09
+# @Last Modified time: 2024-09-12 10:35:09
 from codex import multip_v4
 import time, datetime, threading, pathlib, sys, ast, collections, re
 
@@ -83,9 +83,11 @@ def load_task(task:int=20):
     cyns_data = load_cynslog(cyns_json)
     Start_Time = Lastime()
     def recyns(p:str):
+        # 读取数据
         return cyns_data
     p = multip_v4
     p.initialization(conf=ARGS)
+    # 这里快开始新的执行步骤
     tasks = [0] * task
     while tasks.count(0) != 0:
         Retds = p.loadtask(loadlog=recyns)

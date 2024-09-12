@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-08-02 10:25:17
+# @Last Modified time: 2024-09-12 14:45:51
 
 from functools import partial
 import re, itertools
@@ -110,7 +110,7 @@ def initialization(conf: dict):
                     work(args)
                 else:
                     work()
-            print(f"initialization {name} Done.")
+            # print(f"initialization {name} Done.")
         except Exception as e:
             print(f"initialization {name} Error.\n  -> {e}")
 
@@ -142,6 +142,63 @@ def tolist(**kwargs):
     result = kwargs.get("result")
     return result
 
+def tasked_nop():
+    global config
+    tasked_data = []
+    temp: list = [
+        {"type": "initialization", "work": __init_conf},
+        {
+            "type": "create",
+            "work": BigLottery52.DataProcessor,
+            "args": {
+                "config": "CONF",
+                "funx": BigLottery52.mark,
+                "length": config.get("n", 25),
+            }
+        },
+        {"type": "initialization", "work": lambda: __init_rego("red")},
+        {
+            "type": "filter",
+            "work": BigLottery52.DataProcessor,
+            "args": {"config": "FILTER", "funx": BigLottery52.filters}
+        },
+        {"type": "initialization", "work": lambda: __init_rego("bule")},
+        {
+            "type": "filter",
+            "work": BigLottery52.DataProcessor,
+            "args": {"config": "FILTER", "funx": BigLottery52.filters}
+        },
+        {"type": "initialization", "work": __init_filter},
+        {
+            "type": "filter",
+            "work": BigLottery52.DataProcessor,
+            "args": {"config": "FILTER", "funx": BigLottery52.filters}
+        },
+        #! 新的filter 初始化工作
+        {
+            "type": "differ",
+            "work": BigLottery52.DataProcessor,
+            "args": {
+                "step1": {"config": "CONF", "funx": BigLottery52.mark, "length": 10000},
+                "step2": {
+                    "Probability": ["red", 4, 0.0047, 0.0001],
+                    "funx": BigLottery52.differ,
+                },
+                "step3": {
+                    "Probability": ["red", 5, 0.0001, 0.0001],
+                    "funx": BigLottery52.differ,
+                }
+            }
+        },
+        {
+            "type": "other",
+            "work": formmattolist,
+            "args": {"format": "index,red,bule,DFR4,DFR5"},
+            "callback": lambda re: tasked_data.extend(re),
+        },
+    ]
+    BigLottery52.execute_process(process=temp)
+    return tasked_data
 
 def tasked():
     global config
@@ -231,7 +288,7 @@ def loadtask(loadlog):
                     "funx": BigLottery52.differ,
                 }
             },
-            "callback": lambda re: print(f"FILTER differ Callback: {re[0]}"),
+            # "callback": lambda re: print(f"FILTER differ Callback: {re[0]}"),
         },
         {
             "type": "other",
