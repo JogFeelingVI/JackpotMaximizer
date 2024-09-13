@@ -2,14 +2,14 @@
 # @Author: Your name
 # @Date:   2024-09-12 08:47:23
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-09-12 21:10:41
+# @Last Modified time: 2024-09-13 09:14:40
 
 import tqdm, time, random, datetime
 from codex import multip_v4
 
 NxCU = [1, 2, 4, 3, 6, 7, 8, 9, 0, 11, 23]
 ARGS = {"n": 1000, "loadins": True, "loadfilter": True}
-idex_range = [f"{x:02}" for x in range(1, 10000)]
+idex_range = [x for x in range(0, 10000)]
 
 def Lastime() -> str:
     """
@@ -30,7 +30,9 @@ def connToStr(item:list|dict):
             return f"{Lastime()} -> id {fromid:>4} / cyn {dic} * {n} + {t}"
         
         case dict() as Di:
-            n, t, id, logs = Di.values()
+            keys = ['n', 't', 'id', 'logs']
+            values = [Di[k] for k in keys]
+            n, t, id, logs = values
             dic = {4: logs}
             return f"{Lastime()} -> id {id:>4} / logs {dic} * {n} + {t}"
         
@@ -38,13 +40,14 @@ def connToStr(item:list|dict):
             return f"{Lastime()} -> Error {item}"
 
 
-def convtodict(item: list, id: str):
+def convtodict(item: list, id: int):
     """
     data.append({"red": ast.literal_eval(_r), "bule": ast.literal_eval(_b), "id":_id, "logs":0})
     {'red': [2, 15, 17, 24, 27, 32], 'bule': [11], 'id': '01', 'logs': 0}
     """
     _, n, t, dfr4, dfr5 = item
     return {"red": n, "bule": t, "id": id, "logs": 0}
+
 
 
 def main(explore: int = 25, load: int = 25, exp: str = "./exp", lod: str = "./lod"):
@@ -65,10 +68,11 @@ def main(explore: int = 25, load: int = 25, exp: str = "./exp", lod: str = "./lo
     # 队列已满，可以进行后续操作 写入文件
     with open(exp, "w") as file:
         for item in tqdm.tqdm(exp_ram, desc="Save To", colour='blue', ascii=True):
-            file.write(f"{connToStr(item)}\n")
             idx = idex_range[0]
             idex_range.remove(idx)
-            exp_data.append(convtodict(item, idx))
+            change_item = convtodict(item, idx)
+            file.write(f"{connToStr(change_item)}\n")
+            exp_data.append(change_item)
     # 开始穿透
     def recyns(p:str):
         # 读取数据
@@ -80,13 +84,11 @@ def main(explore: int = 25, load: int = 25, exp: str = "./exp", lod: str = "./lo
         while True:
             Retds = p.loadtask(loadlog=recyns)
             if Retds:
-                # print(f'{Retds.__len__()} {Retds[0]}')
-                for rix in Retds:
-
-                    find_id = dict(rix).get("id", "")
-                    for cd in exp_data:
-                        if cd["id"] == find_id:
-                            cd["logs"] += 1
+                idx = [k['id'] for k in Retds]
+                for cd in exp_data:
+                    if cd["id"] in idx:
+                        cd["logs"] += 1
+                    
             pbar.update()
             count+=1
             if count >= load:
