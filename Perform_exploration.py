@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-09-12 08:47:23
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-09-14 09:59:57
+# @Last Modified time: 2024-09-14 10:03:50
 
 import tqdm, time, random, datetime
 from codex import multip_v4
@@ -63,7 +63,7 @@ def main(explore: int = 25, load: int = 25, exp: str = "./exp", lod: str = "./lo
     exp_ram = []
     p = multip_v4
     p.initialization(conf=ARGS)
-    with tqdm.tqdm(total=explore, desc="Explore Progress", colour='red', ascii=True) as pbar:
+    with tqdm.tqdm(total=explore, desc="Explore", colour='red', ascii=True) as pbar:
         while True:
             Retds = p.tasked_nop()
             pbar.total = exp_ram.__len__() + Retds.__len__()
