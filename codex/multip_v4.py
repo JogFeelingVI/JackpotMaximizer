@@ -2,10 +2,10 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-09-12 14:45:51
+# @Last Modified time: 2024-09-14 09:54:39
 
 from functools import partial
-import re, itertools
+import re, itertools, datetime
 from typing import Iterable
 from codex import BigLottery52, filters_v4, rego_v4
 
@@ -130,6 +130,8 @@ def formmattolist(**kwargs):
                 match _f:
                     case "index":
                         n.append(index)
+                    case "time":
+                        n.append(datetime.datetime.now())
                     case str() as keys:
                         n.append(res_item.get(keys))
             result_to.append(n)
@@ -193,7 +195,7 @@ def tasked_nop():
         {
             "type": "other",
             "work": formmattolist,
-            "args": {"format": "index,red,bule,DFR4,DFR5"},
+            "args": {"format": "index,red,bule,DFR4,DFR5,time"},
             "callback": lambda re: tasked_data.extend(re),
         },
     ]
