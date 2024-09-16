@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-09-12 08:47:23
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-09-14 10:03:50
+# @Last Modified time: 2024-09-16 19:01:13
 
 import tqdm, time, random, datetime
 from codex import multip_v4
@@ -53,7 +53,7 @@ def convtodict(item: list, id: int):
     {'red': [2, 15, 17, 24, 27, 32], 'bule': [11], 'id': '01', 'logs': 0}
     """
     _, n, t, dfr4, dfr5, timing= item
-    multip_v4.BigLottery52.logger.info(f'{n} + {t} {timing}')
+    # multip_v4.BigLottery52.logger.info(f'{n} + {t} {timing}')
     return {"red": n, "bule": t, "id": id, "logs": 0,'time':timing}
 
 
@@ -111,8 +111,8 @@ def main(explore: int = 25, load: int = 25, exp: str = "./exp", lod: str = "./lo
 
 
 if __name__ == "__main__":
-    explore = 330
-    load = 30
+    explore = 300
+    load = 50
     save_exp = "./cyns.log"
     save_lod = "./load.log"
     main(explore, load, save_exp, save_lod)
