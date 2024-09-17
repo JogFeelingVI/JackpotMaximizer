@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-09-12 08:47:23
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-09-16 19:01:13
+# @Last Modified time: 2024-09-17 15:27:02
 
 import tqdm, time, random, datetime
 from codex import multip_v4
@@ -80,7 +80,7 @@ def main(explore: int = 25, load: int = 25, exp: str = "./exp", lod: str = "./lo
             idx = idex_range[0]
             idex_range.remove(idx)
             change_item = convtodict(item, idx)
-            file.write(f"{connToStr(change_item)}\n")
+            file.write(f"{connToStr(item)}\n")
             exp_data.append(change_item)
     # 开始穿透
     def recyns(p:str):
@@ -111,8 +111,8 @@ def main(explore: int = 25, load: int = 25, exp: str = "./exp", lod: str = "./lo
 
 
 if __name__ == "__main__":
-    explore = 300
-    load = 50
+    explore = 1300
+    load = 500
     save_exp = "./cyns.log"
     save_lod = "./load.log"
     main(explore, load, save_exp, save_lod)
