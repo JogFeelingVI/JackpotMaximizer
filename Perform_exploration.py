@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-09-12 08:47:23
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-10-01 06:53:49
+# @Last Modified time: 2024-10-10 04:55:13
 
 import tqdm, time, random, datetime
 from codex import multip_v4
@@ -111,7 +111,7 @@ def main(explore: int = 25, load: int = 25, exp: str = "./exp", lod: str = "./lo
 
 
 if __name__ == "__main__":
-    explore = 3000
+    explore = 50
     load = 700
     save_exp = "./cyns.log"
     save_lod = "./load.log"
