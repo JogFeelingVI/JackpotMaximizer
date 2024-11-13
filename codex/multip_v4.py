@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-06-11 22:08:55
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-09-14 09:54:39
+# @Last Modified time: 2024-11-12 09:35:02
 
 from functools import partial
 import re, itertools, datetime
@@ -135,6 +135,7 @@ def formmattolist(**kwargs):
                     case str() as keys:
                         n.append(res_item.get(keys))
             result_to.append(n)
+    # print(f'r = {format} {result}')
     return result_to
 
 def tolist(**kwargs):
@@ -155,7 +156,7 @@ def tasked_nop():
             "args": {
                 "config": "CONF",
                 "funx": BigLottery52.mark,
-                "length": config.get("n", 25),
+                "length": config.get("n", 100),
             }
         },
         {"type": "initialization", "work": lambda: __init_rego("red")},
@@ -174,24 +175,25 @@ def tasked_nop():
         {
             "type": "filter",
             "work": BigLottery52.DataProcessor,
-            "args": {"config": "FILTER", "funx": BigLottery52.filters}
+            "args": {"config": "FILTER", "funx": BigLottery52.filters},
+            # "callback": lambda re: print(f"Callback: {len(re)} {re[-1]}"),
         },
         #! 新的filter 初始化工作
-        {
-            "type": "differ",
-            "work": BigLottery52.DataProcessor,
-            "args": {
-                "step1": {"config": "CONF", "funx": BigLottery52.mark, "length": 10000},
-                "step2": {
-                    "Probability": ["red", 4, 0.0047, 0.0001],
-                    "funx": BigLottery52.differ,
-                },
-                "step3": {
-                    "Probability": ["red", 5, 0.0001, 0.0001],
-                    "funx": BigLottery52.differ,
-                }
-            }
-        },
+        # {
+        #     "type": "differ",
+        #     "work": BigLottery52.DataProcessor,
+        #     "args": {
+        #         "step1": {"config": "CONF", "funx": BigLottery52.mark, "length": 10000},
+        #         "step2": {
+        #             "Probability": ["red", 4, 0.0047, 0.0001],
+        #             "funx": BigLottery52.differ,
+        #         },
+        #         "step3": {
+        #             "Probability": ["red", 5, 0.0001, 0.0001],
+        #             "funx": BigLottery52.differ,
+        #         }
+        #     }
+        # },
         {
             "type": "other",
             "work": formmattolist,
@@ -282,11 +284,7 @@ def loadtask(loadlog):
             "args": {
                 "step1": {"config": "CONF", "funx": BigLottery52.mark, "length": 10000},
                 "step2": {
-                    "Probability": ["red", 4, 0.0047, 0.0001],
-                    "funx": BigLottery52.differ,
-                },
-                "step3": {
-                    "Probability": ["red", 5, 0.0001, 0.0001],
+                    "Probability": ["red", 4, 0.003, 0.0001],
                     "funx": BigLottery52.differ,
                 }
             },

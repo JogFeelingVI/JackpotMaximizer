@@ -2,7 +2,7 @@
 # @Author: JogFeelingVI
 # @Date:   2024-05-18 08:58:03
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-09-12 21:36:05
+# @Last Modified time: 2024-11-11 23:12:32
 import multiprocessing, os, time, re, logging, random, concurrent.futures, pathlib, itertools, secrets, inspect
 from dataclasses import dataclass
 from functools import partial
@@ -210,9 +210,14 @@ def differ(config: dict = {}, item: dict = {}):
     temp = sum(
         [1 for cg in Comparison_group if fps(item[keyname] + cg[keyname]) == count]
     )
+    
+    if temp == 0:
+        return None
+    
     item[f"DFR{count}"] = temp
     if temp / lens > probability + Tolerance:
         return None
+    # print(f'{item} = {temp/lens = }')
     return item
 
 
