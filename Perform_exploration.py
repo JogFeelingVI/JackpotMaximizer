@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-09-12 08:47:23
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-11-13 16:06:54
+# @Last Modified time: 2024-11-17 09:11:08
 
 from itertools import zip_longest
 from typing import List
@@ -148,8 +148,8 @@ def main(explore: int = 25, load: int = 25, exp: str = "./exp", lod: str = "./lo
 
 
 if __name__ == "__main__":
-    explore = 100
-    load = 10
+    explore = 3000
+    load = 1000
     save_exp = "./cyns.log"
     save_lod = "./load.log"
     main(explore, load, save_exp, save_lod)
