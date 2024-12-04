@@ -2,7 +2,7 @@
 # @Author: Your name
 # @Date:   2024-09-12 08:47:23
 # @Last Modified by:   Your name
-# @Last Modified time: 2024-11-17 09:11:08
+# @Last Modified time: 2024-12-01 11:05:33
 
 from itertools import zip_longest
 from typing import List
@@ -110,12 +110,15 @@ def main(explore: int = 25, load: int = 25, exp: str = "./exp", lod: str = "./lo
             file.write(f"{connToStr(item)}\n")
             exp_data.append(change_item)
     exp_ram.clear()
+    
+    exp_data = remove_duplicates(exp_data, 'red')
 
     # 开始穿透
     def recyns(p: str):
         # 读取数据
         # print(f'{p = } -> {exp_data[0]}')
-        return remove_duplicates(exp_data, 'red')
+        # return remove_duplicates(exp_data, 'red')
+        return exp_data
 
     count = 0
     with tqdm.tqdm(total=load, desc="loAD Progress", colour="CYAN", ascii=True) as pbar:
